@@ -36,10 +36,7 @@ class KGEModel(nn.Module):
             a=-self.embedding_range.item(),
             b=self.embedding_range.item())
 
-        if model_name == 'pRotatE':
-            self.modulus = nn.Parameter(torch.Tensor([[0.5 * self.embedding_range.item()]]))
-
-        if model_name not in ['TransE', 'DistMult', 'ComplEx', 'RotatE', 'pRotatE']:
+        if model_name not in ['ComplEx', 'RotatE']:
             raise ValueError('model {} not supported'.format(model_name))
 
     def forward(self, sample, mode='single'):
@@ -111,8 +108,7 @@ class KGEModel(nn.Module):
 
         model_func = {
             'ComplEx': self.ComplEx,
-            'RotatE': self.RotatE,
-            'pRotatE': self.pRotatE
+            'RotatE': self.RotatE
         }
 
         if self.model_name in model_func:
@@ -164,23 +160,6 @@ class KGEModel(nn.Module):
         score = score.norm(dim = 0)
 
         score = self.gamma.item() - score.sum(dim=2)
-        return score
-
-    def pRotatE(self, head, relation, tail, mode):
-
-        phase_head = head/(self.embedding_range.item()/math.pi)
-        phase_relation = relation/(self.embedding_range.item()/math.pi)
-        phase_tail = tail/(self.embedding_range.item()/math.pi)
-
-        if mode == 'head-batch':
-            score = phase_head + (phase_relation - phase_tail)
-        else:
-            score = (phase_head + phase_relation) - phase_tail
-
-        score = torch.sin(score)
-        score = torch.abs(score)
-
-        score = self.gamma.item() - score.sum(dim = 2) * self.modulus
         return score
 
     @staticmethod
