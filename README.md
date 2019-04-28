@@ -13,7 +13,7 @@ View full documentation [here](https://xinkbase.readthedocs.io).
 ## Quickstart
 
 ```
-from xinkbase.xinkbase import KB
+from xinkbase import KB
 kb = KB()
 kb.store('eats(tom, rice)')
 for ans in kb.query('eats(tom, Food)'):
