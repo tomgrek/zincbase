@@ -5,12 +5,10 @@ jobs:
     docker:
       - image: python:3.7
     steps:
+      - checkout
       - run:
           name: Run Tests
           command: |
-            pwd
-            ls
-            cd xinkbase
             pwd
             ls
             python3 -m pip install -r requirements.txt
