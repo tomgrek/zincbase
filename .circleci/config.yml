@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: python:3.7
     steps:
-      - test:
+      - run:
           name: Run Tests
           command: |
             python3 -m pip install requirements.txt
