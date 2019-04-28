@@ -7,6 +7,16 @@ XinKBase is a state of the art knowledge base.
 
 It combines symbolic logic (think expert systems), graph search, and the latest in neural networks.
 
+## Quickstart
+
+```
+from xinkbase.xinkbase import KB
+kb = KB()
+kb.store('eats(tom, rice)')
+for ans in kb.query('eats(tom, Food)'):
+    print(ans['Food']) # prints 'rice'
+```
+
 # Requirements
 
 * Python 3
@@ -26,6 +36,10 @@ python test/test_main.py
 python test/test_lists.py
 python -m doctest xinkbase/xinkbase.py
 ```
+
+## Building documentation
+
+From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 
 # TODO
 

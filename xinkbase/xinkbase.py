@@ -42,6 +42,11 @@ class KB(object):
 
     def seed(self, seed):
         """Seed the RNGs for PyTorch, NumPy, and Python itself.
+        
+        :param int seed: random seed
+
+        :Example:
+
         >>> KB().seed(555)
         """
         torch.random.manual_seed(seed)
@@ -312,8 +317,41 @@ class KB(object):
                 if ans:
                     queue.append(child)
 
-    def node(self, name):
-        return self.G.nodes(data=True)[name]
+    def attr(self, node_name, attributes):
+        """Set attributes on an existing graph node.
+
+        :param str node_name: Name of the node
+        :param dict attributes: Dictionary of attributes to set
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.store('eats(tom, rice)')
+        0
+        >>> kb.attr('tom', {'is_person': True})
+        >>> kb.node('tom')
+        {'is_person': True}"""
+
+        nx.set_node_attributes(self.G, {node_name: attributes})
+
+    def node(self, node_name):
+        """Get a node, and its attributes, from the graph.
+
+        :param str node_name: Name of the node
+        :return: The node and its attributes.
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.store('eats(tom, rice)')
+        0
+        >>> kb.node('tom')
+        {}
+        >>> kb.attr('tom', {'is_person': True})
+        >>> kb.node('tom')
+        {'is_person': True}"""
+
+        return self.G.nodes(data=True)[node_name]
 
     def delete_rule(self, rule_idx):
         """Delete a rule from the KB.
@@ -335,6 +373,10 @@ class KB(object):
             return False
 
     def plot(self, density=1.0):
+        """Plots a network diagram from (triple) nodes and edges in the KB.
+
+        :param float density: Probability (0-1) that a given edge will be plotted, \
+        useful to thin out dense graphs for visualization."""
         edgelist = [e for e in self.G.edges(data=True) if random.random() < density]
         newg = nx.DiGraph(edgelist)
         pos = nx.spring_layout(newg)
@@ -347,8 +389,13 @@ class KB(object):
         plt.show()
 
     def query(self, statement):
-        """Query the KB
-        :return :generator Generator of alternative bindings to variables that match the query
+        """Query the KB.
+
+        :param str statement: A rule to query on.
+        :return: Generator of alternative bindings to variables that match the query
+
+        :Example:
+
         >>> kb = KB()
         >>> kb.store('a(a)')
         0
@@ -360,16 +407,36 @@ class KB(object):
 
     def store(self, statement):
         """Store a fact/rule in the KB
-        :return :int the id of the fact/rule
+
+        :param str statement: Fact or rule to store in the KB.
+        :return: the id of the fact/rule
+
+        :Example:
+
         >>> KB().store('a(a)')
         0"""
         self.rules.append(Rule(strip_all_whitespace(statement), graph=self.G))
         return len(self.rules) - 1
 
     def to_triples(self):
-        """Convert all facts in the KB to a list of tuples, each of length 3.
+        """Convert all facts in the KB to a list of triples, each of length 3.
         Any fact that is not arity 2 will be ignored.
-        :return :list tuples (triples)"""
+
+        :Note: While the Prolog style representation uses `pred(subject, object)`, \
+        the triple representation is `(subject, pred, object)`.
+
+        :return: list of triples (tuples of length 3)
+        
+        :Example:
+        >>> kb = KB()
+        >>> kb.store('a(b, c)')
+        0
+        >>> kb.to_triples()
+        [('b', 'a', 'c')]
+        >>> kb.store('a(a)')
+        1
+        >>> kb.to_triples()
+        [('b', 'a', 'c')]"""
         triples = []
         for r in self.rules:
             if not r.goals:
@@ -382,6 +449,15 @@ class KB(object):
         return triples
 
     def from_triples(self, triples):
+        """Stores facts from a list of tuples into the KB.
+
+        :param list triples: List of tuples each of the form `(subject, pred, object)`
+
+        :Example:
+        >>> kb = KB()
+        >>> kb.from_triples([('b', 'a', 'c')])
+        >>> len(list(kb.query('a(b, c)')))
+        1"""
         for (u, p, v) in triples:
             self.store('{}({},{})'.format(p, u, v))
 
