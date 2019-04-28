@@ -43,6 +43,7 @@ python -m doctest xinkbase/xinkbase.py
 
 If you use this software, please consider citing:
 
+```
 @software{xinkbase,
   author = {{Tom Grek}},
   title = {XinKBase: A state of the art knowledge base},
@@ -50,3 +51,4 @@ If you use this software, please consider citing:
   version = {0.0.1},
   date = {2019-04-27},
 }
+```
