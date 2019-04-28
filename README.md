@@ -1,11 +1,14 @@
 [![CircleCI](https://circleci.com/gh/tomgrek/xinkbase.svg?style=svg)](https://circleci.com/gh/tomgrek/xinkbase)
 [![DOI](https://zenodo.org/badge/183831265.svg)](https://zenodo.org/badge/latestdoi/183831265)
+[![Documentation Status](https://readthedocs.org/projects/xinkbase/badge/?version=latest)](https://xinkbase.readthedocs.io/en/latest/?badge=latest)
 
 # XinKBase
 
 XinKBase is a state of the art knowledge base.
 
 It combines symbolic logic (think expert systems), graph search, and the latest in neural networks.
+
+View full documentation [here](https://xinkbase.readthedocs.io).
 
 ## Quickstart
 
