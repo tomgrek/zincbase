@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/tomgrek/xinkbase.svg?style=svg)](https://circleci.com/gh/tomgrek/xinkbase)
+
 # XinKBase
 
 A state of the art knowledge base.
