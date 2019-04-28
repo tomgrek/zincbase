@@ -71,13 +71,19 @@ assert b[1]['Brainiac'] in ['oleg', 'tom']; assert b[1]['Brainiac'] != b[0]['Bra
 kb = KB()
 kb.store('gave_mono_to(john, jane)')
 kb.store('gave_mono_to(jane, phil)')
-b = kb.bfs('john', 'phil'); assert len(b) == 1; assert len(b[0]) == 2; assert b[0][0] == ('gave_mono_to', 'jane')
-assert b[0][1] == ('gave_mono_to', 'phil')
+b = kb.bfs('john', 'phil'); b = list(b); assert len(b) == 1 
+assert len(b[0]) == 2; assert b[0][0] == ('gave_mono_to', 'jane'); assert b[0][1] == ('gave_mono_to', 'phil')
+
+b = kb.bfs('phil', 'john'); b = list(b); assert not b
+
+b = kb.bfs('phil', 'john', reverse=True); b = list(b); assert len(b) == 1
+assert b[0][0] == ('gave_mono_to', 'jane'); assert b[0][1] == ('gave_mono_to', 'john')
 
 kb.store('gave_mono_to(jane, janice)')
 kb.store('gave_mono_to(janice, phil)')
-b = kb.bfs('john', 'phil'); assert len(b) == 2; assert len(b[0]) == 2; assert b[0][0] == ('gave_mono_to', 'jane')
-assert b[0][1] == ('gave_mono_to', 'phil'); assert b[1][0] == ('gave_mono_to', 'jane'); assert b[1][1] == ('gave_mono_to', 'janice')
-assert b[1][2] == ('gave_mono_to', 'phil')
+b = kb.bfs('john', 'phil'); b = list(b); assert len(b) == 2
+assert len(b[0]) == 2; assert b[0][0] == ('gave_mono_to', 'jane')
+assert b[0][1] == ('gave_mono_to', 'phil'); assert b[1][0] == ('gave_mono_to', 'jane');
+assert b[1][1] == ('gave_mono_to', 'janice'); assert b[1][2] == ('gave_mono_to', 'phil')
 
 print('All main KB tests passed.')

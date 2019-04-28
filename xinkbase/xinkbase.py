@@ -56,7 +56,7 @@ class KB(object):
         neighbors = graph[node]
         return [x for x in neighbors.items()]
 
-    def bfs(self, start_node, target_node, max_depth=10, limit=math.inf, reverse=False):
+    def bfs(self, start_node, target_node, max_depth=10, reverse=False):
         """Find a path from start_node to target_node"""
         stack = [(start_node, 0, [])]
         answers = []
@@ -66,9 +66,7 @@ class KB(object):
                 return answers
             for n, pred in self._valid_neighbors(node, reverse=reverse):
                 if n == target_node:
-                    answers.append((path + [(pred['pred'], n)] ))
-                    if len(answers) > limit:
-                        return answers
+                    yield path + [(pred['pred'], n)]
                 else:
                     stack.append((n, depth+1, path + [(pred['pred'], n)]))
         return answers
