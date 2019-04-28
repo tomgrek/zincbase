@@ -1,18 +1,17 @@
 xinkbase package
 ================
 
-Subpackages
------------
-
-.. toctree::
-
-    xinkbase.logic
-    xinkbase.nn
-    xinkbase.utils
-    xinkbase.xinkbase
-
 Submodules
 ----------
+
+xinkbase.xinkbase module
+------------------------
+
+.. automodule:: xinkbase.xinkbase
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

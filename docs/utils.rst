@@ -1,21 +1,21 @@
-xinkbase.nn package
-===================
+utils package
+=============
 
 Submodules
 ----------
 
-xinkbase.nn.dataloader module
------------------------------
+utils.string\_utils module
+--------------------------
 
-.. automodule:: xinkbase.nn.dataloader
+.. automodule:: utils.string_utils
     :members:
     :undoc-members:
     :show-inheritance:
 
-xinkbase.nn.rotate module
+utils.type\_checks module
 -------------------------
 
-.. automodule:: xinkbase.nn.rotate
+.. automodule:: utils.type_checks
     :members:
     :undoc-members:
     :show-inheritance:
@@ -24,7 +24,7 @@ xinkbase.nn.rotate module
 Module contents
 ---------------
 
-.. automodule:: xinkbase.nn
+.. automodule:: utils
     :members:
     :undoc-members:
     :show-inheritance:
