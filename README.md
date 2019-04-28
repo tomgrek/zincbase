@@ -31,6 +31,9 @@ python -m doctest xinkbase/xinkbase.py
 
 * Add documentation
 * "solidify" method that takes bindings output from a rule and adds them to graph as concrete atoms so NN can work on them.
+* to_csv method
+* utilize postgres as backend triple store
+* attributes for nodes / relations
 
 # References & Acknowledgements
 
@@ -54,4 +57,5 @@ If you use this software, please consider citing:
   version = {0.0.1},
   date = {2019-04-27},
 }
+
 ```

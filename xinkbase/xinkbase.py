@@ -317,7 +317,11 @@ class KB(object):
 
     def delete_rule(self, rule_idx):
         """Delete a rule from the KB.
-        :param int: rule_idx The index of the rule in the KB. Returned when the rule was added.
+
+        :param int rule_idx: The index of the rule in the KB. Returned when the rule was added.
+
+        :Example:
+
         >>> kb = KB()
         >>> kb.store('a(a)')
         0

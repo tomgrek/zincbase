@@ -2,3 +2,4 @@ __pycache__
 *.csv
 .ipynb_checkpoints
 *.pyc
+_build
