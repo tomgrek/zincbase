@@ -29,19 +29,24 @@ python -m doctest xinkbase/xinkbase.py
 
 * Reimplement search as a generator
 
-# References
+# References & Acknowledgements
 
-[http://www-users.york.ac.uk/~sjh1/courses/L334css/complete/complete2li1.html](L334: Computational Syntax and Semantics -- Introduction to Prolog, Steve Harlow)
-[http://www.openbookproject.net/py4fun/prolog/intro.html](Open Book Project: Prolog in Python, Chris Meyers)
-@inproceedings{
- sun2018rotate,
- title={RotatE: Knowledge Graph Embedding by Relational Rotation in Complex Space},
- author={Zhiqing Sun and Zhi-Hong Deng and Jian-Yun Nie and Jian Tang},
- booktitle={International Conference on Learning Representations},
- year={2019},
- url={https://openreview.net/forum?id=HkgEQnRqYQ},
-}
-[https://curiosity-driven.org/prolog-interpreter](Prolog in JS with nice Einstein puzzle example)
+[L334: Computational Syntax and Semantics -- Introduction to Prolog, Steve Harlow](http://www-users.york.ac.uk/~sjh1/courses/L334css/complete/complete2li1.html)
+
+[Open Book Project: Prolog in Python, Chris Meyers](http://www.openbookproject.net/py4fun/prolog/intro.html)
+
+[Prolog Interpreter in Javascript](https://curiosity-driven.org/prolog-interpreter)
+
+[RotatE: Knowledge Graph Embedding by Relational Rotation in Complex Space, Zhiqing Sun and Zhi-Hong Deng and Jian-Yun Nie and Jian Tang, International Conference on Learning Representations, 2019](https://openreview.net/forum?id=HkgEQnRqYQ)
 
 # Citing
 
+If you use this software, please consider citing:
+
+@software{xinkbase,
+  author = {{Tom Grek}},
+  title = {XinKBase: A state of the art knowledge base},
+  url = {https://github.com/tomgrek/xinkbase},
+  version = {0.0.1},
+  date = {2019-04-27},
+}
