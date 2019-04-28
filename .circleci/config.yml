@@ -1,11 +1,11 @@
 version: 2.1
 
 jobs:
-  test:
+  build:
     docker:
       - image: python:3.7
     steps:
-      - run:
+      - test:
           name: Run Tests
           command: |
             python3 -m pip install requirements.txt
