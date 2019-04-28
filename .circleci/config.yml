@@ -8,6 +8,8 @@ jobs:
       - run:
           name: Run Tests
           command: |
+            pwd
+            ls
             python3 -m pip install -r requirements.txt
             python3 test/test_main.py
             python3 test/test_lists.py
