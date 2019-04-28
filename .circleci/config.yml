@@ -1,0 +1,14 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: python:3.7
+    steps:
+      - run:
+          name: Run Tests
+          command: |
+            python3 -m pip install requirements.txt
+            python3 test/test_main.py
+            python3 test/test_lists.py
+            python3 -m doctest xinkbase/xinkbase.py
