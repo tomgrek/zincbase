@@ -284,7 +284,6 @@ class KB(object):
         head_goal = Goal(Rule("x(y):-x(y)"))
         head_goal.rule.goals = [term]
         queue = deque([head_goal])
-        answers = []
         iterations = 0
         max_iterations = max(100, (len(self.rules) + 1) ** 1.5)
         while queue and iterations < max_iterations:
@@ -294,10 +293,9 @@ class KB(object):
                 if not c.parent:
                     if c.bindings:
                         new_binding = {k:str(v) for (k, v) in c.bindings.items()}
-                        if new_binding not in answers:
-                            answers.append(new_binding)
+                        yield new_binding
                     else:
-                        answers = True
+                        yield True
                     continue
                 parent = copy.deepcopy(c.parent)
                 unify(c.rule.head, c.bindings, parent.rule.goals[parent.idx], parent.bindings)
@@ -315,7 +313,6 @@ class KB(object):
                 ans = unify(term, c.bindings, rule.head, child.bindings)
                 if ans:
                     queue.append(child)
-        return answers
 
     def node(self, name):
         return self.G.nodes(data=True)[name]
@@ -349,11 +346,13 @@ class KB(object):
 
     def query(self, statement):
         """Query the KB
-        :return :list List of alternative bindings to variables that match the query
+        :return :generator Generator of alternative bindings to variables that match the query
         >>> kb = KB()
         >>> kb.store('a(a)')
         0
-        >>> kb.query('a(X)')
+        >>> kb.query('a(X)') #doctest: +ELLIPSIS
+        <generator object KB._search at 0x...>
+        >>> list(kb.query('a(X)'))
         [{'X': 'a'}]"""
         return self._search(Term(strip_all_whitespace(statement)))
 

@@ -3,7 +3,9 @@
 
 # XinKBase
 
-A state of the art knowledge base.
+XinKBase is a state of the art knowledge base.
+
+It combines symbolic logic (think expert systems), graph search, and the latest in neural networks.
 
 # Requirements
 
@@ -27,7 +29,8 @@ python -m doctest xinkbase/xinkbase.py
 
 # TODO
 
-* Reimplement search as a generator
+* Add documentation
+* "solidify" method that takes bindings output from a rule and adds them to graph as concrete atoms so NN can work on them.
 
 # References & Acknowledgements
 
