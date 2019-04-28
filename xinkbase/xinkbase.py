@@ -428,6 +428,7 @@ class KB(object):
         :return: list of triples (tuples of length 3)
         
         :Example:
+
         >>> kb = KB()
         >>> kb.store('a(b, c)')
         0
@@ -454,6 +455,7 @@ class KB(object):
         :param list triples: List of tuples each of the form `(subject, pred, object)`
 
         :Example:
+        
         >>> kb = KB()
         >>> kb.from_triples([('b', 'a', 'c')])
         >>> len(list(kb.query('a(b, c)')))
