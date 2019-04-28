@@ -13,9 +13,9 @@ from sklearn.svm import SVC
 from torch.utils.data import DataLoader
 import torch
 
-from logic.Term import Term
-from logic.Rule import Rule
-from logic.Goal import Goal
+from xinkbase.logic.Term import Term
+from xinkbase.logic.Rule import Rule
+from xinkbase.logic.Goal import Goal
 from logic.common import unify, process
 from nn.dataloader import TrainDataset, BidirectionalOneShotIterator
 from nn.rotate import KGEModel
