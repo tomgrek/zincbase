@@ -51,6 +51,8 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * to_csv method
 * utilize postgres as backend triple store
 * attributes for nodes / relations
+* The to_csv/from_csv methods do not yet support node attributes.
+* Add relation extraction from arbitrary unstructured text
 
 # References & Acknowledgements
 

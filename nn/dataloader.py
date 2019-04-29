@@ -21,7 +21,7 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         positive_sample = self.triples[idx]
 
-        head, relation, tail = positive_sample
+        head, relation, tail, attr = positive_sample
 
         subsampling_weight = self.count[(head, relation)] + self.count[(tail, -relation-1)]
         subsampling_weight = torch.sqrt(1 / torch.Tensor([subsampling_weight]))
@@ -30,6 +30,8 @@ class TrainDataset(Dataset):
         negative_sample_size = 0
 
         while negative_sample_size < self.negative_sample_size:
+            # TODO: limit the negative sample relation and attribute random numbers to within those values.
+            # Right now it's anything up to nentity which is usually much higher.
             negative_sample = np.random.randint(self.nentity, size=self.negative_sample_size*2)
             if self.mode == 'head-batch':
                 mask = np.in1d(
@@ -54,7 +56,6 @@ class TrainDataset(Dataset):
         negative_sample = np.concatenate(negative_sample_list)[:self.negative_sample_size]
 
         negative_sample = torch.from_numpy(negative_sample)
-
         positive_sample = torch.LongTensor(positive_sample)
 
         return positive_sample, negative_sample, subsampling_weight, self.mode
@@ -70,7 +71,7 @@ class TrainDataset(Dataset):
     @staticmethod
     def count_frequency(triples, start=4):
         count = {}
-        for head, relation, tail in triples:
+        for head, relation, tail, attr in triples:
             if (head, relation) not in count:
                 count[(head, relation)] = start
             else:
@@ -88,7 +89,7 @@ class TrainDataset(Dataset):
         true_head = {}
         true_tail = {}
 
-        for head, relation, tail in triples:
+        for head, relation, tail, attr in triples:
             if (head, relation) not in true_tail:
                 true_tail[(head, relation)] = []
             true_tail[(head, relation)].append(tail)

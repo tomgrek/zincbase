@@ -35,9 +35,20 @@ class KGEModel(nn.Module):
         nn.init.uniform_(tensor=self.relation_embedding,
             a=-self.embedding_range.item(),
             b=self.embedding_range.item())
+        
+        self.attribute_layer = nn.Linear(self.entity_dim, 1)
+        self.attribute_layer.weight.requires_grad = False
+        self.attribute_layer.bias.requires_grad = False
+        self.attr_loss_fn = nn.SmoothL1Loss()
+        self.nonlinearity = F.relu
 
         if model_name not in ['ComplEx', 'RotatE']:
             raise ValueError('model {} not supported'.format(model_name))
+
+    def run_embedding(self, embedding):
+        x = self.attribute_layer(embedding)
+        x = self.nonlinearity(x)
+        return x
 
     def forward(self, sample, mode='single'):
 
@@ -62,6 +73,8 @@ class KGEModel(nn.Module):
                 index=sample[:,2]
             ).unsqueeze(1)
 
+            attr = sample[:, -1]
+
         elif mode == 'head-batch':
             tail_part, head_part = sample
             batch_size, negative_sample_size = head_part.size(0), head_part.size(1)
@@ -83,6 +96,8 @@ class KGEModel(nn.Module):
                 dim=0,
                 index=tail_part[:, 2]
             ).unsqueeze(1)
+
+            attr = head_part[:, -1]
 
         elif mode == 'tail-batch':
             head_part, tail_part = sample
@@ -106,6 +121,8 @@ class KGEModel(nn.Module):
                 index=tail_part.view(-1)
             ).view(batch_size, negative_sample_size, -1)
 
+            attr = head_part[:, -1]
+
         model_func = {
             'ComplEx': self.ComplEx,
             'RotatE': self.RotatE
@@ -116,7 +133,13 @@ class KGEModel(nn.Module):
         else:
             raise Exception('Model not supported')
 
-        return score
+        attr_pred = self.attribute_layer(head)
+        attr_pred = self.nonlinearity(attr_pred)
+        if attr.item() == 0 or attr.item() == 1:
+            attr_loss = self.attr_loss_fn(attr_pred, attr.to(dtype=torch.float32).cuda())
+        else:
+            attr_loss = torch.tensor([0])
+        return score, attr_loss
 
     def ComplEx(self, head, relation, tail, mode):
         re_head, im_head = torch.chunk(head, 2, dim=2)
@@ -175,42 +198,26 @@ class KGEModel(nn.Module):
             positive_sample = positive_sample.cuda()
             negative_sample = negative_sample.cuda()
             subsampling_weight = subsampling_weight.cuda()
-        negative_score = model((positive_sample, negative_sample), mode=mode)
+        negative_score, _ = model((positive_sample, negative_sample), mode=mode)
 
-        if 'negative_adversarial_sampling' in args and args['negative_adversarial_sampling']:
-            negative_score = (F.softmax(negative_score * args['adversarial_temperature'], dim = 1).detach()
-                              * F.logsigmoid(-negative_score)).sum(dim = 1)
-        else:
-            negative_score = F.logsigmoid(-negative_score).mean(dim = 1)
+        negative_score = F.logsigmoid(-negative_score).mean(dim=1)
 
-        positive_score = model(positive_sample)
-        positive_score = F.logsigmoid(positive_score).squeeze(dim = 1)
+        positive_score, attr_loss = model(positive_sample)
+        positive_score = F.logsigmoid(positive_score).squeeze(dim=1)
 
-        if 'uni_weight' in args and args['uni_weight']:
-            positive_sample_loss = - positive_score.mean()
-            negative_sample_loss = - negative_score.mean()
-        else:
-            positive_sample_loss = - (subsampling_weight * positive_score).sum()/subsampling_weight.sum()
-            negative_sample_loss = - (subsampling_weight * negative_score).sum()/subsampling_weight.sum()
+        positive_sample_loss = - (subsampling_weight * positive_score).sum()/subsampling_weight.sum()
+        negative_sample_loss = - (subsampling_weight * negative_score).sum()/subsampling_weight.sum()
 
         loss = (positive_sample_loss + negative_sample_loss)/2
-
-        if 'regularization' in args and args['regularization'] and args['regularization'] != 0.0:
-            regularization = args['regularization'] * (
-                model.entity_embedding.norm(p = 3)**3 +
-                model.relation_embedding.norm(p = 3).norm(p = 3)**3)
-            loss = loss + regularization
-            regularization_log = {'regularization': regularization.item()}
-        else:
-            regularization_log = {}
+        loss += attr_loss
 
         loss.backward()
         optimizer.step()
 
         stats = {
-            **regularization_log,
-            'positive_loss': round(positive_sample_loss.item(), 6),
-            'negative_loss': round(negative_sample_loss.item(), 6),
-            'loss': round(loss.item(), 6)
+            'pos_loss': round(positive_sample_loss.item(), 6),
+            'neg_loss': round(negative_sample_loss.item(), 6),
+            'loss': round(loss.item(), 6),
+            'attr_loss': round(float(attr_loss), 4)
         }
         return stats

@@ -1,7 +1,7 @@
 import types
 
 import context
-from xinkbase.xinkbase import KB
+from xinkbase import KB
 
 kb = KB()
 b = kb.store('c(x)'); assert b == 0
