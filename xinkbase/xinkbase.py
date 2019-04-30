@@ -141,8 +141,12 @@ class KB(object):
         pred = int(clf.predict(X))
         return pred == 2
 
-    def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE'):
-        """Build the dictionaries and KGE model"""
+    def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE', node_attributes=[]):
+        """Build the dictionaries and KGE model
+        :param list node_attributes: List of node attributes to include in the model. \
+        If node doesn't possess the attribute, will be treated as zero. So far attributes \
+        must be floats.
+        """
         triples = self.to_triples(data=True)
         for i, triple in enumerate(triples):
             if triple[0] not in self._entity2id:
@@ -160,12 +164,12 @@ class KB(object):
         for triple in triples:
             # TODO: only encoding a single attribute here and it must be a float; provide for optional number
             # of attributes and for a dictionary encoding of them (for categoricals)
-            attributes = list(triple[3].keys())
-            if not attributes:
-                first_attribute = 0.0
-            else:
-                first_attribute = float(triple[3][attributes[0]])
-            self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]], first_attribute))
+            # TODO: check this still works if user doesn't want any attributes, only graph structure.
+            attrs = []
+            for attribute in node_attributes:
+                attr = float(triple[3].get(attribute, 0.0))
+                attrs.append(attr)
+            self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]], attrs))
         dee = False; dre = False
         if model_name == 'ComplEx':
             dee = True
@@ -201,6 +205,7 @@ class KB(object):
 
         nentity = len(self._entity2id)
         nrelation = len(self._relation2id)
+        # 4 negative examples per positive seems to work well.
         train_dataloader_head = DataLoader(
                     TrainDataset(self._encoded_triples, nentity, nrelation, 4, 'head-batch'),
                     batch_size=batch_size,
@@ -216,7 +221,7 @@ class KB(object):
         train_iterator = BidirectionalOneShotIterator(train_dataloader_head, train_dataloader_tail)
         optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self._kg_model.parameters()), lr=lr)
         for step in range(0, steps):
-            log = self._kg_model.train_step(self._kg_model, optimizer, train_iterator, {'cuda':self._cuda})
+            log = self._kg_model.train_step(self._kg_model, optimizer, train_iterator, {'cuda': self._cuda})
             if step % 100 == 0:
                 print(log)
 

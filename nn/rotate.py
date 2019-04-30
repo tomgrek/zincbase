@@ -51,6 +51,8 @@ class KGEModel(nn.Module):
         return x.item()
 
     def forward(self, sample, mode='single'):
+        """A single forward pass"""
+        
         if mode == 'single':
             batch_size, negative_sample_size = sample.size(0), 1
 

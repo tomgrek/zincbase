@@ -7,7 +7,6 @@ class TrainDataset(Dataset):
     def __init__(self, triples, nentity, nrelation, negative_sample_size, mode):
         self.len = len(triples)
         self.triples = triples
-        self.triple_set = set(triples)
         self.nentity = nentity
         self.nrelation = nrelation
         self.negative_sample_size = negative_sample_size
@@ -37,7 +36,7 @@ class TrainDataset(Dataset):
                 np.random.randint(self.nrelation, size=1),
                 np.random.randint(self.nentity, size=1)
             ))
-            negative_sample = np.concatenate((negative_sample, [self.true_attr.get(negative_sample[0], 0.)]))
+            negative_sample = np.concatenate((negative_sample, self.true_attr.get(negative_sample[0], [0.])))
             if self.mode == 'head-batch':
                 mask = np.in1d(
                     negative_sample[:3],
@@ -63,7 +62,11 @@ class TrainDataset(Dataset):
             negative_sample_list.append(negative_sample)
             negative_sample_size += negative_sample.size
 
-        #negative_sample = np.concatenate(negative_sample_list)[:self.negative_sample_size]
+        # TODO(Next): The last item of the following list should be as long as necessary. And negative samples
+        # should be the same size.
+        # Big worry here is that adding loss from many different attributes will completely outweigh loss
+        # from the actual graph structure. Must scale it.
+        positive_sample = [positive_sample[0], positive_sample[1], positive_sample[2], positive_sample[-1][0]]
         negative_sample = torch.from_numpy(negative_sample)
         positive_sample = torch.LongTensor(positive_sample)
 
