@@ -14,6 +14,7 @@ class TrainDataset(Dataset):
         self.mode = mode
         self.count = self.count_frequency(triples)
         self.true_head, self.true_tail = self.get_true_head_and_tail(self.triples)
+        self.true_attr = self.get_true_attr(self.triples)
 
     def __len__(self):
         return self.len
@@ -30,31 +31,39 @@ class TrainDataset(Dataset):
         negative_sample_size = 0
 
         while negative_sample_size < self.negative_sample_size:
-            # TODO: limit the negative sample relation and attribute random numbers to within those values.
-            # Right now it's anything up to nentity which is usually much higher.
-            negative_sample = np.random.randint(self.nentity, size=self.negative_sample_size*2)
+            # The 4 here is because [sub, pred, ob, attr] ->> limited to a single attribute [TODO]
+            negative_sample = np.concatenate((
+                np.random.randint(self.nentity, size=1),
+                np.random.randint(self.nrelation, size=1),
+                np.random.randint(self.nentity, size=1)
+            ))
+            negative_sample = np.concatenate((negative_sample, [self.true_attr.get(negative_sample[0], 0.)]))
             if self.mode == 'head-batch':
                 mask = np.in1d(
-                    negative_sample,
+                    negative_sample[:3],
                     self.true_head[(relation, tail)],
                     assume_unique=True,
                     invert=True
                 )
             elif self.mode == 'tail-batch':
                 mask = np.in1d(
-                    negative_sample,
+                    negative_sample[:3],
                     self.true_tail[(head, relation)],
                     assume_unique=True,
                     invert=True
                 )
             else:
                 raise ValueError('Training batch mode %s not supported' % self.mode)
+
+            mask = np.concatenate((mask, np.array([3])))
             negative_sample = negative_sample[mask]
+
+            if len(negative_sample) < 4:
+                continue
             negative_sample_list.append(negative_sample)
             negative_sample_size += negative_sample.size
 
-        negative_sample = np.concatenate(negative_sample_list)[:self.negative_sample_size]
-
+        #negative_sample = np.concatenate(negative_sample_list)[:self.negative_sample_size]
         negative_sample = torch.from_numpy(negative_sample)
         positive_sample = torch.LongTensor(positive_sample)
 
@@ -82,6 +91,13 @@ class TrainDataset(Dataset):
             else:
                 count[(tail, -relation-1)] += 1
         return count
+
+    @staticmethod
+    def get_true_attr(triples):
+        true_attr = {}
+        for head, relation, tail, attr in triples:
+            true_attr[head] = attr
+        return true_attr
 
     @staticmethod
     def get_true_head_and_tail(triples):

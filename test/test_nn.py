@@ -1,7 +1,14 @@
+# Neural Network tests
+
+# Possible that tests could flake given stochasticity of NN
+# but they are fairly relaxed.
+
 import context
 from xinkbase import KB
 
 kb = KB()
+kb.seed(555)
+
 people = ['john', 'oleg', 'tom', 'vedant', 'akshay', 'todd']
 for person in people:
     kb.store('works_at({}, primer)'.format(person))
@@ -26,6 +33,9 @@ kb.store('associated_with(amazon, zillow)'); kb.store('associated_with(google, p
 kb.store('associated_with(amazon, microsoft)'); kb.store('associated_with(google, facebook)')
 kb.store('based_in(microsoft, seattle)'); kb.store('based_in(facebook, bay_area)')
 
+# # # # # # # # # # # # # # # # # # # # # # # #
+# Test using node attributes in NN
+# # # # # # # # # # # # # # # # # # # # # # # #
 kb.attr('tom', {'owns_a_raincoat': 0.0})
 kb.attr('todd', {'owns_a_raincoat': 0.0})
 kb.attr('oleg', {'owns_a_raincoat': 0.0})
@@ -38,36 +48,46 @@ kb.attr('other3', {'owns_a_raincoat': 1.0})
 kb.attr('other4', {'owns_a_raincoat': 1.0})
 kb.attr('other5', {'owns_a_raincoat': 1.0})
 kb.attr('other6', {'owns_a_raincoat': 1.0})
-kb.seed(555)
+
 kb.build_kg_model(cuda=True, embedding_size=50)
-kb.train_kg_model(steps=20001, batch_size=1) #batch_size=1, 
+# Use bs=1 to overfit on this small dataset
+kb.train_kg_model(steps=10001, batch_size=2)
 
-x = kb._kg_model.run_embedding(kb.get_embedding('other1')) # should = 1
-print('want 1', x)
-x = kb._kg_model.run_embedding(kb.get_embedding('other2')) # should = 1
-print('want 1', x)
-x = kb._kg_model.run_embedding(kb.get_embedding('tom')) # should = 0
-print('want 0', x)
-x = kb._kg_model.run_embedding(kb.get_embedding('todd')) # should = 0
-print('want 0', x)
-x = kb._kg_model.run_embedding(kb.get_embedding('shamala')) # should = 0
-print('want 0', x)
-x = kb._kg_model.run_embedding(kb.get_embedding('mary')) # should = 1
-print('want 1', x)
+# # # # # # # # # # # # # # # # # # # # # # # #
+# People from Seattle should be more likely to
+# own an umbrella (attribute prediction test)
+# # # # # # # # # # # # # # # # # # # # # # # #
+x = kb._kg_model.run_embedding(kb.get_embedding('other1'))
+import pdb; pdb.set_trace()
+assert round(x) == 1
+x = kb._kg_model.run_embedding(kb.get_embedding('other2'))
+assert round(x) == 1
+x = kb._kg_model.run_embedding(kb.get_embedding('mary'))
+assert round(x) == 1
+x = kb._kg_model.run_embedding(kb.get_embedding('tom'))
+assert round(x) == 0
+x = kb._kg_model.run_embedding(kb.get_embedding('todd'))
+assert round(x) == 0
+x = kb._kg_model.run_embedding(kb.get_embedding('shamala'))
+assert round(x) == 0
 
-x = kb.estimate_triple_prob('tom', 'lives_in', 'bay_area') #should be high
-print('want high', x)
-x = kb.estimate_triple_prob('tom', 'lives_in', 'seattle') #should be low
-print('want low', x)
-x = kb.estimate_triple_prob('shamala', 'lives_in', 'bay_area') #should be high
-print('want high', x)
-x = kb.estimate_triple_prob('shamala', 'lives_in', 'seattle')
-print('want low', x)
-x = kb.estimate_triple_prob('other1', 'lives_in', 'seattle')
-print('want high', x)
-x = kb.estimate_triple_prob('other1', 'lives_in', 'bay_area')
-print('want low', x)
-x = kb.estimate_triple_prob('other2', 'lives_in', 'seattle')
-print('want high', x)
-x = kb.estimate_triple_prob('other2', 'lives_in', 'bay_area')
-print('want low', x)
+# # # # # # # # # # # # # # # # # # # # # # # #
+# These relations should still work (link
+# prediction test)
+# # # # # # # # # # # # # # # # # # # # # # # #
+bay_prob = kb.estimate_triple_prob('tom', 'lives_in', 'bay_area')
+sea_prob = kb.estimate_triple_prob('tom', 'lives_in', 'seattle')
+assert bay_prob > 2 * sea_prob
+
+bay_prob = kb.estimate_triple_prob('shamala', 'lives_in', 'bay_area')
+sea_prob = kb.estimate_triple_prob('shamala', 'lives_in', 'seattle')
+assert bay_prob > 2 * sea_prob
+
+sea_prob = kb.estimate_triple_prob('other1', 'lives_in', 'seattle')
+bay_prob = kb.estimate_triple_prob('other1', 'lives_in', 'bay_area')
+assert sea_prob > 2 * bay_prob
+sea_prob = kb.estimate_triple_prob('other2', 'lives_in', 'seattle')
+bay_prob = kb.estimate_triple_prob('other2', 'lives_in', 'bay_area')
+assert sea_prob > 2 * bay_prob
+
+print('Neural network tests passed.')

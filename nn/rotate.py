@@ -48,10 +48,9 @@ class KGEModel(nn.Module):
     def run_embedding(self, embedding):
         x = self.attribute_layer(embedding)
         x = self.nonlinearity(x)
-        return x
+        return x.item()
 
     def forward(self, sample, mode='single'):
-
         if mode == 'single':
             batch_size, negative_sample_size = sample.size(0), 1
 
@@ -79,6 +78,10 @@ class KGEModel(nn.Module):
             tail_part, head_part = sample
             batch_size, negative_sample_size = head_part.size(0), head_part.size(1)
 
+            attr = head_part[:, -1]
+            head_part = head_part.to(torch.long)
+            tail_part = tail_part.to(torch.long)
+
             head = torch.index_select(
                 self.entity_embedding,
                 dim=0,
@@ -97,11 +100,13 @@ class KGEModel(nn.Module):
                 index=tail_part[:, 2]
             ).unsqueeze(1)
 
-            attr = head_part[:, -1]
-
         elif mode == 'tail-batch':
             head_part, tail_part = sample
             batch_size, negative_sample_size = tail_part.size(0), tail_part.size(1)
+            
+            attr = head_part[:, -1]
+            head_part = head_part.to(torch.long)
+            tail_part = tail_part.to(torch.long)
 
             head = torch.index_select(
                 self.entity_embedding,
@@ -121,24 +126,16 @@ class KGEModel(nn.Module):
                 index=tail_part.view(-1)
             ).view(batch_size, negative_sample_size, -1)
 
-            attr = head_part[:, -1]
-
         model_func = {
             'ComplEx': self.ComplEx,
             'RotatE': self.RotatE
         }
 
-        if self.model_name in model_func:
-            score = model_func[self.model_name](head, relation, tail, mode)
-        else:
-            raise Exception('Model not supported')
+        score = model_func[self.model_name](head, relation, tail, mode)
 
         attr_pred = self.attribute_layer(head)
         attr_pred = self.nonlinearity(attr_pred)
-        if attr.item() == 0 or attr.item() == 1:
-            attr_loss = self.attr_loss_fn(attr_pred, attr.to(dtype=torch.float32).cuda())
-        else:
-            attr_loss = torch.tensor([0])
+        attr_loss = self.attr_loss_fn(attr_pred, attr.to(dtype=torch.float32))
         return score, attr_loss
 
     def ComplEx(self, head, relation, tail, mode):
@@ -189,10 +186,8 @@ class KGEModel(nn.Module):
     def train_step(model, optimizer, train_iterator, args):
         model.train()
         optimizer.zero_grad()
-        try:
-            positive_sample, negative_sample, subsampling_weight, mode = next(train_iterator)
-        except:
-            return None
+        
+        positive_sample, negative_sample, subsampling_weight, mode = next(train_iterator)
 
         if args['cuda']:
             positive_sample = positive_sample.cuda()
@@ -208,7 +203,7 @@ class KGEModel(nn.Module):
         positive_sample_loss = - (subsampling_weight * positive_score).sum()/subsampling_weight.sum()
         negative_sample_loss = - (subsampling_weight * negative_score).sum()/subsampling_weight.sum()
 
-        loss = (positive_sample_loss + negative_sample_loss)/2
+        loss = (positive_sample_loss + negative_sample_loss) / 2
         loss += attr_loss
 
         loss.backward()
