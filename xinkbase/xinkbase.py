@@ -167,6 +167,8 @@ class KB(object):
             # TODO: check this still works if user doesn't want any attributes, only graph structure.
             attrs = []
             for attribute in node_attributes:
+                # currently to_triples returns (sub, pred, ob, sub_attrs)
+                # TODO: extend it to pred_attrs and ob_attrs
                 attr = float(triple[3].get(attribute, 0.0))
                 attrs.append(attr)
             self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]], attrs))
@@ -183,7 +185,8 @@ class KB(object):
                              hidden_dim=embedding_size,
                              gamma=gamma,
                              double_entity_embedding=dee,
-                             double_relation_embedding=dre)
+                             double_relation_embedding=dre,
+                             num_node_attributes=len(node_attributes))
         if cuda:
             self._cuda = True
             self._kg_model = self._kg_model.cuda()

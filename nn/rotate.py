@@ -9,7 +9,8 @@ from torch.utils.data import DataLoader
 
 class KGEModel(nn.Module):
     def __init__(self, model_name, nentity, nrelation, hidden_dim, gamma,
-                 double_entity_embedding=False, double_relation_embedding=False):
+                 double_entity_embedding=False, double_relation_embedding=False,
+                 num_node_attributes=0):
         super(KGEModel, self).__init__()
         self.model_name = model_name
         self.nentity = nentity
@@ -33,12 +34,17 @@ class KGEModel(nn.Module):
 
         self.relation_embedding = nn.Parameter(torch.zeros(nrelation, self.relation_dim))
         nn.init.uniform_(tensor=self.relation_embedding,
-            a=-self.embedding_range.item(),
-            b=self.embedding_range.item())
+            a = -self.embedding_range.item(),
+            b = self.embedding_range.item())
         
-        self.attribute_layer = nn.Linear(self.entity_dim, 1)
-        self.attribute_layer.weight.requires_grad = False
-        self.attribute_layer.bias.requires_grad = False
+        self.attribute_layers = []
+        for i in range(0, num_node_attributes):
+            # TODO: some initialization on these attribute layers
+            self.attribute_layers.append(nn.Linear(self.entity_dim, 1))
+            self.attribute_layers[-1].weight.requires_grad = False
+            self.attribute_layers[-1].bias.requires_grad = False
+            # TODO: not always cuda
+            self.attribute_layers[-1].cuda()
         self.attr_loss_fn = nn.SmoothL1Loss()
         self.nonlinearity = F.relu
 
@@ -52,7 +58,7 @@ class KGEModel(nn.Module):
 
     def forward(self, sample, mode='single'):
         """A single forward pass"""
-        
+
         if mode == 'single':
             batch_size, negative_sample_size = sample.size(0), 1
 
@@ -135,9 +141,23 @@ class KGEModel(nn.Module):
 
         score = model_func[self.model_name](head, relation, tail, mode)
 
-        attr_pred = self.attribute_layer(head)
-        attr_pred = self.nonlinearity(attr_pred)
-        attr_loss = self.attr_loss_fn(attr_pred, attr.to(dtype=torch.float32))
+        attr_loss = torch.zeros(1)
+        for i, layer in enumerate(self.attribute_layers):
+            try:
+                attr_pred = layer(head)
+            except:
+                import pdb; pdb.set_trace()
+            attr_pred = self.nonlinearity(attr_pred)
+            
+            # TODO(next): this seems all kinds of messed up. Why is attr sometimes
+            just a 1 element tensor? Why is it sometimes floats and sometimes longs?
+            Why does attr_pred sometimes have dim 1x2x5 and sometimes 1x1x1?
+
+
+            
+            print(attr_pred, attr, attr.to(dtype=torch.float32)[i])
+            attr_loss += self.attr_loss_fn(attr_pred, attr.to(dtype=torch.float32)[i])
+
         return score, attr_loss
 
     def ComplEx(self, head, relation, tail, mode):
@@ -206,7 +226,8 @@ class KGEModel(nn.Module):
         negative_sample_loss = - (subsampling_weight * negative_score).sum()/subsampling_weight.sum()
 
         loss = (positive_sample_loss + negative_sample_loss) / 2
-        loss += attr_loss
+        #print(loss, attr_loss)
+        loss += attr_loss.item()
 
         loss.backward()
         optimizer.step()

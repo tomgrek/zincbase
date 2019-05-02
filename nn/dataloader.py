@@ -7,7 +7,7 @@ class TrainDataset(Dataset):
     def __init__(self, triples, nentity, nrelation, negative_sample_size, mode):
         self.len = len(triples)
         self.triples = triples
-        self.nentity = nentity
+        self.nentity = nentity # NOT USED - overridden by get_true_attr (TODO)
         self.nrelation = nrelation
         self.negative_sample_size = negative_sample_size
         self.mode = mode
@@ -36,7 +36,8 @@ class TrainDataset(Dataset):
                 np.random.randint(self.nrelation, size=1),
                 np.random.randint(self.nentity, size=1)
             ))
-            negative_sample = np.concatenate((negative_sample, self.true_attr.get(negative_sample[0], [0.])))
+
+            negative_sample = np.concatenate((negative_sample, self.true_attr[negative_sample[0]]))
             if self.mode == 'head-batch':
                 mask = np.in1d(
                     negative_sample[:3],
@@ -54,9 +55,9 @@ class TrainDataset(Dataset):
             else:
                 raise ValueError('Training batch mode %s not supported' % self.mode)
 
-            mask = np.concatenate((mask, np.array([3])))
+            mask = np.concatenate((mask, np.arange(0, len(mask) - 1) + len(mask)))
             negative_sample = negative_sample[mask]
-
+            
             if len(negative_sample) < 4:
                 continue
             negative_sample_list.append(negative_sample)
@@ -66,10 +67,9 @@ class TrainDataset(Dataset):
         # should be the same size.
         # Big worry here is that adding loss from many different attributes will completely outweigh loss
         # from the actual graph structure. Must scale it.
-        positive_sample = [positive_sample[0], positive_sample[1], positive_sample[2], positive_sample[-1][0]]
-        negative_sample = torch.from_numpy(negative_sample)
-        positive_sample = torch.LongTensor(positive_sample)
-
+        positive_sample = [positive_sample[0], positive_sample[1], positive_sample[2]] + positive_sample[3:][0]
+        negative_sample = torch.from_numpy(negative_sample).float()
+        positive_sample = torch.LongTensor(positive_sample) #TODO First 3 needs to be a longtensor, after that should be floats
         return positive_sample, negative_sample, subsampling_weight, self.mode
 
     @staticmethod
@@ -95,11 +95,11 @@ class TrainDataset(Dataset):
                 count[(tail, -relation-1)] += 1
         return count
 
-    @staticmethod
-    def get_true_attr(triples):
+    def get_true_attr(self, triples):
         true_attr = {}
         for head, relation, tail, attr in triples:
             true_attr[head] = attr
+        self.nentity = len(true_attr)
         return true_attr
 
     @staticmethod
