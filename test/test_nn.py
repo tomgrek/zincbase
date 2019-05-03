@@ -49,7 +49,7 @@ kb.attr('other4', {'owns_a_raincoat': 1.0, 'doesnt_own_raincoat': 0.0})
 kb.attr('other5', {'owns_a_raincoat': 1.0, 'doesnt_own_raincoat': 0.0})
 kb.attr('other6', {'owns_a_raincoat': 1.0, 'doesnt_own_raincoat': 0.0})
 
-kb.build_kg_model(cuda=True, embedding_size=30, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'])
+kb.build_kg_model(cuda=False, embedding_size=30, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'])
 # Use bs=1 to overfit on this small dataset
 kb.train_kg_model(steps=8001, batch_size=2)
 

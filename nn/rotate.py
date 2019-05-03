@@ -10,13 +10,14 @@ from torch.utils.data import DataLoader
 class KGEModel(nn.Module):
     def __init__(self, model_name, nentity, nrelation, hidden_dim, gamma,
                  double_entity_embedding=False, double_relation_embedding=False,
-                 node_attributes=[]):
+                 node_attributes=[], device='cuda'):
         super(KGEModel, self).__init__()
         self.model_name = model_name
         self.nentity = nentity
         self.nrelation = nrelation
         self.hidden_dim = hidden_dim
         self.epsilon = 2.0
+        self.device = device
 
         self.gamma = nn.Parameter(torch.Tensor([gamma]), requires_grad=False)
 
@@ -45,8 +46,7 @@ class KGEModel(nn.Module):
             self.attribute_layers.append(nn.Linear(self.entity_dim, 1))
             self.attribute_layers[-1].weight.requires_grad = False
             self.attribute_layers[-1].bias.requires_grad = False
-            # TODO: not always cuda
-            self.attribute_layers[-1].cuda()
+            self.attribute_layers[-1].to(self.device)
         self.attr_loss_fn = nn.SmoothL1Loss()
         self.nonlinearity = torch.tanh #F.relu
 
@@ -139,6 +139,7 @@ class KGEModel(nn.Module):
                 index=tail_part.view(-1)
             ).view(batch_size, negative_sample_size, -1)
 
+        #import pdb; pdb.set_trace()
         model_func = {
             'ComplEx': self.ComplEx,
             'RotatE': self.RotatE
@@ -149,7 +150,7 @@ class KGEModel(nn.Module):
         if not attributes:
             return score, None
 
-        attr_loss = torch.tensor(0, dtype=torch.float).cuda()
+        attr_loss = torch.tensor(0, dtype=torch.float, device=self.device)
         for i, layer in enumerate(self.attribute_layers):
             attr_pred = layer(head)
             attr_pred = self.nonlinearity(attr_pred)

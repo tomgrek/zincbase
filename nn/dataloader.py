@@ -4,16 +4,16 @@ import torch
 from torch.utils.data import Dataset
 
 class TrainDataset(Dataset):
-    def __init__(self, triples, nentity, nrelation, negative_sample_size, mode):
+    def __init__(self, triples, nrelation, negative_sample_size, mode):
         self.len = len(triples)
         self.triples = triples
-        self.nentity = nentity # NOT USED - overridden by get_true_attr (TODO)
         self.nrelation = nrelation
         self.negative_sample_size = negative_sample_size
         self.mode = mode
         self.count = self.count_frequency(triples)
         self.true_head, self.true_tail = self.get_true_head_and_tail(self.triples)
         self.true_attr = self.get_true_attr(self.triples)
+        self.nentity = len(self.true_attr)
 
     def __len__(self):
         return self.len
@@ -95,7 +95,6 @@ class TrainDataset(Dataset):
         true_attr = {}
         for head, relation, tail, attr in triples:
             true_attr[head] = attr
-        self.nentity = len(true_attr)
         return true_attr
 
     @staticmethod
