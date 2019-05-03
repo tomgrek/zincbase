@@ -141,11 +141,14 @@ class KB(object):
         pred = int(clf.predict(X))
         return pred == 2
 
-    def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE', node_attributes=[]):
+    def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE',
+                    node_attributes=[], attr_loss_to_graph_loss=1.0):
         """Build the dictionaries and KGE model
         :param list node_attributes: List of node attributes to include in the model. \
         If node doesn't possess the attribute, will be treated as zero. So far attributes \
         must be floats.
+        :param float attr_loss_to_graph_loss: % to scale attribute loss against graph loss. \
+        0 would only take into account graph loss, math.inf would only take into account attr loss.
         """
         triples = self.to_triples(data=True)
         for i, triple in enumerate(triples):
@@ -191,7 +194,8 @@ class KB(object):
                              double_entity_embedding=dee,
                              double_relation_embedding=dre,
                              node_attributes=node_attributes,
-                             device=device)
+                             device=device,
+                             attr_loss_to_graph_loss=attr_loss_to_graph_loss)
         if cuda:
             self._cuda = True
             self._kg_model = self._kg_model.cuda()

@@ -59,10 +59,6 @@ class TrainDataset(Dataset):
             negative_sample_list.append(negative_sample)
             negative_sample_size += negative_sample.size
 
-        # TODO(Next): The last item of the following list should be as long as necessary. And negative samples
-        # should be the same size.
-        # Big worry here is that adding loss from many different attributes will completely outweigh loss
-        # from the actual graph structure. Must scale it.
         positive_sample = [positive_sample[0], positive_sample[1], positive_sample[2]] + positive_sample[3:][0]
         negative_sample = torch.from_numpy(negative_sample).float()
         positive_sample = torch.LongTensor(positive_sample) #TODO First 3 needs to be a longtensor, after that should be floats

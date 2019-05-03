@@ -10,13 +10,14 @@ from torch.utils.data import DataLoader
 class KGEModel(nn.Module):
     def __init__(self, model_name, nentity, nrelation, hidden_dim, gamma,
                  double_entity_embedding=False, double_relation_embedding=False,
-                 node_attributes=[], device='cuda'):
+                 node_attributes=[], attr_loss_to_graph_loss=1.0, device='cuda'):
         super(KGEModel, self).__init__()
         self.model_name = model_name
         self.nentity = nentity
         self.nrelation = nrelation
         self.hidden_dim = hidden_dim
         self.epsilon = 2.0
+        self.attr_loss_to_graph_loss = attr_loss_to_graph_loss
         self.device = device
 
         self.gamma = nn.Parameter(torch.Tensor([gamma]), requires_grad=False)
@@ -48,7 +49,7 @@ class KGEModel(nn.Module):
             self.attribute_layers[-1].bias.requires_grad = False
             self.attribute_layers[-1].to(self.device)
         self.attr_loss_fn = nn.SmoothL1Loss()
-        self.nonlinearity = torch.tanh #F.relu
+        self.nonlinearity = torch.tanh # Cannot use relu since layers non-trainable: could start and stay negative only
 
         if model_name not in ['ComplEx', 'RotatE']:
             raise ValueError('model {} not supported'.format(model_name))
@@ -139,7 +140,6 @@ class KGEModel(nn.Module):
                 index=tail_part.view(-1)
             ).view(batch_size, negative_sample_size, -1)
 
-        #import pdb; pdb.set_trace()
         model_func = {
             'ComplEx': self.ComplEx,
             'RotatE': self.RotatE
@@ -154,7 +154,7 @@ class KGEModel(nn.Module):
         for i, layer in enumerate(self.attribute_layers):
             attr_pred = layer(head)
             attr_pred = self.nonlinearity(attr_pred)
-            attr_loss += self.attr_loss_fn(attr_pred, attr[:, i])
+            attr_loss += self.attr_loss_to_graph_loss * self.attr_loss_fn(attr_pred, attr[:, i])
 
         return score, attr_loss
 
@@ -180,7 +180,7 @@ class KGEModel(nn.Module):
         re_head, im_head = torch.chunk(head, 2, dim=2)
         re_tail, im_tail = torch.chunk(tail, 2, dim=2)
 
-        phase_relation = relation/(self.embedding_range.item()/math.pi)
+        phase_relation = relation / (self.embedding_range.item()/math.pi)
 
         re_relation = torch.cos(phase_relation)
         im_relation = torch.sin(phase_relation)
