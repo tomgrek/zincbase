@@ -30,7 +30,6 @@ class TrainDataset(Dataset):
         negative_sample_size = 0
 
         while negative_sample_size < self.negative_sample_size:
-            # The 4 here is because [sub, pred, ob, attr] ->> limited to a single attribute [TODO]
             negative_sample = np.concatenate((
                 np.random.randint(self.nentity, size=1),
                 np.random.randint(self.nrelation, size=1),
@@ -54,12 +53,9 @@ class TrainDataset(Dataset):
                 )
             else:
                 raise ValueError('Training batch mode %s not supported' % self.mode)
-
-            mask = np.concatenate((mask, np.arange(0, len(mask) - 1) + len(mask)))
+            mask = np.concatenate((mask, np.arange(0, len(negative_sample) - 3) + len(mask)))
             negative_sample = negative_sample[mask]
             
-            if len(negative_sample) < 4:
-                continue
             negative_sample_list.append(negative_sample)
             negative_sample_size += negative_sample.size
 

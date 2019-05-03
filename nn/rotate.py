@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 class KGEModel(nn.Module):
     def __init__(self, model_name, nentity, nrelation, hidden_dim, gamma,
                  double_entity_embedding=False, double_relation_embedding=False,
-                 num_node_attributes=0):
+                 node_attributes=[]):
         super(KGEModel, self).__init__()
         self.model_name = model_name
         self.nentity = nentity
@@ -38,7 +38,9 @@ class KGEModel(nn.Module):
             b = self.embedding_range.item())
         
         self.attribute_layers = []
-        for i in range(0, num_node_attributes):
+        self.node_attributes = node_attributes
+        self.num_node_attributes = len(node_attributes)
+        for i in range(0, self.num_node_attributes):
             # TODO: some initialization on these attribute layers
             self.attribute_layers.append(nn.Linear(self.entity_dim, 1))
             self.attribute_layers[-1].weight.requires_grad = False
@@ -46,17 +48,17 @@ class KGEModel(nn.Module):
             # TODO: not always cuda
             self.attribute_layers[-1].cuda()
         self.attr_loss_fn = nn.SmoothL1Loss()
-        self.nonlinearity = F.relu
+        self.nonlinearity = torch.tanh #F.relu
 
         if model_name not in ['ComplEx', 'RotatE']:
             raise ValueError('model {} not supported'.format(model_name))
 
-    def run_embedding(self, embedding):
-        x = self.attribute_layer(embedding)
+    def run_embedding(self, embedding, attribute_name):
+        x = self.attribute_layers[self.node_attributes.index(attribute_name)](embedding)
         x = self.nonlinearity(x)
         return x.item()
 
-    def forward(self, sample, mode='single'):
+    def forward(self, sample, mode='single', attributes=True):
         """A single forward pass"""
 
         if mode == 'single':
@@ -80,13 +82,15 @@ class KGEModel(nn.Module):
                 index=sample[:,2]
             ).unsqueeze(1)
 
-            attr = sample[:, -1]
+            attr = sample[:, 3:]
+            attr = attr.to(torch.float)
 
         elif mode == 'head-batch':
             tail_part, head_part = sample
             batch_size, negative_sample_size = head_part.size(0), head_part.size(1)
 
-            attr = head_part[:, -1]
+            attr = head_part[:, 3:]
+            attr = attr.to(torch.float)
             head_part = head_part.to(torch.long)
             tail_part = tail_part.to(torch.long)
 
@@ -112,9 +116,10 @@ class KGEModel(nn.Module):
             head_part, tail_part = sample
             batch_size, negative_sample_size = tail_part.size(0), tail_part.size(1)
             
-            attr = head_part[:, -1]
+            attr = head_part[:, 3:]
             head_part = head_part.to(torch.long)
             tail_part = tail_part.to(torch.long)
+            attr = attr.to(torch.float)
 
             head = torch.index_select(
                 self.entity_embedding,
@@ -141,22 +146,14 @@ class KGEModel(nn.Module):
 
         score = model_func[self.model_name](head, relation, tail, mode)
 
-        attr_loss = torch.zeros(1)
+        if not attributes:
+            return score, None
+
+        attr_loss = torch.tensor(0, dtype=torch.float).cuda()
         for i, layer in enumerate(self.attribute_layers):
-            try:
-                attr_pred = layer(head)
-            except:
-                import pdb; pdb.set_trace()
+            attr_pred = layer(head)
             attr_pred = self.nonlinearity(attr_pred)
-            
-            # TODO(next): this seems all kinds of messed up. Why is attr sometimes
-            just a 1 element tensor? Why is it sometimes floats and sometimes longs?
-            Why does attr_pred sometimes have dim 1x2x5 and sometimes 1x1x1?
-
-
-            
-            print(attr_pred, attr, attr.to(dtype=torch.float32)[i])
-            attr_loss += self.attr_loss_fn(attr_pred, attr.to(dtype=torch.float32)[i])
+            attr_loss += self.attr_loss_fn(attr_pred, attr[:, i])
 
         return score, attr_loss
 
@@ -226,8 +223,7 @@ class KGEModel(nn.Module):
         negative_sample_loss = - (subsampling_weight * negative_score).sum()/subsampling_weight.sum()
 
         loss = (positive_sample_loss + negative_sample_loss) / 2
-        #print(loss, attr_loss)
-        loss += attr_loss.item()
+        loss += attr_loss
 
         loss.backward()
         optimizer.step()

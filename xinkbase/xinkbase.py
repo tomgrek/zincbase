@@ -186,7 +186,7 @@ class KB(object):
                              gamma=gamma,
                              double_entity_embedding=dee,
                              double_relation_embedding=dre,
-                             num_node_attributes=len(node_attributes))
+                             node_attributes=node_attributes)
         if cuda:
             self._cuda = True
             self._kg_model = self._kg_model.cuda()
@@ -210,13 +210,13 @@ class KB(object):
         nrelation = len(self._relation2id)
         # 4 negative examples per positive seems to work well.
         train_dataloader_head = DataLoader(
-                    TrainDataset(self._encoded_triples, nentity, nrelation, 4, 'head-batch'),
+                    TrainDataset(self._encoded_triples, nentity, nrelation, 1, 'head-batch'),
                     batch_size=batch_size,
                     shuffle=True,
                     num_workers=1,
                     collate_fn=TrainDataset.collate_fn)
         train_dataloader_tail = DataLoader(
-                    TrainDataset(self._encoded_triples, nentity, nrelation, 4, 'tail-batch'),
+                    TrainDataset(self._encoded_triples, nentity, nrelation, 1, 'tail-batch'),
                     batch_size=batch_size,
                     shuffle=True,
                     num_workers=1,
@@ -234,7 +234,7 @@ class KB(object):
         tensor = torch.tensor([[self._entity2id[sub], self._relation2id[pred], self._entity2id[ob]]])
         if self._cuda:
             tensor = tensor.cuda()
-        logit, _ = self._kg_model(tensor)
+        logit, _ = self._kg_model(tensor, attributes=False)
         return round(expit(float(logit)), 4)
 
     def get_embedding(self, entity):

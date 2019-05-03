@@ -49,26 +49,32 @@ kb.attr('other4', {'owns_a_raincoat': 1.0, 'doesnt_own_raincoat': 0.0})
 kb.attr('other5', {'owns_a_raincoat': 1.0, 'doesnt_own_raincoat': 0.0})
 kb.attr('other6', {'owns_a_raincoat': 1.0, 'doesnt_own_raincoat': 0.0})
 
-kb.build_kg_model(cuda=True, embedding_size=50, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'])
+kb.build_kg_model(cuda=True, embedding_size=30, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'])
 # Use bs=1 to overfit on this small dataset
-kb.train_kg_model(steps=12001, batch_size=2)
+kb.train_kg_model(steps=8001, batch_size=2)
 
 # # # # # # # # # # # # # # # # # # # # # # # #
 # People from Seattle should be more likely to
 # own an umbrella (attribute prediction test)
 # # # # # # # # # # # # # # # # # # # # # # # #
-x = kb._kg_model.run_embedding(kb.get_embedding('other1'))
-print(x) #assert round(x) == 1
-x = kb._kg_model.run_embedding(kb.get_embedding('other2'))
-print(x) #assert round(x) == 1
-x = kb._kg_model.run_embedding(kb.get_embedding('mary'))
-print(x) #assert round(x) == 1
-x = kb._kg_model.run_embedding(kb.get_embedding('tom'))
-print(x) #assert round(x) == 0
-x = kb._kg_model.run_embedding(kb.get_embedding('todd'))
-print(x) #assert round(x) == 0
-x = kb._kg_model.run_embedding(kb.get_embedding('shamala'))
-print(x) #assert round(x) == 0
+x = kb._kg_model.run_embedding(kb.get_embedding('other1'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('other1'), 'doesnt_own_raincoat')
+assert round(x) == 1; assert round(y) == 0
+x = kb._kg_model.run_embedding(kb.get_embedding('other2'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('other2'), 'doesnt_own_raincoat')
+assert round(x) == 1; assert round(y) == 0
+x = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'doesnt_own_raincoat')
+assert round(x) == 1; assert round(y) == 0
+x = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'doesnt_own_raincoat')
+assert round(x) == 0; assert round(y) == 1
+x = kb._kg_model.run_embedding(kb.get_embedding('todd'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('todd'), 'doesnt_own_raincoat')
+assert round(x) == 0; assert round(y) == 1
+x = kb._kg_model.run_embedding(kb.get_embedding('shamala'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('shamala'), 'doesnt_own_raincoat')
+assert y > 1.5 * x # Not a known fact
 
 # # # # # # # # # # # # # # # # # # # # # # # #
 # These relations should still work (link
