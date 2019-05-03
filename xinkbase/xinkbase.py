@@ -93,6 +93,8 @@ class KB(object):
         for node in nodes:
             new_embed += self.get_embedding(node['X'])
         new_embed /= len(nodes)
+        # TODO: Relations have embeddings also; add the relation embedding to new_embed each
+        # time and average it.
         new_embed = new_embed.clone().detach().requires_grad_(True)
         self.store('{}({}, {})'.format(pred, sub, ob))
         self._kg_model.entity_embedding = torch.nn.Parameter(torch.cat((embeddings_copy, new_embed)))
@@ -139,9 +141,16 @@ class KB(object):
         pred = int(clf.predict(X))
         return pred == 2
 
-    def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE'):
-        """Build the dictionaries and KGE model"""
-        triples = self.to_triples()
+    def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE',
+                    node_attributes=[], attr_loss_to_graph_loss=1.0):
+        """Build the dictionaries and KGE model
+        :param list node_attributes: List of node attributes to include in the model. \
+        If node doesn't possess the attribute, will be treated as zero. So far attributes \
+        must be floats.
+        :param float attr_loss_to_graph_loss: % to scale attribute loss against graph loss. \
+        0 would only take into account graph loss, math.inf would only take into account attr loss.
+        """
+        triples = self.to_triples(data=True)
         for i, triple in enumerate(triples):
             if triple[0] not in self._entity2id:
                 self._entity2id[triple[0]] = len(self._entity2id)
@@ -156,7 +165,16 @@ class KB(object):
                 j += 1
         self._encoded_triples = []
         for triple in triples:
-            self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]]))
+            # TODO: only encoding a single attribute here and it must be a float; provide for optional number
+            # of attributes and for a dictionary encoding of them (for categoricals)
+            # TODO: check this still works if user doesn't want any attributes, only graph structure.
+            attrs = []
+            for attribute in node_attributes:
+                # currently to_triples returns (sub, pred, ob, sub_attrs)
+                # TODO: extend it to pred_attrs and ob_attrs
+                attr = float(triple[3].get(attribute, 0.0))
+                attrs.append(attr)
+            self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]], attrs))
         dee = False; dre = False
         if model_name == 'ComplEx':
             dee = True
@@ -164,36 +182,50 @@ class KB(object):
         if model_name == 'RotatE':
             dee = True
             dre = False
+        if cuda:
+            device = 'cuda'
+        else:
+            device = 'cpu'
         self._kg_model = KGEModel(model_name=model_name,
                              nentity=len(self._entity2id),
                              nrelation=len(self._relation2id),
                              hidden_dim=embedding_size,
                              gamma=gamma,
                              double_entity_embedding=dee,
-                             double_relation_embedding=dre) #Also True if ComplEx
+                             double_relation_embedding=dre,
+                             node_attributes=node_attributes,
+                             device=device,
+                             attr_loss_to_graph_loss=attr_loss_to_graph_loss)
         if cuda:
             self._cuda = True
             self._kg_model = self._kg_model.cuda()
 
     def train_kg_model(self, steps=1000, batch_size=512, lr=0.001, reencode_triples=False):
+        """Train a KG model on the KB.
 
+        :param int steps: Number of training steps
+        :param int batch_size: Batch size for training
+        :param float lr: Initial learning rate for Adam optimizer
+        :param bool reencode_triples: If a node has been added since last training, set this to True
+        """
         if reencode_triples:
-            # if you have added a node since last training
-            triples = self.to_triples()
+            # TODO: this is not encoding attributes as well, yet.
+            triples = self.to_triples(data=True)
             self._encoded_triples = []
             for triple in triples:
                 self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]]))
 
         nentity = len(self._entity2id)
         nrelation = len(self._relation2id)
+        # 4 negative examples per positive seems to work well.
         train_dataloader_head = DataLoader(
-                    TrainDataset(self._encoded_triples, nentity, nrelation, 4, 'head-batch'),
+                    TrainDataset(self._encoded_triples, nrelation, 4, 'head-batch'),
                     batch_size=batch_size,
                     shuffle=True,
                     num_workers=1,
                     collate_fn=TrainDataset.collate_fn)
         train_dataloader_tail = DataLoader(
-                    TrainDataset(self._encoded_triples, nentity, nrelation, 4, 'tail-batch'),
+                    TrainDataset(self._encoded_triples, nrelation, 4, 'tail-batch'),
                     batch_size=batch_size,
                     shuffle=True,
                     num_workers=1,
@@ -201,7 +233,7 @@ class KB(object):
         train_iterator = BidirectionalOneShotIterator(train_dataloader_head, train_dataloader_tail)
         optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self._kg_model.parameters()), lr=lr)
         for step in range(0, steps):
-            log = self._kg_model.train_step(self._kg_model, optimizer, train_iterator, {'cuda':self._cuda})
+            log = self._kg_model.train_step(self._kg_model, optimizer, train_iterator, {'cuda': self._cuda})
             if step % 100 == 0:
                 print(log)
 
@@ -211,7 +243,7 @@ class KB(object):
         tensor = torch.tensor([[self._entity2id[sub], self._relation2id[pred], self._entity2id[ob]]])
         if self._cuda:
             tensor = tensor.cuda()
-        logit = self._kg_model(tensor)
+        logit, _ = self._kg_model(tensor, attributes=False)
         return round(expit(float(logit)), 4)
 
     def get_embedding(self, entity):
@@ -418,14 +450,16 @@ class KB(object):
         self.rules.append(Rule(strip_all_whitespace(statement), graph=self.G))
         return len(self.rules) - 1
 
-    def to_triples(self):
-        """Convert all facts in the KB to a list of triples, each of length 3.
+    def to_triples(self, data=False):
+        """Convert all facts in the KB to a list of triples, each of length 3
+        (or 4 if data=True).
         Any fact that is not arity 2 will be ignored.
 
         :Note: While the Prolog style representation uses `pred(subject, object)`, \
         the triple representation is `(subject, pred, object)`.
 
-        :return: list of triples (tuples of length 3)
+        :param bool data: Whether to return subject attributes as a 4th element.
+        :return: list of triples (tuples of length 3 or 4 if data=True)
         
         :Example:
 
@@ -437,7 +471,10 @@ class KB(object):
         >>> kb.store('a(a)')
         1
         >>> kb.to_triples()
-        [('b', 'a', 'c')]"""
+        [('b', 'a', 'c')]
+        >>> kb.attr('b', {'an_attribute': 'xyz'})
+        >>> kb.to_triples(data=True)
+        [('b', 'a', 'c', {'an_attribute': 'xyz'})]"""
         triples = []
         for r in self.rules:
             if not r.goals:
@@ -446,7 +483,10 @@ class KB(object):
                     subject = subject[0].lower() + subject[1:]
                     object_ = str(r.head.args[1])
                     object_ = object_[0].lower() + object_[1:]
-                    triples.append((subject, r.head.pred, object_))
+                    if data:
+                        triples.append((subject, r.head.pred, object_, self.node(subject)))
+                    else:
+                        triples.append((subject, r.head.pred, object_))
         return triples
 
     def from_triples(self, triples):

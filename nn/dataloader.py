@@ -4,16 +4,16 @@ import torch
 from torch.utils.data import Dataset
 
 class TrainDataset(Dataset):
-    def __init__(self, triples, nentity, nrelation, negative_sample_size, mode):
+    def __init__(self, triples, nrelation, negative_sample_size, mode):
         self.len = len(triples)
         self.triples = triples
-        self.triple_set = set(triples)
-        self.nentity = nentity
         self.nrelation = nrelation
         self.negative_sample_size = negative_sample_size
         self.mode = mode
         self.count = self.count_frequency(triples)
         self.true_head, self.true_tail = self.get_true_head_and_tail(self.triples)
+        self.true_attr = self.get_true_attr(self.triples)
+        self.nentity = len(self.true_attr)
 
     def __len__(self):
         return self.len
@@ -21,7 +21,7 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         positive_sample = self.triples[idx]
 
-        head, relation, tail = positive_sample
+        head, relation, tail, attr = positive_sample
 
         subsampling_weight = self.count[(head, relation)] + self.count[(tail, -relation-1)]
         subsampling_weight = torch.sqrt(1 / torch.Tensor([subsampling_weight]))
@@ -30,33 +30,38 @@ class TrainDataset(Dataset):
         negative_sample_size = 0
 
         while negative_sample_size < self.negative_sample_size:
-            negative_sample = np.random.randint(self.nentity, size=self.negative_sample_size*2)
+            negative_sample = np.concatenate((
+                np.random.randint(self.nentity, size=1),
+                np.random.randint(self.nrelation, size=1),
+                np.random.randint(self.nentity, size=1)
+            ))
+
+            negative_sample = np.concatenate((negative_sample, self.true_attr[negative_sample[0]]))
             if self.mode == 'head-batch':
                 mask = np.in1d(
-                    negative_sample,
+                    negative_sample[:3],
                     self.true_head[(relation, tail)],
                     assume_unique=True,
                     invert=True
                 )
             elif self.mode == 'tail-batch':
                 mask = np.in1d(
-                    negative_sample,
+                    negative_sample[:3],
                     self.true_tail[(head, relation)],
                     assume_unique=True,
                     invert=True
                 )
             else:
                 raise ValueError('Training batch mode %s not supported' % self.mode)
+            mask = np.concatenate((mask, np.arange(0, len(negative_sample) - 3) + len(mask)))
             negative_sample = negative_sample[mask]
+            
             negative_sample_list.append(negative_sample)
             negative_sample_size += negative_sample.size
 
-        negative_sample = np.concatenate(negative_sample_list)[:self.negative_sample_size]
-
-        negative_sample = torch.from_numpy(negative_sample)
-
-        positive_sample = torch.LongTensor(positive_sample)
-
+        positive_sample = [positive_sample[0], positive_sample[1], positive_sample[2]] + positive_sample[3:][0]
+        negative_sample = torch.from_numpy(negative_sample).float()
+        positive_sample = torch.LongTensor(positive_sample) #TODO First 3 needs to be a longtensor, after that should be floats
         return positive_sample, negative_sample, subsampling_weight, self.mode
 
     @staticmethod
@@ -70,7 +75,7 @@ class TrainDataset(Dataset):
     @staticmethod
     def count_frequency(triples, start=4):
         count = {}
-        for head, relation, tail in triples:
+        for head, relation, tail, attr in triples:
             if (head, relation) not in count:
                 count[(head, relation)] = start
             else:
@@ -82,13 +87,19 @@ class TrainDataset(Dataset):
                 count[(tail, -relation-1)] += 1
         return count
 
+    def get_true_attr(self, triples):
+        true_attr = {}
+        for head, relation, tail, attr in triples:
+            true_attr[head] = attr
+        return true_attr
+
     @staticmethod
     def get_true_head_and_tail(triples):
 
         true_head = {}
         true_tail = {}
 
-        for head, relation, tail in triples:
+        for head, relation, tail, attr in triples:
             if (head, relation) not in true_tail:
                 true_tail[(head, relation)] = []
             true_tail[(head, relation)].append(tail)

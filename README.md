@@ -48,9 +48,12 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 
 * Add documentation
 * "solidify" method that takes bindings output from a rule and adds them to graph as concrete atoms so NN can work on them.
+* refactor the .attr method to be prolog style ie owns_a_raincoat(tom)
 * to_csv method
 * utilize postgres as backend triple store
 * attributes for nodes / relations
+* The to_csv/from_csv methods do not yet support node attributes.
+* Add relation extraction from arbitrary unstructured text
 
 # References & Acknowledgements
 

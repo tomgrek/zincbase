@@ -9,13 +9,16 @@ from torch.utils.data import DataLoader
 
 class KGEModel(nn.Module):
     def __init__(self, model_name, nentity, nrelation, hidden_dim, gamma,
-                 double_entity_embedding=False, double_relation_embedding=False):
+                 double_entity_embedding=False, double_relation_embedding=False,
+                 node_attributes=[], attr_loss_to_graph_loss=1.0, device='cuda'):
         super(KGEModel, self).__init__()
         self.model_name = model_name
         self.nentity = nentity
         self.nrelation = nrelation
         self.hidden_dim = hidden_dim
         self.epsilon = 2.0
+        self.attr_loss_to_graph_loss = attr_loss_to_graph_loss
+        self.device = device
 
         self.gamma = nn.Parameter(torch.Tensor([gamma]), requires_grad=False)
 
@@ -33,13 +36,31 @@ class KGEModel(nn.Module):
 
         self.relation_embedding = nn.Parameter(torch.zeros(nrelation, self.relation_dim))
         nn.init.uniform_(tensor=self.relation_embedding,
-            a=-self.embedding_range.item(),
-            b=self.embedding_range.item())
+            a = -self.embedding_range.item(),
+            b = self.embedding_range.item())
+        
+        self.attribute_layers = []
+        self.node_attributes = node_attributes
+        self.num_node_attributes = len(node_attributes)
+        for i in range(0, self.num_node_attributes):
+            # TODO: some initialization on these attribute layers
+            self.attribute_layers.append(nn.Linear(self.entity_dim, 1))
+            self.attribute_layers[-1].weight.requires_grad = False
+            self.attribute_layers[-1].bias.requires_grad = False
+            self.attribute_layers[-1].to(self.device)
+        self.attr_loss_fn = nn.SmoothL1Loss()
+        self.nonlinearity = torch.tanh # Cannot use relu since layers non-trainable: could start and stay negative only
 
         if model_name not in ['ComplEx', 'RotatE']:
             raise ValueError('model {} not supported'.format(model_name))
 
-    def forward(self, sample, mode='single'):
+    def run_embedding(self, embedding, attribute_name):
+        x = self.attribute_layers[self.node_attributes.index(attribute_name)](embedding)
+        x = self.nonlinearity(x)
+        return x.item()
+
+    def forward(self, sample, mode='single', attributes=True):
+        """A single forward pass"""
 
         if mode == 'single':
             batch_size, negative_sample_size = sample.size(0), 1
@@ -62,9 +83,17 @@ class KGEModel(nn.Module):
                 index=sample[:,2]
             ).unsqueeze(1)
 
+            attr = sample[:, 3:]
+            attr = attr.to(torch.float)
+
         elif mode == 'head-batch':
             tail_part, head_part = sample
             batch_size, negative_sample_size = head_part.size(0), head_part.size(1)
+
+            attr = head_part[:, 3:]
+            attr = attr.to(torch.float)
+            head_part = head_part.to(torch.long)
+            tail_part = tail_part.to(torch.long)
 
             head = torch.index_select(
                 self.entity_embedding,
@@ -87,6 +116,11 @@ class KGEModel(nn.Module):
         elif mode == 'tail-batch':
             head_part, tail_part = sample
             batch_size, negative_sample_size = tail_part.size(0), tail_part.size(1)
+            
+            attr = head_part[:, 3:]
+            head_part = head_part.to(torch.long)
+            tail_part = tail_part.to(torch.long)
+            attr = attr.to(torch.float)
 
             head = torch.index_select(
                 self.entity_embedding,
@@ -111,12 +145,18 @@ class KGEModel(nn.Module):
             'RotatE': self.RotatE
         }
 
-        if self.model_name in model_func:
-            score = model_func[self.model_name](head, relation, tail, mode)
-        else:
-            raise Exception('Model not supported')
+        score = model_func[self.model_name](head, relation, tail, mode)
 
-        return score
+        if not attributes:
+            return score, None
+
+        attr_loss = torch.tensor(0, dtype=torch.float, device=self.device)
+        for i, layer in enumerate(self.attribute_layers):
+            attr_pred = layer(head)
+            attr_pred = self.nonlinearity(attr_pred)
+            attr_loss += self.attr_loss_to_graph_loss * self.attr_loss_fn(attr_pred, attr[:, i])
+
+        return score, attr_loss
 
     def ComplEx(self, head, relation, tail, mode):
         re_head, im_head = torch.chunk(head, 2, dim=2)
@@ -140,7 +180,7 @@ class KGEModel(nn.Module):
         re_head, im_head = torch.chunk(head, 2, dim=2)
         re_tail, im_tail = torch.chunk(tail, 2, dim=2)
 
-        phase_relation = relation/(self.embedding_range.item()/math.pi)
+        phase_relation = relation / (self.embedding_range.item()/math.pi)
 
         re_relation = torch.cos(phase_relation)
         im_relation = torch.sin(phase_relation)
@@ -166,51 +206,33 @@ class KGEModel(nn.Module):
     def train_step(model, optimizer, train_iterator, args):
         model.train()
         optimizer.zero_grad()
-        try:
-            positive_sample, negative_sample, subsampling_weight, mode = next(train_iterator)
-        except:
-            return None
+        
+        positive_sample, negative_sample, subsampling_weight, mode = next(train_iterator)
 
         if args['cuda']:
             positive_sample = positive_sample.cuda()
             negative_sample = negative_sample.cuda()
             subsampling_weight = subsampling_weight.cuda()
-        negative_score = model((positive_sample, negative_sample), mode=mode)
+        negative_score, _ = model((positive_sample, negative_sample), mode=mode)
 
-        if 'negative_adversarial_sampling' in args and args['negative_adversarial_sampling']:
-            negative_score = (F.softmax(negative_score * args['adversarial_temperature'], dim = 1).detach()
-                              * F.logsigmoid(-negative_score)).sum(dim = 1)
-        else:
-            negative_score = F.logsigmoid(-negative_score).mean(dim = 1)
+        negative_score = F.logsigmoid(-negative_score).mean(dim=1)
 
-        positive_score = model(positive_sample)
-        positive_score = F.logsigmoid(positive_score).squeeze(dim = 1)
+        positive_score, attr_loss = model(positive_sample)
+        positive_score = F.logsigmoid(positive_score).squeeze(dim=1)
 
-        if 'uni_weight' in args and args['uni_weight']:
-            positive_sample_loss = - positive_score.mean()
-            negative_sample_loss = - negative_score.mean()
-        else:
-            positive_sample_loss = - (subsampling_weight * positive_score).sum()/subsampling_weight.sum()
-            negative_sample_loss = - (subsampling_weight * negative_score).sum()/subsampling_weight.sum()
+        positive_sample_loss = - (subsampling_weight * positive_score).sum()/subsampling_weight.sum()
+        negative_sample_loss = - (subsampling_weight * negative_score).sum()/subsampling_weight.sum()
 
-        loss = (positive_sample_loss + negative_sample_loss)/2
-
-        if 'regularization' in args and args['regularization'] and args['regularization'] != 0.0:
-            regularization = args['regularization'] * (
-                model.entity_embedding.norm(p = 3)**3 +
-                model.relation_embedding.norm(p = 3).norm(p = 3)**3)
-            loss = loss + regularization
-            regularization_log = {'regularization': regularization.item()}
-        else:
-            regularization_log = {}
+        loss = (positive_sample_loss + negative_sample_loss) / 2
+        loss += attr_loss
 
         loss.backward()
         optimizer.step()
 
         stats = {
-            **regularization_log,
-            'positive_loss': round(positive_sample_loss.item(), 6),
-            'negative_loss': round(negative_sample_loss.item(), 6),
-            'loss': round(loss.item(), 6)
+            'pos_loss': round(positive_sample_loss.item(), 6),
+            'neg_loss': round(negative_sample_loss.item(), 6),
+            'loss': round(loss.item(), 6),
+            'attr_loss': round(float(attr_loss), 4)
         }
         return stats
