@@ -53,7 +53,7 @@ class KGEModel(nn.Module):
         self.num_pred_attributes = len(pred_attributes)
         for i in range(0, self.num_pred_attributes):
             # TODO: some initialization on these attribute layers
-            self.attribute_layers.append(nn.Linear(self.relation_dim, 1))
+            self.attribute_layers.append(nn.Linear((2 * self.entity_dim) + self.relation_dim, 1))
             self.attribute_layers[-1].weight.requires_grad = False
             self.attribute_layers[-1].bias.requires_grad = False
             self.attribute_layers[-1].to(self.device)
@@ -153,7 +153,6 @@ class KGEModel(nn.Module):
             'ComplEx': self.ComplEx,
             'RotatE': self.RotatE
         }
-
         score = model_func[self.model_name](head, relation, tail, mode)
 
         if not attributes:
@@ -161,9 +160,16 @@ class KGEModel(nn.Module):
 
         attr_loss = torch.tensor(0, dtype=torch.float, device=self.device)
         for i, layer in enumerate(self.attribute_layers):
-            attr_pred = layer(head)
-            attr_pred = self.nonlinearity(attr_pred)
-            attr_loss += self.attr_loss_to_graph_loss * self.attr_loss_fn(attr_pred, attr[:, i])
+            if i < self.num_node_attributes:
+                attr_hat = layer(head)
+                attr_hat = self.nonlinearity(attr_hat)
+                attr_loss += self.attr_loss_to_graph_loss * self.attr_loss_fn(attr_hat, attr[:, i])
+            else:
+                if mode == 'single':
+                    whole = torch.cat((head.squeeze(), relation.squeeze(), tail.squeeze()), dim=-1)
+                    attr_hat = layer(whole)
+                    attr_hat = self.nonlinearity(attr_hat)
+                    attr_loss += self.attr_loss_to_graph_loss * self.attr_loss_fn(attr_hat, attr[:, i])
 
         return score, attr_loss
 
@@ -217,7 +223,6 @@ class KGEModel(nn.Module):
         optimizer.zero_grad()
         
         positive_sample, negative_sample, subsampling_weight, mode = next(train_iterator)
-
         if args['cuda']:
             positive_sample = positive_sample.cuda()
             negative_sample = negative_sample.cuda()
