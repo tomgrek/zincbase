@@ -29,7 +29,7 @@ class KB(object):
     <class 'xinkbase.KB'>
     """
     def __init__(self):
-        self.G = nx.DiGraph()
+        self.G = nx.MultiDiGraph()
         self.rules = []
         self._entity2id = {}
         self._relation2id = {}
@@ -142,14 +142,18 @@ class KB(object):
         return pred == 2
 
     def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE',
-                    node_attributes=[], attr_loss_to_graph_loss=1.0):
+                    node_attributes=[], attr_loss_to_graph_loss=1.0,
+                    pred_attributes=[]):
         """Build the dictionaries and KGE model
         :param list node_attributes: List of node attributes to include in the model. \
         If node doesn't possess the attribute, will be treated as zero. So far attributes \
         must be floats.
+        :param list pred_attributes: List of predicate attributes to include in the model.
         :param float attr_loss_to_graph_loss: % to scale attribute loss against graph loss. \
         0 would only take into account graph loss, math.inf would only take into account attr loss.
         """
+        # TODO refactor this so there's a separate dict of node + pred attrs; they don't have
+        # to be part of the triple.
         triples = self.to_triples(data=True)
         for i, triple in enumerate(triples):
             if triple[0] not in self._entity2id:
@@ -165,14 +169,15 @@ class KB(object):
                 j += 1
         self._encoded_triples = []
         for triple in triples:
-            # TODO: only encoding a single attribute here and it must be a float; provide for optional number
-            # of attributes and for a dictionary encoding of them (for categoricals)
-            # TODO: check this still works if user doesn't want any attributes, only graph structure.
+            # TODO: attribute must be a float; for a dictionary encoding of them (for categoricals)
             attrs = []
             for attribute in node_attributes:
                 # currently to_triples returns (sub, pred, ob, sub_attrs)
                 # TODO: extend it to pred_attrs and ob_attrs
                 attr = float(triple[3].get(attribute, 0.0))
+                attrs.append(attr)
+            for pred_attr in pred_attributes:
+                attr = float(triple[4].get(attribute, 0.0))
                 attrs.append(attr)
             self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]], attrs))
         dee = False; dre = False
@@ -194,6 +199,7 @@ class KB(object):
                              double_entity_embedding=dee,
                              double_relation_embedding=dre,
                              node_attributes=node_attributes,
+                             pred_attributes=pred_attributes,
                              device=device,
                              attr_loss_to_graph_loss=attr_loss_to_graph_loss)
         if cuda:
@@ -238,6 +244,7 @@ class KB(object):
                 print(log)
 
     def estimate_triple_prob(self, sub, pred, ob):
+        # TODO: Should be prolog style
         if not self._kg_model:
             raise Exception('Must build and train the model first')
         tensor = torch.tensor([[self._entity2id[sub], self._relation2id[pred], self._entity2id[ob]]])
@@ -348,6 +355,52 @@ class KB(object):
                 ans = unify(term, c.bindings, rule.head, child.bindings)
                 if ans:
                     queue.append(child)
+
+    def edge_attr(self, sub, pred, ob, attributes):
+        """Set attributes on a predicate between subject and object.
+        Useful for example to encode time.
+
+        :param str sub: Subject node/entity
+        :param str pred: Predicate between subject and object
+        :param str ob: Object node/entity
+        :param dict attributes: Attributes to set on the individual edge. Must be floats.
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.store('eats(tom, rice)')
+        0
+        >>> kb.edge_attr('tom', 'eats', 'rice', {'used_to': 1.0})
+        >>> kb.edge('tom', 'eats', 'rice')
+        {'used_to': 1.0}
+        >>> kb.edge_attr('tom', 'eats', 'rice', {'still_does': 1.0})
+        >>> kb.edge('tom', 'eats', 'rice')
+        {'used_to': 1.0, 'still_does': 1.0}"""
+        for idx, edge in self.G[sub][ob].items():
+            if edge['pred'] == pred:
+                nx.set_edge_attributes(self.G, {(sub, ob, idx): attributes})
+                return None
+        return False
+    
+    def edge(self, sub, pred, ob):
+        """Returns an edge and its attributes.
+
+        :param str sub: Subject node/entity
+        :param str pred: Predicate between subject and object
+        :param str ob: Object node/entity
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.store('eats(tom, rice)')
+        0
+        >>> kb.edge_attr('tom', 'eats', 'rice', {'used_to': 1.0})
+        >>> kb.edge('tom', 'eats', 'rice')
+        {'used_to': 1.0}"""
+        for _, edge in self.G[sub][ob].items():
+            if edge['pred'] == pred:
+                return {k:v for (k,v) in edge.items() if k != 'pred'}
+        return False
 
     def attr(self, node_name, attributes):
         """Set attributes on an existing graph node.

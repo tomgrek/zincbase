@@ -10,7 +10,8 @@ from torch.utils.data import DataLoader
 class KGEModel(nn.Module):
     def __init__(self, model_name, nentity, nrelation, hidden_dim, gamma,
                  double_entity_embedding=False, double_relation_embedding=False,
-                 node_attributes=[], attr_loss_to_graph_loss=1.0, device='cuda'):
+                 node_attributes=[], pred_attributes=[],
+                 attr_loss_to_graph_loss=1.0, device='cuda'):
         super(KGEModel, self).__init__()
         self.model_name = model_name
         self.nentity = nentity
@@ -45,6 +46,14 @@ class KGEModel(nn.Module):
         for i in range(0, self.num_node_attributes):
             # TODO: some initialization on these attribute layers
             self.attribute_layers.append(nn.Linear(self.entity_dim, 1))
+            self.attribute_layers[-1].weight.requires_grad = False
+            self.attribute_layers[-1].bias.requires_grad = False
+            self.attribute_layers[-1].to(self.device)
+        self.pred_attributes = pred_attributes
+        self.num_pred_attributes = len(pred_attributes)
+        for i in range(0, self.num_pred_attributes):
+            # TODO: some initialization on these attribute layers
+            self.attribute_layers.append(nn.Linear(self.relation_dim, 1))
             self.attribute_layers[-1].weight.requires_grad = False
             self.attribute_layers[-1].bias.requires_grad = False
             self.attribute_layers[-1].to(self.device)
