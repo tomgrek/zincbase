@@ -20,8 +20,8 @@ from logic.common import unify, process
 from nn.dataloader import TrainDataset, BidirectionalOneShotIterator
 from nn.rotate import KGEModel
 from utils.string_utils import strip_all_whitespace
-
-class KB(object):
+ 
+class KB():
     """Knowledge Base Class
 
     >>> kb = KB()
@@ -29,7 +29,7 @@ class KB(object):
     <class 'xinkbase.KB'>
     """
     def __init__(self):
-        self.G = nx.DiGraph()
+        self.G = nx.MultiDiGraph()
         self.rules = []
         self._entity2id = {}
         self._relation2id = {}
@@ -53,6 +53,87 @@ class KB(object):
         np.random.seed(seed)
         random.seed(seed)
     
+    def edge_attr(self, sub, pred, ob, attributes):
+        """Set attributes on a predicate between subject and object.
+        Useful for example to encode time.
+
+        :param str sub: Subject node/entity
+        :param str pred: Predicate between subject and object
+        :param str ob: Object node/entity
+        :param dict attributes: Attributes to set on the individual edge. Must be floats.
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.store('eats(tom, rice)')
+        0
+        >>> kb.edge_attr('tom', 'eats', 'rice', {'used_to': 1.0})
+        >>> kb.edge('tom', 'eats', 'rice')
+        {'used_to': 1.0}
+        >>> kb.edge_attr('tom', 'eats', 'rice', {'still_does': 1.0})
+        >>> kb.edge('tom', 'eats', 'rice')
+        {'used_to': 1.0, 'still_does': 1.0}"""
+        for idx, edge in self.G[sub][ob].items():
+            if edge['pred'] == pred:
+                nx.set_edge_attributes(self.G, {(sub, ob, idx): attributes})
+                return None
+        return False
+    
+    def edge(self, sub, pred, ob):
+        """Returns an edge and its attributes.
+
+        :param str sub: Subject node/entity
+        :param str pred: Predicate between subject and object
+        :param str ob: Object node/entity
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.store('eats(tom, rice)')
+        0
+        >>> kb.edge_attr('tom', 'eats', 'rice', {'used_to': 1.0})
+        >>> kb.edge('tom', 'eats', 'rice')
+        {'used_to': 1.0}"""
+        for _, edge in self.G[sub][ob].items():
+            if edge['pred'] == pred:
+                return {k:v for (k,v) in edge.items() if k != 'pred'}
+        return False
+
+    def attr(self, node_name, attributes):
+        """Set attributes on an existing graph node.
+
+        :param str node_name: Name of the node
+        :param dict attributes: Dictionary of attributes to set
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.store('eats(tom, rice)')
+        0
+        >>> kb.attr('tom', {'is_person': True})
+        >>> kb.node('tom')
+        {'is_person': True}"""
+
+        nx.set_node_attributes(self.G, {node_name: attributes})
+
+    def node(self, node_name):
+        """Get a node, and its attributes, from the graph.
+
+        :param str node_name: Name of the node
+        :return: The node and its attributes.
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.store('eats(tom, rice)')
+        0
+        >>> kb.node('tom')
+        {}
+        >>> kb.attr('tom', {'is_person': True})
+        >>> kb.node('tom')
+        {'is_person': True}"""
+        return self.G.nodes(data=True)[node_name]
+
     def _valid_neighbors(self, node, reverse=False):
         if reverse:
             graph = self.G.reverse()
@@ -71,9 +152,11 @@ class KB(object):
                 return answers
             for n, pred in self._valid_neighbors(node, reverse=reverse):
                 if n == target_node:
-                    yield path + [(pred['pred'], n)]
+                    for final_edge in pred:
+                        yield path + [(pred[final_edge]['pred'], n)]
                 else:
-                    stack.append((n, depth+1, path + [(pred['pred'], n)]))
+                    for edge in pred:
+                        stack.append((n, depth+1, path + [(pred[edge]['pred'], n)]))
         return answers
 
     def add_node_to_trained_kg(self, sub, pred, ob):
@@ -142,14 +225,18 @@ class KB(object):
         return pred == 2
 
     def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE',
-                    node_attributes=[], attr_loss_to_graph_loss=1.0):
+                    node_attributes=[], attr_loss_to_graph_loss=1.0, pred_loss_to_graph_loss=1.0,
+                    pred_attributes=[]):
         """Build the dictionaries and KGE model
         :param list node_attributes: List of node attributes to include in the model. \
         If node doesn't possess the attribute, will be treated as zero. So far attributes \
         must be floats.
+        :param list pred_attributes: List of predicate attributes to include in the model.
         :param float attr_loss_to_graph_loss: % to scale attribute loss against graph loss. \
         0 would only take into account graph loss, math.inf would only take into account attr loss.
         """
+        # TODO refactor this so there's a separate dict of node + pred attrs; they don't have
+        # to be part of the triple.
         triples = self.to_triples(data=True)
         for i, triple in enumerate(triples):
             if triple[0] not in self._entity2id:
@@ -165,16 +252,16 @@ class KB(object):
                 j += 1
         self._encoded_triples = []
         for triple in triples:
-            # TODO: only encoding a single attribute here and it must be a float; provide for optional number
-            # of attributes and for a dictionary encoding of them (for categoricals)
-            # TODO: check this still works if user doesn't want any attributes, only graph structure.
+            # TODO: attribute must be a float; for a dictionary encoding of them (for categoricals)
             attrs = []
             for attribute in node_attributes:
-                # currently to_triples returns (sub, pred, ob, sub_attrs)
-                # TODO: extend it to pred_attrs and ob_attrs
                 attr = float(triple[3].get(attribute, 0.0))
                 attrs.append(attr)
-            self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]], attrs))
+            for pred_attr in pred_attributes:
+                attr = float(triple[4].get(pred_attr, 0.0))
+                attrs.append(attr)
+            self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]],
+                                        attrs))
         dee = False; dre = False
         if model_name == 'ComplEx':
             dee = True
@@ -194,8 +281,10 @@ class KB(object):
                              double_entity_embedding=dee,
                              double_relation_embedding=dre,
                              node_attributes=node_attributes,
-                             device=device,
-                             attr_loss_to_graph_loss=attr_loss_to_graph_loss)
+                             pred_attributes=pred_attributes,
+                             attr_loss_to_graph_loss=attr_loss_to_graph_loss,
+                             pred_loss_to_graph_loss=pred_loss_to_graph_loss,
+                             device=device)
         if cuda:
             self._cuda = True
             self._kg_model = self._kg_model.cuda()
@@ -217,7 +306,6 @@ class KB(object):
 
         nentity = len(self._entity2id)
         nrelation = len(self._relation2id)
-        # 4 negative examples per positive seems to work well.
         train_dataloader_head = DataLoader(
                     TrainDataset(self._encoded_triples, nrelation, 4, 'head-batch'),
                     batch_size=batch_size,
@@ -238,12 +326,23 @@ class KB(object):
                 print(log)
 
     def estimate_triple_prob(self, sub, pred, ob):
+        # TODO: Should be prolog style
         if not self._kg_model:
             raise Exception('Must build and train the model first')
         tensor = torch.tensor([[self._entity2id[sub], self._relation2id[pred], self._entity2id[ob]]])
         if self._cuda:
             tensor = tensor.cuda()
         logit, _ = self._kg_model(tensor, attributes=False)
+        return round(expit(float(logit)), 4)
+
+    def estimate_triple_prob_with_attrs(self, sub, pred, ob, pred_prop):
+        # TODO: Should be prolog style
+        if not self._kg_model:
+            raise Exception('Must build and train the model first')
+        tensor = torch.tensor([[self._entity2id[sub], self._relation2id[pred], self._entity2id[ob]]])
+        if self._cuda:
+            tensor = tensor.cuda()
+        logit, _ = self._kg_model(tensor, attributes=True, predict_pred_prop=pred_prop)
         return round(expit(float(logit)), 4)
 
     def get_embedding(self, entity):
@@ -349,42 +448,6 @@ class KB(object):
                 if ans:
                     queue.append(child)
 
-    def attr(self, node_name, attributes):
-        """Set attributes on an existing graph node.
-
-        :param str node_name: Name of the node
-        :param dict attributes: Dictionary of attributes to set
-
-        :Example:
-
-        >>> kb = KB()
-        >>> kb.store('eats(tom, rice)')
-        0
-        >>> kb.attr('tom', {'is_person': True})
-        >>> kb.node('tom')
-        {'is_person': True}"""
-
-        nx.set_node_attributes(self.G, {node_name: attributes})
-
-    def node(self, node_name):
-        """Get a node, and its attributes, from the graph.
-
-        :param str node_name: Name of the node
-        :return: The node and its attributes.
-
-        :Example:
-
-        >>> kb = KB()
-        >>> kb.store('eats(tom, rice)')
-        0
-        >>> kb.node('tom')
-        {}
-        >>> kb.attr('tom', {'is_person': True})
-        >>> kb.node('tom')
-        {'is_person': True}"""
-
-        return self.G.nodes(data=True)[node_name]
-
     def delete_rule(self, rule_idx):
         """Delete a rule from the KB.
 
@@ -484,7 +547,11 @@ class KB(object):
                     object_ = str(r.head.args[1])
                     object_ = object_[0].lower() + object_[1:]
                     if data:
-                        triples.append((subject, r.head.pred, object_, self.node(subject)))
+                        triples.append((subject, r.head.pred, object_,
+                            self.node(subject),
+                            self.edge(subject, r.head.pred, object_),
+                            self.node(object_)
+                        ))
                     else:
                         triples.append((subject, r.head.pred, object_))
         return triples
