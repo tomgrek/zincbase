@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 autodoc_mock_imports = ['matplotlib', 'torch', 'numpy', 'networkx', 'scipy', 'sklearn']
 # -- Project information -----------------------------------------------------
 
-project = 'XinKBase'
+project = 'ZincBase'
 copyright = '2019, Tom Grek'
 author = 'Tom Grek'
 
@@ -108,7 +108,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'xinkbasedoc'
+htmlhelp_basename = 'zincbasedoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -156,8 +156,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'XinKBase', 'XinKBase Documentation',
-     author, 'XinKBase', 'A state of the art knowledge base',
+    (master_doc, 'ZincBase', 'ZincBase Documentation',
+     author, 'ZincBase', 'A state of the art knowledge base',
      'Miscellaneous'),
 ]
 

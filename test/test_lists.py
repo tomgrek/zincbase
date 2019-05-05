@@ -1,6 +1,6 @@
 import context
 
-from xinkbase import KB
+from zincbase import KB
 
 kb = KB()
 

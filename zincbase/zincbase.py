@@ -26,7 +26,7 @@ class KB():
 
     >>> kb = KB()
     >>> kb.__class__
-    <class 'xinkbase.KB'>
+    <class 'zincbase.KB'>
     """
     def __init__(self):
         self.G = nx.MultiDiGraph()
@@ -521,8 +521,9 @@ class KB():
         :Note: While the Prolog style representation uses `pred(subject, object)`, \
         the triple representation is `(subject, pred, object)`.
 
-        :param bool data: Whether to return subject attributes as a 4th element.
-        :return: list of triples (tuples of length 3 or 4 if data=True)
+        :param bool data: Whether to return subject, predicate and object \
+        attributes as a 4th element.
+        :return: list of triples (tuples of length 3 or 6 if data=True)
         
         :Example:
 
@@ -537,7 +538,7 @@ class KB():
         [('b', 'a', 'c')]
         >>> kb.attr('b', {'an_attribute': 'xyz'})
         >>> kb.to_triples(data=True)
-        [('b', 'a', 'c', {'an_attribute': 'xyz'})]"""
+        [('b', 'a', 'c', {'an_attribute': 'xyz'}, {}, {})]"""
         triples = []
         for r in self.rules:
             if not r.goals:

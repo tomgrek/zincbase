@@ -1,13 +1,13 @@
-xinkbase package
+zincbase package
 ================
 
 Submodules
 ----------
 
-xinkbase.xinkbase module
+zincbase.zincbase module
 ------------------------
 
-.. automodule:: xinkbase.xinkbase
+.. automodule:: zincbase.zincbase
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,7 +16,7 @@ xinkbase.xinkbase module
 Module contents
 ---------------
 
-.. automodule:: xinkbase
+.. automodule:: zincbase
     :members:
     :undoc-members:
     :show-inheritance:
