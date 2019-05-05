@@ -225,7 +225,7 @@ class KB():
         return pred == 2
 
     def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE',
-                    node_attributes=[], attr_loss_to_graph_loss=1.0,
+                    node_attributes=[], attr_loss_to_graph_loss=1.0, pred_loss_to_graph_loss=1.0,
                     pred_attributes=[]):
         """Build the dictionaries and KGE model
         :param list node_attributes: List of node attributes to include in the model. \
@@ -282,8 +282,9 @@ class KB():
                              double_relation_embedding=dre,
                              node_attributes=node_attributes,
                              pred_attributes=pred_attributes,
-                             device=device,
-                             attr_loss_to_graph_loss=attr_loss_to_graph_loss)
+                             attr_loss_to_graph_loss=attr_loss_to_graph_loss,
+                             pred_loss_to_graph_loss=pred_loss_to_graph_loss,
+                             device=device)
         if cuda:
             self._cuda = True
             self._kg_model = self._kg_model.cuda()

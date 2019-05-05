@@ -101,14 +101,12 @@ print('First suite of neural network tests passed.')
 # # # # # # # # # # # # # # # # # # # # # # # #
 # Test predicate attributes
 # # # # # # # # # # # # # # # # # # # # # # # #
-kb.store('lives_in(tom, seattle)') ## TODO very temporary: I only have to put this first before the line
-# below because of some stupid implementation, fix it. Change the line below to seattle and it fails,
-# but that is what it is designed for -- it's working but either just needs a lot more training time
-# or not working well enough
+kb.store('lives_in(tom, seattle)') ## TODO seems weird to have to add this fact then stick 'formerly' on it
+# on the next line.
 kb.edge_attr('tom', 'lives_in', 'bay_area', {'formerly': 1.0})
 kb.build_kg_model(cuda=False, embedding_size=30, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'],
-                pred_attributes=['formerly'], attr_loss_to_graph_loss=0.9)
-kb.train_kg_model(steps=32001, batch_size=1)
+                pred_attributes=['formerly'], attr_loss_to_graph_loss=0.9, pred_loss_to_graph_loss=5.0)
+kb.train_kg_model(steps=18001, batch_size=2)
 
 # # # # # # # # # # # # # # # # # # # # # # # #
 # People from Seattle should be more likely to
@@ -122,7 +120,7 @@ y = kb._kg_model.run_embedding(kb.get_embedding('other2'), 'doesnt_own_raincoat'
 assert round(x) == 1; assert round(y) == 0
 x = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'owns_a_raincoat')
 y = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'doesnt_own_raincoat')
-assert round(x) == 1; assert round(y) == 0
+assert x > 1.5 * y # Not a known fact
 x = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'owns_a_raincoat')
 y = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'doesnt_own_raincoat')
 assert round(x) == 0; assert round(y) == 1
@@ -152,12 +150,13 @@ sea_prob = kb.estimate_triple_prob('other2', 'lives_in', 'seattle')
 bay_prob = kb.estimate_triple_prob('other2', 'lives_in', 'bay_area')
 assert sea_prob > 2 * bay_prob
 
-x = kb.estimate_triple_prob_with_attrs('tom', 'lives_in', 'seattle', 'formerly')
+x = kb.estimate_triple_prob_with_attrs('tom', 'lives_in', 'bay_area', 'formerly')
 y = kb.estimate_triple_prob_with_attrs('john', 'lives_in', 'bay_area', 'formerly')
-assert x > y
+z = kb.estimate_triple_prob_with_attrs('mary', 'lives_in', 'bay_area', 'formerly')
+assert x > y; assert x > z
 
-mary = kb.estimate_triple_prob_with_attrs('mary', 'lives_in', 'bay_area', 'formerly')
-shamala = kb.estimate_triple_prob_with_attrs('shamala', 'lives_in', 'bay_area', 'formerly')
-print(mary, shamala)
+x = kb.estimate_triple_prob_with_attrs('tom', 'knows', 'john', 'formerly')
+y = kb.estimate_triple_prob('tom', 'knows', 'john')
+assert y > x
 
 print('Neural network tests passed.')

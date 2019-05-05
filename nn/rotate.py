@@ -11,7 +11,8 @@ class KGEModel(nn.Module):
     def __init__(self, model_name, nentity, nrelation, hidden_dim, gamma,
                  double_entity_embedding=False, double_relation_embedding=False,
                  node_attributes=[], pred_attributes=[],
-                 attr_loss_to_graph_loss=1.0, device='cuda'):
+                 attr_loss_to_graph_loss=1.0, pred_loss_to_graph_loss=1.0,
+                 device='cuda'):
         super(KGEModel, self).__init__()
         self.model_name = model_name
         self.nentity = nentity
@@ -19,6 +20,7 @@ class KGEModel(nn.Module):
         self.hidden_dim = hidden_dim
         self.epsilon = 2.0
         self.attr_loss_to_graph_loss = attr_loss_to_graph_loss
+        self.pred_loss_to_graph_loss = pred_loss_to_graph_loss
         self.device = device
 
         self.gamma = nn.Parameter(torch.Tensor([gamma]), requires_grad=False)
@@ -52,13 +54,13 @@ class KGEModel(nn.Module):
 
         self.pred_attributes = pred_attributes
         self.num_pred_attributes = len(pred_attributes)
-        self.attribute_layers = []
-        for i in range(0, self.num_pred_attributes):
-            # TODO: some initialization on these attribute layers
-            self.attribute_layers.append(nn.Linear((2 * self.entity_dim) + self.relation_dim, 1))
-            self.attribute_layers[-1].weight.requires_grad = False
-            self.attribute_layers[-1].bias.requires_grad = False
-            self.attribute_layers[-1].to(self.device)
+
+        if self.num_pred_attributes:
+            self.pred_layer = nn.Linear((2 * self.entity_dim) + self.relation_dim, self.num_pred_attributes)
+            self.pred_layer.weight.requires_grad = False
+            self.pred_layer.bias.requires_grad = False
+            self.pred_layer.to(self.device)
+            
         self.attr_loss_fn = nn.SmoothL1Loss()
         self.nonlinearity = torch.tanh # Cannot use relu since layers non-trainable: could start and stay negative only
 
@@ -167,26 +169,26 @@ class KGEModel(nn.Module):
 
         if predict_pred_prop:
             whole = torch.cat((head.squeeze(), relation.squeeze(), tail.squeeze()), dim=-1)
-            attr_hat = self.attribute_layers[self.pred_attributes.index(predict_pred_prop)](whole)
-            attr_hat = self.nonlinearity(attr_hat)
-            return attr_hat, None
+            x = self.pred_layer(whole)
+            x = self.nonlinearity(x)
+            return x[self.pred_attributes.index(predict_pred_prop)].item(), None
 
         if not attributes:
             return score, None
 
         attr_loss = torch.tensor(0, dtype=torch.float, device=self.device)
         
-        if self.num_node_attributes and mode == 'single':
-            big_head = head.repeat(repeats=(1, self.num_node_attributes, 1))
-            attr_hat = self.attribute_layer(big_head.flatten().view(-1, self.final_layer_size))
-            attr_hat = self.nonlinearity(attr_hat)
-            attr_loss = self.attr_loss_to_graph_loss * self.attr_loss_fn(attr_hat, attr_node)
-        for i, layer in enumerate(self.attribute_layers):
-            if mode == 'single':
-                whole = torch.cat((head.squeeze(), relation.squeeze(), tail.squeeze()), dim=-1)
-                attr_hat = layer(whole)
+        if mode == 'single':
+            if self.num_node_attributes:
+                big_head = head.repeat(repeats=(1, self.num_node_attributes, 1))
+                attr_hat = self.attribute_layer(big_head.flatten().view(-1, self.final_layer_size))
                 attr_hat = self.nonlinearity(attr_hat)
-                attr_loss += self.attr_loss_to_graph_loss * self.attr_loss_fn(attr_hat, attr_pred[:, i])
+                attr_loss += self.attr_loss_to_graph_loss * self.attr_loss_fn(attr_hat, attr_node)
+            if self.num_pred_attributes:
+                whole = torch.cat((head.squeeze(), relation.squeeze(), tail.squeeze()), dim=-1)
+                attr_hat = self.pred_layer(whole)
+                attr_hat = self.nonlinearity(attr_hat)
+                attr_loss += self.pred_loss_to_graph_loss * self.attr_loss_fn(attr_hat, attr_pred)
 
         return score, attr_loss
 
