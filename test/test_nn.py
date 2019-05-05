@@ -108,7 +108,7 @@ kb.store('lives_in(tom, seattle)') ## TODO very temporary: I only have to put th
 kb.edge_attr('tom', 'lives_in', 'bay_area', {'formerly': 1.0})
 kb.build_kg_model(cuda=False, embedding_size=30, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'],
                 pred_attributes=['formerly'], attr_loss_to_graph_loss=0.9)
-kb.train_kg_model(steps=12001, batch_size=1)
+kb.train_kg_model(steps=32001, batch_size=1)
 
 # # # # # # # # # # # # # # # # # # # # # # # #
 # People from Seattle should be more likely to
