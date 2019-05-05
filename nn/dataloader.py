@@ -28,39 +28,41 @@ class TrainDataset(Dataset):
 
         negative_sample_list = []
         negative_sample_size = 0
-
+        # This is not really 'negative samples' but rather a list of head/tails that dont appear
+        # with the other part of the tuple
         while negative_sample_size < self.negative_sample_size:
-            negative_sample = np.concatenate((
-                np.random.randint(self.nentity, size=1),
-                np.random.randint(self.nrelation, size=1),
-                np.random.randint(self.nentity, size=1)
-            ))
-
-            negative_sample = np.concatenate((negative_sample, self.true_attr[negative_sample[0]]))
+            negative_sample = np.random.randint(self.nentity, size=self.negative_sample_size*2)
             if self.mode == 'head-batch':
                 mask = np.in1d(
-                    negative_sample[:3],
-                    self.true_head[(relation, tail)],
-                    assume_unique=True,
+                    negative_sample, 
+                    self.true_head[(relation, tail)], 
+                    assume_unique=True, 
                     invert=True
                 )
             elif self.mode == 'tail-batch':
                 mask = np.in1d(
-                    negative_sample[:3],
-                    self.true_tail[(head, relation)],
-                    assume_unique=True,
+                    negative_sample, 
+                    self.true_tail[(head, relation)], 
+                    assume_unique=True, 
                     invert=True
                 )
             else:
                 raise ValueError('Training batch mode %s not supported' % self.mode)
-            mask = np.concatenate((mask, np.arange(0, len(negative_sample) - 3) + len(mask)))
             negative_sample = negative_sample[mask]
-            
             negative_sample_list.append(negative_sample)
             negative_sample_size += negative_sample.size
-
-        positive_sample = [positive_sample[0], positive_sample[1], positive_sample[2]] + positive_sample[3:][0]
+        
+        negative_sample = np.concatenate(negative_sample_list)[:self.negative_sample_size]
         negative_sample = torch.from_numpy(negative_sample).float()
+
+        tmp = [positive_sample[0], positive_sample[1], positive_sample[2]]
+        for item in positive_sample[3:]:
+            if isinstance(item, list) or isinstance(item, tuple):
+                for subitem in item:
+                    tmp.append(subitem)
+            else:
+                tmp.append(item)
+        positive_sample = tmp
         positive_sample = torch.LongTensor(positive_sample) #TODO First 3 needs to be a longtensor, after that should be floats
         return positive_sample, negative_sample, subsampling_weight, self.mode
 

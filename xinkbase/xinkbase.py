@@ -305,7 +305,6 @@ class KB():
 
         nentity = len(self._entity2id)
         nrelation = len(self._relation2id)
-        # 4 negative examples per positive seems to work well.
         train_dataloader_head = DataLoader(
                     TrainDataset(self._encoded_triples, nrelation, 4, 'head-batch'),
                     batch_size=batch_size,
@@ -333,6 +332,16 @@ class KB():
         if self._cuda:
             tensor = tensor.cuda()
         logit, _ = self._kg_model(tensor, attributes=False)
+        return round(expit(float(logit)), 4)
+
+    def estimate_triple_prob_with_attrs(self, sub, pred, ob, pred_prop):
+        # TODO: Should be prolog style
+        if not self._kg_model:
+            raise Exception('Must build and train the model first')
+        tensor = torch.tensor([[self._entity2id[sub], self._relation2id[pred], self._entity2id[ob]]])
+        if self._cuda:
+            tensor = tensor.cuda()
+        logit, _ = self._kg_model(tensor, attributes=True, predict_pred_prop=pred_prop)
         return round(expit(float(logit)), 4)
 
     def get_embedding(self, entity):

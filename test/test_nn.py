@@ -50,61 +50,10 @@ kb.attr('other5', {'owns_a_raincoat': 1.0, 'doesnt_own_raincoat': 0.0})
 kb.attr('other6', {'owns_a_raincoat': 1.0, 'doesnt_own_raincoat': 0.0})
 
 kb.build_kg_model(cuda=False, embedding_size=30, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'],
-                attr_loss_to_graph_loss=0.9)
+               attr_loss_to_graph_loss=0.9)
 # Ideally use bs=1 to overfit on this small dataset
 # bs=2 at least checks that it works with > 1 bs
-# kb.train_kg_model(steps=8001, batch_size=2)
-
-# # # # # # # # # # # # # # # # # # # # # # # #
-# People from Seattle should be more likely to
-# own an umbrella (attribute prediction test)
-# # # # # # # # # # # # # # # # # # # # # # # #
-# x = kb._kg_model.run_embedding(kb.get_embedding('other1'), 'owns_a_raincoat')
-# y = kb._kg_model.run_embedding(kb.get_embedding('other1'), 'doesnt_own_raincoat')
-# assert round(x) == 1; assert round(y) == 0
-# x = kb._kg_model.run_embedding(kb.get_embedding('other2'), 'owns_a_raincoat')
-# y = kb._kg_model.run_embedding(kb.get_embedding('other2'), 'doesnt_own_raincoat')
-# assert round(x) == 1; assert round(y) == 0
-# x = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'owns_a_raincoat')
-# y = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'doesnt_own_raincoat')
-# assert round(x) == 1; assert round(y) == 0
-# x = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'owns_a_raincoat')
-# y = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'doesnt_own_raincoat')
-# assert round(x) == 0; assert round(y) == 1
-# x = kb._kg_model.run_embedding(kb.get_embedding('todd'), 'owns_a_raincoat')
-# y = kb._kg_model.run_embedding(kb.get_embedding('todd'), 'doesnt_own_raincoat')
-# assert round(x) == 0; assert round(y) == 1
-# x = kb._kg_model.run_embedding(kb.get_embedding('shamala'), 'owns_a_raincoat')
-# y = kb._kg_model.run_embedding(kb.get_embedding('shamala'), 'doesnt_own_raincoat')
-# assert y > 1.5 * x # Not a known fact
-
-# # # # # # # # # # # # # # # # # # # # # # # #
-# These relations should still work (link
-# prediction test)
-# # # # # # # # # # # # # # # # # # # # # # # #
-# bay_prob = kb.estimate_triple_prob('tom', 'lives_in', 'bay_area')
-# sea_prob = kb.estimate_triple_prob('tom', 'lives_in', 'seattle')
-# assert bay_prob > 2 * sea_prob
-
-# bay_prob = kb.estimate_triple_prob('shamala', 'lives_in', 'bay_area')
-# sea_prob = kb.estimate_triple_prob('shamala', 'lives_in', 'seattle')
-# assert bay_prob > 2 * sea_prob
-
-# sea_prob = kb.estimate_triple_prob('other1', 'lives_in', 'seattle')
-# bay_prob = kb.estimate_triple_prob('other1', 'lives_in', 'bay_area')
-# assert sea_prob > 2 * bay_prob
-# sea_prob = kb.estimate_triple_prob('other2', 'lives_in', 'seattle')
-# bay_prob = kb.estimate_triple_prob('other2', 'lives_in', 'bay_area')
-# assert sea_prob > 2 * bay_prob
-
-# # # # # # # # # # # # # # # # # # # # # # # #
-# Test predicate attributes
-# # # # # # # # # # # # # # # # # # # # # # # #
-
-kb.edge_attr('tom', 'lives_in', 'bay_area', {'formerly': 1.0})
-kb.build_kg_model(cuda=False, embedding_size=30, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'],
-                pred_attributes=['formerly'], attr_loss_to_graph_loss=0.9)
-kb.train_kg_model(steps=9001, batch_size=2)
+kb.train_kg_model(steps=12001, batch_size=2)
 
 # # # # # # # # # # # # # # # # # # # # # # # #
 # People from Seattle should be more likely to
@@ -147,5 +96,66 @@ assert sea_prob > 2 * bay_prob
 sea_prob = kb.estimate_triple_prob('other2', 'lives_in', 'seattle')
 bay_prob = kb.estimate_triple_prob('other2', 'lives_in', 'bay_area')
 assert sea_prob > 2 * bay_prob
+
+print('First suite of neural network tests passed.')
+# # # # # # # # # # # # # # # # # # # # # # # #
+# Test predicate attributes
+# # # # # # # # # # # # # # # # # # # # # # # #
+kb.store('lives_in(tom, seattle)') ## TODO very temporary: I only have to put this first before the line
+# below because of some stupid implementation, fix it.
+kb.edge_attr('tom', 'lives_in', 'seattle', {'formerly': 1.0})
+kb.build_kg_model(cuda=False, embedding_size=30, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'],
+                pred_attributes=['formerly'], attr_loss_to_graph_loss=0.9)
+kb.train_kg_model(steps=12001, batch_size=1)
+
+# # # # # # # # # # # # # # # # # # # # # # # #
+# People from Seattle should be more likely to
+# own an umbrella (attribute prediction test)
+# # # # # # # # # # # # # # # # # # # # # # # #
+x = kb._kg_model.run_embedding(kb.get_embedding('other1'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('other1'), 'doesnt_own_raincoat')
+assert round(x) == 1; assert round(y) == 0
+x = kb._kg_model.run_embedding(kb.get_embedding('other2'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('other2'), 'doesnt_own_raincoat')
+assert round(x) == 1; assert round(y) == 0
+x = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'doesnt_own_raincoat')
+assert round(x) == 1; assert round(y) == 0
+x = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'doesnt_own_raincoat')
+assert round(x) == 0; assert round(y) == 1
+x = kb._kg_model.run_embedding(kb.get_embedding('todd'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('todd'), 'doesnt_own_raincoat')
+assert round(x) == 0; assert round(y) == 1
+x = kb._kg_model.run_embedding(kb.get_embedding('shamala'), 'owns_a_raincoat')
+y = kb._kg_model.run_embedding(kb.get_embedding('shamala'), 'doesnt_own_raincoat')
+assert y > 1.5 * x # Not a known fact
+
+# # # # # # # # # # # # # # # # # # # # # # # #
+# These relations should still work (link
+# prediction test)
+# # # # # # # # # # # # # # # # # # # # # # # #
+bay_prob = kb.estimate_triple_prob('tom', 'lives_in', 'bay_area')
+sea_prob = kb.estimate_triple_prob('tom', 'lives_in', 'seattle')
+assert bay_prob > 2 * sea_prob
+
+bay_prob = kb.estimate_triple_prob('shamala', 'lives_in', 'bay_area')
+sea_prob = kb.estimate_triple_prob('shamala', 'lives_in', 'seattle')
+assert bay_prob > 2 * sea_prob
+
+sea_prob = kb.estimate_triple_prob('other1', 'lives_in', 'seattle')
+bay_prob = kb.estimate_triple_prob('other1', 'lives_in', 'bay_area')
+assert sea_prob > 2 * bay_prob
+sea_prob = kb.estimate_triple_prob('other2', 'lives_in', 'seattle')
+bay_prob = kb.estimate_triple_prob('other2', 'lives_in', 'bay_area')
+assert sea_prob > 2 * bay_prob
+
+x = kb.estimate_triple_prob_with_attrs('tom', 'lives_in', 'seattle', 'formerly')
+y = kb.estimate_triple_prob_with_attrs('john', 'lives_in', 'bay_area', 'formerly')
+assert x > y
+
+mary = kb.estimate_triple_prob_with_attrs('mary', 'lives_in', 'bay_area', 'formerly')
+shamala = kb.estimate_triple_prob_with_attrs('shamala', 'lives_in', 'bay_area', 'formerly')
+print(mary, shamala)
 
 print('Neural network tests passed.')

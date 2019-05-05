@@ -15,5 +15,6 @@ jobs:
             python3 test/test_main.py
             python3 test/test_lists.py
             python3 test/test_graph.py
+            python3 test/test_nn_basic.py
             python3 test/test_nn.py
             python3 -m doctest xinkbase/xinkbase.py
