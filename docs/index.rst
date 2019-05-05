@@ -1,4 +1,4 @@
-XinKBase Documentation
+ZincBase Documentation
 ===============================
 
 .. toctree::

@@ -1,19 +1,19 @@
-[![CircleCI](https://circleci.com/gh/tomgrek/xinkbase.svg?style=svg)](https://circleci.com/gh/tomgrek/xinkbase)
+[![CircleCI](https://circleci.com/gh/tomgrek/zincbase.svg?style=svg)](https://circleci.com/gh/tomgrek/zincbase)
 [![DOI](https://zenodo.org/badge/183831265.svg)](https://zenodo.org/badge/latestdoi/183831265)
-[![Documentation Status](https://readthedocs.org/projects/xinkbase/badge/?version=latest)](https://xinkbase.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/zincbase/badge/?version=latest)](https://zincbase.readthedocs.io/en/latest/?badge=latest)
 
-# XinKBase
+# ZincBase
 
-XinKBase is a state of the art knowledge base.
+ZincBase is a state of the art knowledge base.
 
 It combines symbolic logic (think expert systems), graph search, and the latest in neural networks.
 
-View full documentation [here](https://xinkbase.readthedocs.io).
+View full documentation [here](https://zincbase.readthedocs.io).
 
 ## Quickstart
 
 ```
-from xinkbase import KB
+from zincbase import KB
 kb = KB()
 kb.store('eats(tom, rice)')
 for ans in kb.query('eats(tom, Food)'):
@@ -36,8 +36,11 @@ _Note:_ Requirements might differ for PyTorch depending on your system.
 
 ```
 python test/test_main.py
+python test/test_graph.py
 python test/test_lists.py
-python -m doctest xinkbase/xinkbase.py
+python test/test_nn_basic.py
+python test/test_nn.py
+python -m doctest zincbase/zincbase.py
 ```
 
 ## Building documentation
@@ -70,10 +73,10 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 If you use this software, please consider citing:
 
 ```
-@software{xinkbase,
+@software{zincbase,
   author = {{Tom Grek}},
-  title = {XinKBase: A state of the art knowledge base},
-  url = {https://github.com/tomgrek/xinkbase},
+  title = {ZincBase: A state of the art knowledge base},
+  url = {https://github.com/tomgrek/zincbase},
   version = {0.0.1},
   date = {2019-04-27},
 }

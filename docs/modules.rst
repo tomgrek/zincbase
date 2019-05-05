@@ -1,4 +1,4 @@
-xinkbase
+zincbase
 ========
 
 .. toctree::
@@ -7,4 +7,4 @@ xinkbase
    logic
    nn
    utils
-   xinkbase
+   zincbase

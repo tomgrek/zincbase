@@ -4,7 +4,7 @@
 # but they are fairly relaxed.
 
 import context
-from xinkbase import KB
+from zincbase import KB
 
 kb = KB()
 kb.seed(555)
