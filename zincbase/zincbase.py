@@ -2,6 +2,8 @@ from collections import deque, defaultdict
 import copy
 import csv
 import math
+import os
+import pickle
 import random
 
 import matplotlib.pyplot as plt
@@ -39,6 +41,14 @@ class KB():
         self._knn_index = []
         self._cuda = False
         self.classifiers = {}
+
+        self._model_name = None
+        self._embedding_size = None
+        self._gamma = None
+        self._node_attributes = None
+        self._pred_attributes = None
+        self._attr_loss_to_graph_loss = None
+        self._pred_loss_to_graph_loss = None
 
     def seed(self, seed):
         """Seed the RNGs for PyTorch, NumPy, and Python itself.
@@ -183,7 +193,21 @@ class KB():
         self._kg_model.entity_embedding = torch.nn.Parameter(torch.cat((embeddings_copy, new_embed)))
 
     def create_multi_classifier(self, pred):
-        all_examples = self.query('{}(X, Y)'.format(pred))
+        """Build a classifier for a predicate that can classify a subject, given a predicate, into
+        one of the object entities from the KB that has that predicate relation. An example illustrates it best.
+
+        :Example:
+        
+        >>> kb = KB()
+        >>> kb.from_csv('./assets/countries.csv')
+        >>> kb.seed(555)
+        >>> kb.build_kg_model(cuda=False, embedding_size=40)
+        >>> kb.train_kg_model(steps=1000, batch_size=1, verbose=False)
+        >>> kb.create_multi_classifier('capital_of');
+        >>> kb.multi_classify('manila', 'capital_of')
+        'philippines'"""
+
+        all_examples = list(self.query('{}(X, Y)'.format(pred)))
         Xs = []
         Ys = []
         indexes = list(set([x['Y'] for x in all_examples]))
@@ -224,19 +248,88 @@ class KB():
         pred = int(clf.predict(X))
         return pred == 2
 
+    def save_all(self, dirname='.'):
+        """Save current KB to the directory specified. Saves the (state dict of the) PyTorch
+        model as well, if it has been built.
+
+        :param str dirname: Directory in which to save the files. Creates the directory
+        if it doesn't already exist."""
+        if not os.path.exists(dirname):
+            os.mkdir(dirname)
+        if self._kg_model:
+            torch.save(self._kg_model.state_dict(), os.path.join(dirname, 'pytorch_model.dict'))
+        zb_dict = {
+            'model_name': self._model_name,
+            'entity2id': self._entity2id,
+            'relation2id': self._relation2id,
+            'encoded_triples': self._encoded_triples,
+            'embedding_size': self._embedding_size,
+            'gamma': self._gamma,
+            'node_attributes': self._node_attributes,
+            'pred_attributes': self._pred_attributes,
+            'attr_loss_to_graph_loss': self._attr_loss_to_graph_loss,
+            'pred_loss_to_graph_loss': self._pred_loss_to_graph_loss,
+            'rules': self.rules
+        }
+        f = open(os.path.join(dirname, 'zb.pkl'), 'wb')
+        pickle.dump(zb_dict, f)
+        f.close()
+        return True
+    
+    def load_all(self, dirname='.', cuda=False):
+        """Load KB (and model, if it exists) from the specified directory.
+
+        :param str dirname: Directory to load zb.pkl and (if present) pytorch_model.dict
+        :param bool cuda: If the model exists, it will be loaded - specify if you want
+        it to be on the GPU."""
+
+        with open(os.path.join(dirname, 'zb.pkl'), 'rb') as f:
+            zb_dict = pickle.load(f)
+        self._model_name = zb_dict['model_name']
+        self._entity2id = zb_dict['entity2id']
+        self._relation2id = zb_dict['relation2id']
+        self._encoded_triples = zb_dict['encoded_triples']
+        self._embedding_size = zb_dict['embedding_size']
+        self._gamma = zb_dict['gamma']
+        self._node_attributes = zb_dict['node_attributes']
+        self._pred_attributes = zb_dict['pred_attributes']
+        self._attr_loss_to_graph_loss = zb_dict['attr_loss_to_graph_loss']
+        self._pred_loss_to_graph_loss = zb_dict['pred_loss_to_graph_loss']
+        tmp_rules = zb_dict['rules']
+        for rule in tmp_rules:
+            self.store(str(rule.head))
+        if os.path.exists(os.path.join(dirname, 'pytorch_model.dict')):
+            self.build_kg_model(cuda, embedding_size=self._embedding_size, gamma=self._gamma,
+            model_name=self._model_name, node_attributes=self._node_attributes,
+            attr_loss_to_graph_loss=self._attr_loss_to_graph_loss,
+            pred_loss_to_graph_loss=self._pred_loss_to_graph_loss,
+            pred_attributes=self._pred_attributes)
+            self._kg_model.load_state_dict(torch.load(os.path.join(dirname, 'pytorch_model.dict')))
+        return True
+
+
     def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE',
                     node_attributes=[], attr_loss_to_graph_loss=1.0, pred_loss_to_graph_loss=1.0,
                     pred_attributes=[]):
         """Build the dictionaries and KGE model
+
         :param list node_attributes: List of node attributes to include in the model. \
-        If node doesn't possess the attribute, will be treated as zero. So far attributes \
+            If node doesn't possess the attribute, will be treated as zero. So far attributes \
         must be floats.
         :param list pred_attributes: List of predicate attributes to include in the model.
         :param float attr_loss_to_graph_loss: % to scale attribute loss against graph loss. \
-        0 would only take into account graph loss, math.inf would only take into account attr loss.
-        """
+        0 would only take into account graph loss, math.inf would only take into account attr loss."""
         # TODO refactor this so there's a separate dict of node + pred attrs; they don't have
         # to be part of the triple.
+
+        self._gamma = gamma
+        self._embedding_size = embedding_size
+        self._model_name = model_name
+        self._attr_loss_to_graph_loss = attr_loss_to_graph_loss
+        self._pred_loss_to_graph_loss = pred_loss_to_graph_loss
+        self._node_attributes = node_attributes
+        self._pred_attributes = pred_attributes
+
         triples = self.to_triples(data=True)
         for i, triple in enumerate(triples):
             if triple[0] not in self._entity2id:
@@ -289,7 +382,8 @@ class KB():
             self._cuda = True
             self._kg_model = self._kg_model.cuda()
 
-    def train_kg_model(self, steps=1000, batch_size=512, lr=0.001, reencode_triples=False):
+    def train_kg_model(self, steps=1000, batch_size=512, lr=0.001,
+                       reencode_triples=False, verbose=True):
         """Train a KG model on the KB.
 
         :param int steps: Number of training steps
@@ -322,7 +416,7 @@ class KB():
         optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self._kg_model.parameters()), lr=lr)
         for step in range(0, steps):
             log = self._kg_model.train_step(self._kg_model, optimizer, train_iterator, {'cuda': self._cuda})
-            if step % 100 == 0:
+            if verbose and step % 100 == 0:
                 print(log)
 
     def estimate_triple_prob(self, sub, pred, ob):
@@ -351,8 +445,13 @@ class KB():
             index = index.cuda()
         return torch.index_select(self._kg_model.entity_embedding, dim=0, index=index).detach()
 
-    def fit_knn(self, entities):
+    def fit_knn(self, entities=None):
+        """Fit an unsupervised sklearn kNN to the embeddings of entities.
+
+        :param list entities: The entities that should be part of the kNN. Defaults to all if not specified"""
         self._knn_index = []
+        if not entities:
+            entities = [e for e in self._entity2id]
         encoded_entities = []
         for e in entities:
             encoded_entities.append(self._entity2id[e])
@@ -364,6 +463,11 @@ class KB():
         self._knn = NearestNeighbors(n_neighbors=4, algorithm='kd_tree').fit(embeddings)
 
     def get_nearest_neighbors(self, entity, k=1):
+        """Get the nearest neighbors to entity (embedding), according to the previously fit knn.
+
+        :param str entity: An entity
+        :param int k: How many neighbors
+        """
         embedding = self.get_embedding(entity)
         embedding = embedding.cpu() # no cuda for sklearn
         distances, indices = self._knn.kneighbors(embedding, n_neighbors=k)
@@ -375,6 +479,18 @@ class KB():
         return borgs
 
     def get_most_likely(self, sub, pred, ob, k=1):
+        """Return the k most likely triples to satisfy the input triple.
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.from_csv('./assets/countries.csv')
+        >>> kb.seed(555)
+        >>> kb.build_kg_model(cuda=False, embedding_size=40)
+        >>> kb.train_kg_model(steps=1000, batch_size=1, verbose=False)
+        >>> kb.get_most_likely('austria', 'borders', '?', k=2)
+        [{'prob': 0.7049, 'triple': 'austria borders switzerland'}, {'prob': 0.6726, 'triple': 'austria borders hungary'}]"""
+
         orig_sub = sub
         orig_ob = ob
         if sub == '?':
@@ -399,7 +515,7 @@ class KB():
         possibles_tensor = torch.tensor(possibles)
         if self._cuda:
             possibles_tensor = possibles_tensor.cuda()
-        out = self._kg_model(possibles_tensor)
+        out, _ = self._kg_model(possibles_tensor)
         answers = torch.topk(out, k=k, dim=0)
         probs = answers[0]
         indexes = answers[1]
