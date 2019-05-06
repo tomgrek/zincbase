@@ -18,6 +18,18 @@ kb = KB()
 kb.store('eats(tom, rice)')
 for ans in kb.query('eats(tom, Food)'):
     print(ans['Food']) # prints 'rice'
+
+...
+# The included assets/countries.csv contains triples like:
+# (paris, capital_of, france)
+# (djibouti, in_region, africa)
+# (denmark, borders, germany)
+
+kb.from_csv('./assets/countries.csv')
+kb.build_kg_model(cuda=False, embedding_size=40)
+kb.train_kg_model(steps=2000, batch_size=1, verbose=False)
+kb.estimate_triple_prob('egypt', 'borders', 'sudan')
+0.8467
 ```
 
 # Requirements
@@ -54,11 +66,12 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * refactor the .attr method to be prolog style ie owns_a_raincoat(tom)
 * to_csv method
 * utilize postgres as backend triple store
-* attributes for nodes / relations
 * The to_csv/from_csv methods do not yet support node attributes.
 * Add relation extraction from arbitrary unstructured text
 
 # References & Acknowledgements
+
+[Theo Trouillon. Complex-Valued Embedding Models for Knowledge Graphs. Machine Learning[cs.LG]. Université Grenoble Alpes, 2017. English. ffNNT : 2017GREAM048](https://tel.archives-ouvertes.fr/tel-01692327/file/TROUILLON_2017_archivage.pdf)
 
 [L334: Computational Syntax and Semantics -- Introduction to Prolog, Steve Harlow](http://www-users.york.ac.uk/~sjh1/courses/L334css/complete/complete2li1.html)
 
