@@ -197,13 +197,13 @@ class KB():
         one of the object entities from the KB that has that predicate relation. An example illustrates it best.
 
         :Example:
-        
+
         >>> kb = KB()
         >>> kb.from_csv('./assets/countries.csv')
         >>> kb.seed(555)
         >>> kb.build_kg_model(cuda=False, embedding_size=40)
         >>> kb.train_kg_model(steps=1000, batch_size=1, verbose=False)
-        >>> kb.create_multi_classifier('capital_of');
+        >>> _ = kb.create_multi_classifier('capital_of')
         >>> kb.multi_classify('manila', 'capital_of')
         'philippines'"""
 
