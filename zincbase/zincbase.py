@@ -193,8 +193,9 @@ class KB():
         self._kg_model.entity_embedding = torch.nn.Parameter(torch.cat((embeddings_copy, new_embed)))
 
     def create_multi_classifier(self, pred):
-        """Build a classifier for a predicate that can classify a subject, given a predicate, into
-        one of the object entities from the KB that has that predicate relation. An example illustrates it best.
+        """Build a classifier (SVM) for a predicate that can classify a subject, given a predicate, into
+        one of the object entities from the KB that has that predicate relation. Automatically
+        compensates for class imbalance.
 
         :Example:
 
@@ -227,23 +228,46 @@ class KB():
         return clf
 
     def multi_classify(self, subject, pred):
+        """Predict `object` for subject according to the multi-classifer
+        previously trained on `pred`."""
+
         clf, indexes = self.classifiers[pred]
         return indexes[int(clf.predict(np.reshape(self.get_embedding(subject), (1, -1))))]
 
-    def create_binary_classifier(self, pred, object):
-        all_examples = self.query('{}(X, Y)'.format(pred))
-        pos_examples = [self.get_embedding(x['X']) for x in all_examples if x['Y'] == object]
-        neg_examples = [self.get_embedding(x['X']) for x in all_examples if x['Y'] != object]
+    def create_binary_classifier(self, pred, ob):
+        """Creates a binary classifier (SVM) for `pred(?, ob)` using embeddings from the trained model.
+        Automatically compensates for class imbalance.
+
+        Follow it with `binary_classify(sub, pred, ob)` to predict whether the relation holds or not.
+
+        May be useful because although the model can estimate a probability for (sub, pred, ob),
+        what threshold should you use to decide what constitutes True vs False?
+
+        :Example:
+
+        >>> kb = KB()
+        >>> kb.from_csv('./assets/countries.csv')
+        >>> kb.build_kg_model(cuda=False, embedding_size=40)
+        >>> kb.train_kg_model(steps=2000, batch_size=1, verbose=False)
+        >>> _ = kb.create_binary_classifier('in_region', 'asia')
+        >>> kb.binary_classify('india', 'in_region', 'asia')
+        True
+        >>> kb.binary_classify('brazil', 'in_region', 'asia')
+        False"""
+        all_examples = list(self.query('{}(X, Y)'.format(pred)))
+        pos_examples = [self.get_embedding(x['X']) for x in all_examples if x['Y'] == ob]
+        neg_examples = [self.get_embedding(x['X']) for x in all_examples if x['Y'] != ob]
         Xs = np.reshape(np.stack(pos_examples + neg_examples), (-1, pos_examples[0].shape[1]))
         Ys = np.stack([2 for x in pos_examples] + [1 for x in neg_examples])
         ratio = int(len(neg_examples) / len(pos_examples))
         clf = SVC(gamma='auto', kernel='linear', class_weight={2:min(ratio, 15)})
         clf.fit(Xs, Ys)
-        self.classifiers[(pred, object)] = clf
+        self.classifiers[(pred, ob)] = clf
         return clf
 
-    def binary_classify(self, subject, pred, object):
-        clf = self.classifiers[(pred, object)]
+    def binary_classify(self, subject, pred, ob):
+        """Predict whether triple (sub, pred, ob) is true or not."""
+        clf = self.classifiers[(pred, ob)]
         X = self.get_embedding(subject)
         pred = int(clf.predict(X))
         return pred == 2
