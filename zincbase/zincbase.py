@@ -407,7 +407,7 @@ class KB():
             self._kg_model = self._kg_model.cuda()
 
     def train_kg_model(self, steps=1000, batch_size=512, lr=0.001,
-                       reencode_triples=False, verbose=True):
+                       reencode_triples=False, neg_to_pos=4, verbose=True):
         """Train a KG model on the KB.
 
         :param int steps: Number of training steps
@@ -425,13 +425,13 @@ class KB():
         nentity = len(self._entity2id)
         nrelation = len(self._relation2id)
         train_dataloader_head = DataLoader(
-                    TrainDataset(self._encoded_triples, nrelation, 4, 'head-batch'),
+                    TrainDataset(self._encoded_triples, nrelation, neg_to_pos, 'head-batch'),
                     batch_size=batch_size,
                     shuffle=True,
                     num_workers=1,
                     collate_fn=TrainDataset.collate_fn)
         train_dataloader_tail = DataLoader(
-                    TrainDataset(self._encoded_triples, nrelation, 4, 'tail-batch'),
+                    TrainDataset(self._encoded_triples, nrelation, neg_to_pos, 'tail-batch'),
                     batch_size=batch_size,
                     shuffle=True,
                     num_workers=1,
@@ -444,6 +444,8 @@ class KB():
                 print(log)
 
     def estimate_triple_prob(self, sub, pred, ob):
+        """Estimate the probability of the triple (sub, pred, ob) according to the trained model."""
+         
         # TODO: Should be prolog style
         if not self._kg_model:
             raise Exception('Must build and train the model first')
@@ -512,8 +514,8 @@ class KB():
         >>> kb.seed(555)
         >>> kb.build_kg_model(cuda=False, embedding_size=40)
         >>> kb.train_kg_model(steps=1000, batch_size=1, verbose=False)
-        >>> kb.get_most_likely('austria', 'borders', '?', k=2)
-        [{'prob': 0.7049, 'triple': 'austria borders switzerland'}, {'prob': 0.6726, 'triple': 'austria borders hungary'}]"""
+        >>> kb.get_most_likely('austria', 'borders', '?', k=2) # doctest:+ELLIPSIS
+        [{'prob': 0.758, 'triple': ('austria', 'borders', 'austria')}, {'prob': 0.7565, 'triple': ('austria', 'borders', 'slovenia')}]"""
 
         orig_sub = sub
         orig_ob = ob
@@ -547,10 +549,10 @@ class KB():
         for i in range(len(indexes)):
             if orig_sub == '?':
                 orig = reverse_lookup[possibles[int(indexes[i])][0]]
-                triple = orig + ' ' + pred + ' ' + orig_ob
+                triple = (orig, pred, orig_ob)
             else:
                 orig = reverse_lookup[possibles[int(indexes[i])][2]]
-                triple = orig_sub + ' ' + pred + ' ' + orig
+                triple = (orig_sub, pred, orig)
             retvals.append({'prob': round(expit(float(probs[i])), 4), 'triple': triple})
         return retvals
 
@@ -662,7 +664,7 @@ class KB():
         the triple representation is `(subject, pred, object)`.
 
         :param bool data: Whether to return subject, predicate and object \
-        attributes as a 4th element.
+        attributes as elements 4, 5, and 6 of the triple.
         :return: list of triples (tuples of length 3 or 6 if data=True)
         
         :Example:
@@ -711,9 +713,9 @@ class KB():
         for (u, p, v) in triples:
             self.store('{}({},{})'.format(p, u, v))
 
-    def from_csv(self, csvfile, header=None, start=0, size=None):
+    def from_csv(self, csvfile, header=None, start=0, size=None, delimiter=','):
         with open(csvfile) as f:
-            reader = csv.reader(f)
+            reader = csv.reader(f, delimiter=delimiter)
             i = 0
             if header:
                 next(reader, None)
@@ -723,12 +725,12 @@ class KB():
                 next(reader, None)
             i = 0
             for row in reader:
-                pred = row[1].replace('.', '').replace('(', '').replace(')','')
-                sub = row[0].replace(' ','').replace('.', '').replace('(', '').replace(')','')
+                pred = row[1].replace('.', '').replace('(', '').replace(')','').replace('/','_')
+                sub = row[0].replace(' ','').replace('.', '').replace('(', '').replace(')','').replace('/','_')
                 sub = sub[0].lower() + sub[1:]
-                ob = row[2].replace(' ','').replace('.', '').replace('(', '').replace(')','')
+                ob = row[2].replace(' ','').replace('.', '').replace('(', '').replace(')','').replace('/','_')
                 ob = ob[0].lower() + ob[1:]
-                if not (sub.isalpha() and ob.isalpha()):
+                if not (sub.replace('_','').isalnum() and ob.replace('_','').isalnum()):
                     continue
                 self.store('{}({},{})'.format(pred, sub, ob))
                 i += 1
