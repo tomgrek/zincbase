@@ -41,7 +41,7 @@ class KGEModel(nn.Module):
         nn.init.uniform_(tensor=self.relation_embedding,
             a = -self.embedding_range.item(),
             b = self.embedding_range.item())
-        
+
         self.node_attributes = node_attributes
         self.num_node_attributes = len(node_attributes)
 
@@ -60,7 +60,7 @@ class KGEModel(nn.Module):
             self.pred_layer.weight.requires_grad = False
             self.pred_layer.bias.requires_grad = False
             self.pred_layer.to(self.device)
-            
+
         self.attr_loss_fn = nn.SmoothL1Loss()
         self.nonlinearity = torch.tanh # Cannot use relu since layers non-trainable: could start and stay negative only
 
@@ -135,7 +135,7 @@ class KGEModel(nn.Module):
         elif mode == 'tail-batch':
             head_part, tail_part = sample
             batch_size, negative_sample_size = tail_part.size(0), tail_part.size(1)
-            
+
             attr_node = head_part[:, 3:3 + self.num_node_attributes]
             attr_pred = head_part[:, 3 + self.num_node_attributes:]
             head_part = head_part.to(torch.long)
@@ -177,7 +177,7 @@ class KGEModel(nn.Module):
             return score, None
 
         attr_loss = torch.tensor(0, dtype=torch.float, device=self.device)
-        
+
         if mode == 'single':
             if self.num_node_attributes:
                 big_head = head.repeat(repeats=(1, self.num_node_attributes, 1))
@@ -237,9 +237,8 @@ class KGEModel(nn.Module):
 
     @staticmethod
     def train_step(model, optimizer, train_iterator, args):
-        model.train()
         optimizer.zero_grad()
-        
+
         positive_sample, negative_sample, subsampling_weight, mode = next(train_iterator)
         if args['cuda']:
             positive_sample = positive_sample.cuda()

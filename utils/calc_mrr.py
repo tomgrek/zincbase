@@ -1,4 +1,6 @@
 import csv
+import re
+
 from tqdm import tqdm
 
 def calc_mrr(kb, test_file, delimiter=',', header=None, size=None):
@@ -10,10 +12,10 @@ def calc_mrr(kb, test_file, delimiter=',', header=None, size=None):
         i = 0
         test_triples = []
         for row in reader:
-            pred = row[1].replace('.', '').replace('(', '').replace(')','').replace('/','_')
-            sub = row[0].replace(' ','').replace('.', '').replace('(', '').replace(')','').replace('/','_')
+            pred = re.sub('[ ./()]', '_', row[1])
+            sub = re.sub('[ ./()]', '_', row[0])
             sub = sub[0].lower() + sub[1:]
-            ob = row[2].replace(' ','').replace('.', '').replace('(', '').replace(')','').replace('/','_')
+            ob = re.sub('[ ./()]', '_', row[2])
             ob = ob[0].lower() + ob[1:]
             if not (sub.replace('_','').isalnum() and ob.replace('_','').isalnum()):
                 continue
@@ -31,7 +33,8 @@ def calc_mrr(kb, test_file, delimiter=',', header=None, size=None):
             ranked_ents = [x['triple'][2] for x in ranks]
             if ob not in ranked_ents:
                 continue
+            print('Was looking for {} and found it in position {}'.format(ob, ranked_ents.index(ob)))
             mrr += 1 / (ranked_ents.index(ob) + 1)
         except:
             continue
-    return mrr / len(test_triples)
+    return mrr / size

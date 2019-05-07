@@ -5,3 +5,4 @@ scipy
 sklearn
 torch
 torchvision
+tqdm

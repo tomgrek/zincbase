@@ -5,6 +5,7 @@ import math
 import os
 import pickle
 import random
+import re
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -14,6 +15,7 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.svm import SVC
 from torch.utils.data import DataLoader
 import torch
+from tqdm import tqdm
 
 from logic.Term import Term
 from logic.Rule import Rule
@@ -22,7 +24,7 @@ from logic.common import unify, process
 from nn.dataloader import TrainDataset, BidirectionalOneShotIterator
 from nn.rotate import KGEModel
 from utils.string_utils import strip_all_whitespace
- 
+
 class KB():
     """Knowledge Base Class
 
@@ -52,7 +54,7 @@ class KB():
 
     def seed(self, seed):
         """Seed the RNGs for PyTorch, NumPy, and Python itself.
-        
+
         :param int seed: random seed
 
         :Example:
@@ -62,7 +64,7 @@ class KB():
         torch.random.manual_seed(seed)
         np.random.seed(seed)
         random.seed(seed)
-    
+
     def edge_attr(self, sub, pred, ob, attributes):
         """Set attributes on a predicate between subject and object.
         Useful for example to encode time.
@@ -88,7 +90,7 @@ class KB():
                 nx.set_edge_attributes(self.G, {(sub, ob, idx): attributes})
                 return None
         return False
-    
+
     def edge(self, sub, pred, ob):
         """Returns an edge and its attributes.
 
@@ -299,7 +301,7 @@ class KB():
         pickle.dump(zb_dict, f)
         f.close()
         return True
-    
+
     def load_all(self, dirname='.', cuda=False):
         """Load KB (and model, if it exists) from the specified directory.
 
@@ -332,7 +334,7 @@ class KB():
         return True
 
 
-    def build_kg_model(self, cuda=False, embedding_size=256, gamma=2, model_name='RotatE',
+    def build_kg_model(self, cuda=False, embedding_size=256, gamma=24, model_name='RotatE',
                     node_attributes=[], attr_loss_to_graph_loss=1.0, pred_loss_to_graph_loss=1.0,
                     pred_attributes=[]):
         """Build the dictionaries and KGE model
@@ -407,7 +409,7 @@ class KB():
             self._kg_model = self._kg_model.cuda()
 
     def train_kg_model(self, steps=1000, batch_size=512, lr=0.001,
-                       reencode_triples=False, neg_to_pos=4, verbose=True):
+                       reencode_triples=False, neg_to_pos=128, verbose=True):
         """Train a KG model on the KB.
 
         :param int steps: Number of training steps
@@ -438,14 +440,21 @@ class KB():
                     collate_fn=TrainDataset.collate_fn)
         train_iterator = BidirectionalOneShotIterator(train_dataloader_head, train_dataloader_tail)
         optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self._kg_model.parameters()), lr=lr)
-        for step in range(0, steps):
+
+        self._kg_model.train()
+        if verbose:
+            it = tqdm(range(0, steps))
+        else:
+            it = range(0, steps)
+        for step in it:
             log = self._kg_model.train_step(self._kg_model, optimizer, train_iterator, {'cuda': self._cuda})
             if verbose and step % 100 == 0:
                 print(log)
+        self._kg_model.eval()
 
     def estimate_triple_prob(self, sub, pred, ob):
         """Estimate the probability of the triple (sub, pred, ob) according to the trained model."""
-         
+
         # TODO: Should be prolog style
         if not self._kg_model:
             raise Exception('Must build and train the model first')
@@ -666,7 +675,7 @@ class KB():
         :param bool data: Whether to return subject, predicate and object \
         attributes as elements 4, 5, and 6 of the triple.
         :return: list of triples (tuples of length 3 or 6 if data=True)
-        
+
         :Example:
 
         >>> kb = KB()
@@ -705,7 +714,7 @@ class KB():
         :param list triples: List of tuples each of the form `(subject, pred, object)`
 
         :Example:
-        
+
         >>> kb = KB()
         >>> kb.from_triples([('b', 'a', 'c')])
         >>> len(list(kb.query('a(b, c)')))
@@ -725,10 +734,10 @@ class KB():
                 next(reader, None)
             i = 0
             for row in reader:
-                pred = row[1].replace('.', '').replace('(', '').replace(')','').replace('/','_')
-                sub = row[0].replace(' ','').replace('.', '').replace('(', '').replace(')','').replace('/','_')
+                pred = re.sub('[ ./()]', '_', row[1])
+                sub = re.sub('[ ./()]', '_', row[0])
                 sub = sub[0].lower() + sub[1:]
-                ob = row[2].replace(' ','').replace('.', '').replace('(', '').replace(')','').replace('/','_')
+                ob = re.sub('[ ./()]', '_', row[2])
                 ob = ob[0].lower() + ob[1:]
                 if not (sub.replace('_','').isalnum() and ob.replace('_','').isalnum()):
                     continue
