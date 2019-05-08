@@ -551,6 +551,7 @@ class KB():
         if self._cuda:
             possibles_tensor = possibles_tensor.cuda()
         out, _ = self._kg_model(possibles_tensor)
+        k = min(out.size(0), k)
         answers = torch.topk(out, k=k, dim=0)
         probs = answers[0]
         indexes = answers[1]

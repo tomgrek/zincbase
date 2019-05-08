@@ -27,11 +27,7 @@ def calc_mrr(kb, test_file, delimiter=',', header=None, size=None):
     for t in tqdm(test_triples[:size]):
         try:
             ob = t[2]
-            try:
-                # TODO: should not have to do this, can check it in the get_most_likely fn (ie if len possibles < k, just return that many)
-                ranks = kb.get_most_likely(t[0], t[1], '?', k=20)
-            except:
-                ranks = kb.get_most_likely(t[0], t[1], '?', k=2)
+            ranks = kb.get_most_likely(t[0], t[1], '?', k=100)
             ranked_ents = [x['triple'][2] for x in ranks]
             if ob not in ranked_ents:
                 continue

@@ -1,1397 +1,1111 @@
-oranjestad,capital_of,aruba
-aruba,in_subregion,caribbean
-aruba,in_region,americas
-caribbean,is_subregion_of,americas
-afghanistan,borders,iran
-afghanistan,borders,pakistan
-afghanistan,borders,turkmenistan
-afghanistan,borders,uzbekistan
-afghanistan,borders,tajikistan
-afghanistan,borders,china
-kabul,capital_of,afghanistan
-afghanistan,in_subregion,southern_Asia
-afghanistan,in_region,asia
-southern_Asia,is_subregion_of,asia
-angola,borders,republic_of_the_Congo
-angola,borders,dR_Congo
-angola,borders,zambia
-angola,borders,namibia
-luanda,capital_of,angola
-angola,in_subregion,middle_Africa
-angola,in_region,africa
-middle_Africa,is_subregion_of,africa
-the_Valley,capital_of,anguilla
-anguilla,in_subregion,caribbean
-anguilla,in_region,americas
-mariehamn,capital_of,åland_Islands
-åland_Islands,in_subregion,northern_Europe
-åland_Islands,in_region,europe
-northern_Europe,is_subregion_of,europe
-albania,borders,montenegro
-albania,borders,greece
-albania,borders,north_Macedonia
-albania,borders,kosovo
-tirana,capital_of,albania
-albania,in_subregion,southern_Europe
-albania,in_region,europe
-southern_Europe,is_subregion_of,europe
-andorra,borders,france
-andorra,borders,spain
-andorra_la_Vella,capital_of,andorra
-andorra,in_subregion,southern_Europe
-andorra,in_region,europe
-united_Arab_Emirates,borders,oman
-united_Arab_Emirates,borders,saudi_Arabia
-abu_Dhabi,capital_of,united_Arab_Emirates
-united_Arab_Emirates,in_subregion,western_Asia
-united_Arab_Emirates,in_region,asia
-western_Asia,is_subregion_of,asia
-argentina,borders,bolivia
-argentina,borders,brazil
-argentina,borders,chile
-argentina,borders,paraguay
-argentina,borders,uruguay
-buenos_Aires,capital_of,argentina
-argentina,in_subregion,south_America
-argentina,in_region,americas
-south_America,is_subregion_of,americas
-armenia,borders,azerbaijan
-armenia,borders,georgia
-armenia,borders,iran
-armenia,borders,turkey
-yerevan,capital_of,armenia
-armenia,in_subregion,western_Asia
-armenia,in_region,asia
-pago_Pago,capital_of,american_Samoa
-american_Samoa,in_subregion,polynesia
-american_Samoa,in_region,oceania
-polynesia,is_subregion_of,oceania
-saint_Johns,capital_of,antigua_and_Barbuda
-antigua_and_Barbuda,in_subregion,caribbean
-antigua_and_Barbuda,in_region,americas
-canberra,capital_of,australia
-australia,in_subregion,australia_and_New_Zealand
-australia,in_region,oceania
-australia_and_New_Zealand,is_subregion_of,oceania
-austria,borders,czechia
-austria,borders,germany
-austria,borders,hungary
-austria,borders,italy
-austria,borders,liechtenstein
-austria,borders,slovakia
-austria,borders,slovenia
-austria,borders,switzerland
-vienna,capital_of,austria
-austria,in_subregion,western_Europe
-austria,in_region,europe
-western_Europe,is_subregion_of,europe
-azerbaijan,borders,armenia
-azerbaijan,borders,georgia
-azerbaijan,borders,iran
-azerbaijan,borders,russia
-azerbaijan,borders,turkey
-baku,capital_of,azerbaijan
-azerbaijan,in_subregion,western_Asia
-azerbaijan,in_region,asia
-burundi,borders,dR_Congo
-burundi,borders,rwanda
-burundi,borders,tanzania
-bujumbura,capital_of,burundi
-burundi,in_subregion,eastern_Africa
-burundi,in_region,africa
-eastern_Africa,is_subregion_of,africa
-belgium,borders,france
-belgium,borders,germany
-belgium,borders,luxembourg
-belgium,borders,netherlands
-brussels,capital_of,belgium
-belgium,in_subregion,western_Europe
-belgium,in_region,europe
-benin,borders,burkina_Faso
-benin,borders,niger
-benin,borders,nigeria
-benin,borders,togo
-porto-Novo,capital_of,benin
-benin,in_subregion,western_Africa
-benin,in_region,africa
-western_Africa,is_subregion_of,africa
-burkina_Faso,borders,benin
-burkina_Faso,borders,ivory_Coast
-burkina_Faso,borders,ghana
-burkina_Faso,borders,mali
-burkina_Faso,borders,niger
-burkina_Faso,borders,togo
-ouagadougou,capital_of,burkina_Faso
-burkina_Faso,in_subregion,western_Africa
-burkina_Faso,in_region,africa
-bangladesh,borders,myanmar
-bangladesh,borders,india
-dhaka,capital_of,bangladesh
-bangladesh,in_subregion,southern_Asia
-bangladesh,in_region,asia
-bulgaria,borders,greece
-bulgaria,borders,north_Macedonia
-bulgaria,borders,romania
-bulgaria,borders,serbia
-bulgaria,borders,turkey
-sofia,capital_of,bulgaria
-bulgaria,in_subregion,eastern_Europe
-bulgaria,in_region,europe
-eastern_Europe,is_subregion_of,europe
-manama,capital_of,bahrain
-bahrain,in_subregion,western_Asia
-bahrain,in_region,asia
-nassau,capital_of,bahamas
-bahamas,in_subregion,caribbean
-bahamas,in_region,americas
-bosnia_and_Herzegovina,borders,croatia
-bosnia_and_Herzegovina,borders,montenegro
-bosnia_and_Herzegovina,borders,serbia
-sarajevo,capital_of,bosnia_and_Herzegovina
-bosnia_and_Herzegovina,in_subregion,southern_Europe
-bosnia_and_Herzegovina,in_region,europe
-gustavia,capital_of,saint_Barthélemy
-saint_Barthélemy,in_subregion,caribbean
-saint_Barthélemy,in_region,americas
-jamestown,capital_of,saint_Helena
-saint_Helena,_Ascension_and_Tristan_da_Cunha,in_subregion
-saint_Helena,_Ascension_and_Tristan_da_Cunha,in_region
-belarus,borders,latvia
-belarus,borders,lithuania
-belarus,borders,poland
-belarus,borders,russia
-belarus,borders,ukraine
-minsk,capital_of,belarus
-belarus,in_subregion,eastern_Europe
-belarus,in_region,europe
-belize,borders,guatemala
-belize,borders,mexico
-belmopan,capital_of,belize
-belize,in_subregion,central_America
-belize,in_region,americas
-central_America,is_subregion_of,americas
-hamilton,capital_of,bermuda
-bermuda,in_subregion,north_America
-bermuda,in_region,americas
-north_America,is_subregion_of,americas
-bolivia,borders,argentina
-bolivia,borders,brazil
-bolivia,borders,chile
-bolivia,borders,paraguay
-bolivia,borders,peru
-sucre,capital_of,bolivia
-bolivia,in_subregion,south_America
-bolivia,in_region,americas
-brazil,borders,argentina
-brazil,borders,bolivia
-brazil,borders,colombia
-brazil,borders,french_Guiana
-brazil,borders,guyana
-brazil,borders,paraguay
-brazil,borders,peru
-brazil,borders,suriname
-brazil,borders,uruguay
-brazil,borders,venezuela
-brasília,capital_of,brazil
-brazil,in_subregion,south_America
-brazil,in_region,americas
-bridgetown,capital_of,barbados
-barbados,in_subregion,caribbean
-barbados,in_region,americas
-brunei,borders,malaysia
-bandar_Seri_Begawan,capital_of,brunei
-brunei,in_subregion,south-Eastern_Asia
-brunei,in_region,asia
-south-Eastern_Asia,is_subregion_of,asia
-bhutan,borders,china
-bhutan,borders,india
-thimphu,capital_of,bhutan
-bhutan,in_subregion,southern_Asia
-bhutan,in_region,asia
-botswana,borders,namibia
-botswana,borders,south_Africa
-botswana,borders,zambia
-botswana,borders,zimbabwe
-gaborone,capital_of,botswana
-botswana,in_subregion,southern_Africa
-botswana,in_region,africa
-southern_Africa,is_subregion_of,africa
-central_African_Republic,borders,cameroon
-central_African_Republic,borders,chad
-central_African_Republic,borders,dR_Congo
-central_African_Republic,borders,republic_of_the_Congo
-central_African_Republic,borders,south_Sudan
-central_African_Republic,borders,sudan
-bangui,capital_of,central_African_Republic
-central_African_Republic,in_subregion,middle_Africa
-central_African_Republic,in_region,africa
-canada,borders,united_States
-ottawa,capital_of,canada
-canada,in_subregion,north_America
-canada,in_region,americas
-west_Island,capital_of,cocos_(Keeling)_Islands
-cocos_(Keeling)_Islands,in_subregion,australia_and_New_Zealand
-cocos_(Keeling)_Islands,in_region,oceania
-switzerland,borders,austria
-switzerland,borders,france
-switzerland,borders,italy
-switzerland,borders,liechtenstein
-switzerland,borders,germany
-bern,capital_of,switzerland
-switzerland,in_subregion,western_Europe
-switzerland,in_region,europe
-chile,borders,argentina
-chile,borders,bolivia
-chile,borders,peru
-santiago,capital_of,chile
-chile,in_subregion,south_America
-chile,in_region,americas
-china,borders,afghanistan
-china,borders,bhutan
-china,borders,myanmar
-china,borders,hong_Kong
-china,borders,india
-china,borders,kazakhstan
-china,borders,nepal
-china,borders,north_Korea
-china,borders,kyrgyzstan
-china,borders,laos
-china,borders,macau
-china,borders,mongolia
-china,borders,pakistan
-china,borders,russia
-china,borders,tajikistan
-china,borders,vietnam
-beijing,capital_of,china
-china,in_subregion,eastern_Asia
-china,in_region,asia
-eastern_Asia,is_subregion_of,asia
-ivory_Coast,borders,burkina_Faso
-ivory_Coast,borders,ghana
-ivory_Coast,borders,guinea
-ivory_Coast,borders,liberia
-ivory_Coast,borders,mali
-yamoussoukro,capital_of,ivory_Coast
-ivory_Coast,in_subregion,western_Africa
-ivory_Coast,in_region,africa
-cameroon,borders,central_African_Republic
-cameroon,borders,chad
-cameroon,borders,republic_of_the_Congo
-cameroon,borders,equatorial_Guinea
-cameroon,borders,gabon
-cameroon,borders,nigeria
-yaoundé,capital_of,cameroon
-cameroon,in_subregion,middle_Africa
-cameroon,in_region,africa
-dR_Congo,borders,angola
-dR_Congo,borders,burundi
-dR_Congo,borders,central_African_Republic
-dR_Congo,borders,republic_of_the_Congo
-dR_Congo,borders,rwanda
-dR_Congo,borders,south_Sudan
-dR_Congo,borders,tanzania
-dR_Congo,borders,uganda
-dR_Congo,borders,zambia
-kinshasa,capital_of,dR_Congo
-dR_Congo,in_subregion,middle_Africa
-dR_Congo,in_region,africa
-republic_of_the_Congo,borders,angola
-republic_of_the_Congo,borders,cameroon
-republic_of_the_Congo,borders,central_African_Republic
-republic_of_the_Congo,borders,dR_Congo
-republic_of_the_Congo,borders,gabon
-brazzaville,capital_of,republic_of_the_Congo
-republic_of_the_Congo,in_subregion,middle_Africa
-republic_of_the_Congo,in_region,africa
-avarua,capital_of,cook_Islands
-cook_Islands,in_subregion,polynesia
-cook_Islands,in_region,oceania
-colombia,borders,brazil
-colombia,borders,ecuador
-colombia,borders,panama
-colombia,borders,peru
-colombia,borders,venezuela
-bogotá,capital_of,colombia
-colombia,in_subregion,south_America
-colombia,in_region,americas
-moroni,capital_of,comoros
-comoros,in_subregion,eastern_Africa
-comoros,in_region,africa
-praia,capital_of,cape_Verde
-cape_Verde,in_subregion,western_Africa
-cape_Verde,in_region,africa
-costa_Rica,borders,nicaragua
-costa_Rica,borders,panama
-san_José,capital_of,costa_Rica
-costa_Rica,in_subregion,central_America
-costa_Rica,in_region,americas
-havana,capital_of,cuba
-cuba,in_subregion,caribbean
-cuba,in_region,americas
-willemstad,capital_of,curaçao
-curaçao,in_subregion,caribbean
-curaçao,in_region,americas
-flying_Fish_Cove,capital_of,christmas_Island
-christmas_Island,in_subregion,australia_and_New_Zealand
-christmas_Island,in_region,oceania
-george_Town,capital_of,cayman_Islands
-cayman_Islands,in_subregion,caribbean
-cayman_Islands,in_region,americas
-nicosia,capital_of,cyprus
-cyprus,in_subregion,eastern_Europe
-cyprus,in_region,europe
-czechia,borders,austria
-czechia,borders,germany
-czechia,borders,poland
-czechia,borders,slovakia
-prague,capital_of,czechia
-czechia,in_subregion,eastern_Europe
-czechia,in_region,europe
-germany,borders,austria
-germany,borders,belgium
-germany,borders,czechia
-germany,borders,denmark
-germany,borders,france
-germany,borders,luxembourg
-germany,borders,netherlands
-germany,borders,poland
-germany,borders,switzerland
-berlin,capital_of,germany
-germany,in_subregion,western_Europe
-germany,in_region,europe
-djibouti,borders,eritrea
-djibouti,borders,ethiopia
-djibouti,borders,somalia
-djibouti,capital_of,djibouti
-djibouti,in_subregion,eastern_Africa
-djibouti,in_region,africa
-roseau,capital_of,dominica
-dominica,in_subregion,caribbean
-dominica,in_region,americas
-denmark,borders,germany
-copenhagen,capital_of,denmark
-denmark,in_subregion,northern_Europe
-denmark,in_region,europe
-dominican_Republic,borders,haiti
-santo_Domingo,capital_of,dominican_Republic
-dominican_Republic,in_subregion,caribbean
-dominican_Republic,in_region,americas
-algeria,borders,tunisia
-algeria,borders,libya
-algeria,borders,niger
-algeria,borders,western_Sahara
-algeria,borders,mauritania
-algeria,borders,mali
-algeria,borders,morocco
-algiers,capital_of,algeria
-algeria,in_subregion,northern_Africa
-algeria,in_region,africa
-northern_Africa,is_subregion_of,africa
-ecuador,borders,colombia
-ecuador,borders,peru
-quito,capital_of,ecuador
-ecuador,in_subregion,south_America
-ecuador,in_region,americas
-egypt,borders,israel
-egypt,borders,libya
-egypt,borders,palestine
-egypt,borders,sudan
-cairo,capital_of,egypt
-egypt,in_subregion,northern_Africa
-egypt,in_region,africa
-eritrea,borders,djibouti
-eritrea,borders,ethiopia
-eritrea,borders,sudan
-asmara,capital_of,eritrea
-eritrea,in_subregion,eastern_Africa
-eritrea,in_region,africa
-western_Sahara,borders,algeria
-western_Sahara,borders,mauritania
-western_Sahara,borders,morocco
-el_Aaiún,capital_of,western_Sahara
-western_Sahara,in_subregion,northern_Africa
-western_Sahara,in_region,africa
-spain,borders,andorra
-spain,borders,france
-spain,borders,gibraltar
-spain,borders,portugal
-spain,borders,morocco
-madrid,capital_of,spain
-spain,in_subregion,southern_Europe
-spain,in_region,europe
-estonia,borders,latvia
-estonia,borders,russia
-tallinn,capital_of,estonia
-estonia,in_subregion,northern_Europe
-estonia,in_region,europe
-ethiopia,borders,djibouti
-ethiopia,borders,eritrea
-ethiopia,borders,kenya
-ethiopia,borders,somalia
-ethiopia,borders,south_Sudan
-ethiopia,borders,sudan
-addis_Ababa,capital_of,ethiopia
-ethiopia,in_subregion,eastern_Africa
-ethiopia,in_region,africa
-finland,borders,norway
-finland,borders,sweden
-finland,borders,russia
-helsinki,capital_of,finland
-finland,in_subregion,northern_Europe
-finland,in_region,europe
-suva,capital_of,fiji
-fiji,in_subregion,melanesia
-fiji,in_region,oceania
-melanesia,is_subregion_of,oceania
-stanley,capital_of,falkland_Islands
-falkland_Islands,in_subregion,south_America
-falkland_Islands,in_region,americas
-france,borders,andorra
-france,borders,belgium
-france,borders,germany
-france,borders,italy
-france,borders,luxembourg
-france,borders,monaco
-france,borders,spain
-france,borders,switzerland
-paris,capital_of,france
-france,in_subregion,western_Europe
-france,in_region,europe
-tórshavn,capital_of,faroe_Islands
-faroe_Islands,in_subregion,northern_Europe
-faroe_Islands,in_region,europe
-palikir,capital_of,micronesia
-micronesia,in_subregion,micronesia
-micronesia,in_region,oceania
-micronesia,is_subregion_of,oceania
-gabon,borders,cameroon
-gabon,borders,republic_of_the_Congo
-gabon,borders,equatorial_Guinea
-libreville,capital_of,gabon
-gabon,in_subregion,middle_Africa
-gabon,in_region,africa
-united_Kingdom,borders,ireland
-london,capital_of,united_Kingdom
-united_Kingdom,in_subregion,northern_Europe
-united_Kingdom,in_region,europe
-georgia,borders,armenia
-georgia,borders,azerbaijan
-georgia,borders,russia
-georgia,borders,turkey
-tbilisi,capital_of,georgia
-georgia,in_subregion,western_Asia
-georgia,in_region,asia
-st__Peter_Port,capital_of,guernsey
-guernsey,in_subregion,northern_Europe
-guernsey,in_region,europe
-ghana,borders,burkina_Faso
-ghana,borders,ivory_Coast
-ghana,borders,togo
-accra,capital_of,ghana
-ghana,in_subregion,western_Africa
-ghana,in_region,africa
-gibraltar,borders,spain
-gibraltar,capital_of,gibraltar
-gibraltar,in_subregion,southern_Europe
-gibraltar,in_region,europe
-guinea,borders,ivory_Coast
-guinea,borders,guinea-Bissau
-guinea,borders,liberia
-guinea,borders,mali
-guinea,borders,senegal
-guinea,borders,sierra_Leone
-conakry,capital_of,guinea
-guinea,in_subregion,western_Africa
-guinea,in_region,africa
-basse-Terre,capital_of,guadeloupe
-guadeloupe,in_subregion,caribbean
-guadeloupe,in_region,americas
-gambia,borders,senegal
-banjul,capital_of,gambia
-gambia,in_subregion,western_Africa
-gambia,in_region,africa
-guinea-Bissau,borders,guinea
-guinea-Bissau,borders,senegal
-bissau,capital_of,guinea-Bissau
-guinea-Bissau,in_subregion,western_Africa
-guinea-Bissau,in_region,africa
-equatorial_Guinea,borders,cameroon
-equatorial_Guinea,borders,gabon
-malabo,capital_of,equatorial_Guinea
-equatorial_Guinea,in_subregion,middle_Africa
-equatorial_Guinea,in_region,africa
-greece,borders,albania
-greece,borders,bulgaria
-greece,borders,turkey
-greece,borders,north_Macedonia
-athens,capital_of,greece
-greece,in_subregion,southern_Europe
-greece,in_region,europe
-st__Georges,capital_of,grenada
-grenada,in_subregion,caribbean
-grenada,in_region,americas
-nuuk,capital_of,greenland
-greenland,in_subregion,north_America
-greenland,in_region,americas
-guatemala,borders,belize
-guatemala,borders,el_Salvador
-guatemala,borders,honduras
-guatemala,borders,mexico
-guatemala_City,capital_of,guatemala
-guatemala,in_subregion,central_America
-guatemala,in_region,americas
-french_Guiana,borders,brazil
-french_Guiana,borders,suriname
-cayenne,capital_of,french_Guiana
-french_Guiana,in_subregion,south_America
-french_Guiana,in_region,americas
-hagåtña,capital_of,guam
-guam,in_subregion,micronesia
-guam,in_region,oceania
-guyana,borders,brazil
-guyana,borders,suriname
-guyana,borders,venezuela
-georgetown,capital_of,guyana
-guyana,in_subregion,south_America
-guyana,in_region,americas
-hong_Kong,borders,china
-city_of_Victoria,capital_of,hong_Kong
-hong_Kong,in_subregion,eastern_Asia
-hong_Kong,in_region,asia
-honduras,borders,guatemala
-honduras,borders,el_Salvador
-honduras,borders,nicaragua
-tegucigalpa,capital_of,honduras
-honduras,in_subregion,central_America
-honduras,in_region,americas
-croatia,borders,bosnia_and_Herzegovina
-croatia,borders,hungary
-croatia,borders,montenegro
-croatia,borders,serbia
-croatia,borders,slovenia
-zagreb,capital_of,croatia
-croatia,in_subregion,southern_Europe
-croatia,in_region,europe
-haiti,borders,dominican_Republic
-port-au-Prince,capital_of,haiti
-haiti,in_subregion,caribbean
-haiti,in_region,americas
-hungary,borders,austria
-hungary,borders,croatia
-hungary,borders,romania
-hungary,borders,serbia
-hungary,borders,slovakia
-hungary,borders,slovenia
-hungary,borders,ukraine
-budapest,capital_of,hungary
-hungary,in_subregion,eastern_Europe
-hungary,in_region,europe
-indonesia,borders,timor-Leste
-indonesia,borders,malaysia
-indonesia,borders,papua_New_Guinea
-jakarta,capital_of,indonesia
-indonesia,in_subregion,south-Eastern_Asia
-indonesia,in_region,asia
-douglas,capital_of,isle_of_Man
-isle_of_Man,in_subregion,northern_Europe
-isle_of_Man,in_region,europe
-india,borders,bangladesh
-india,borders,bhutan
-india,borders,myanmar
-india,borders,china
-india,borders,nepal
-india,borders,pakistan
-new_Delhi,capital_of,india
-india,in_subregion,southern_Asia
-india,in_region,asia
-diego_Garcia,capital_of,british_Indian_Ocean_Territory
-british_Indian_Ocean_Territory,in_subregion,eastern_Africa
-british_Indian_Ocean_Territory,in_region,africa
-ireland,borders,united_Kingdom
-dublin,capital_of,ireland
-ireland,in_subregion,northern_Europe
-ireland,in_region,europe
-iran,borders,afghanistan
-iran,borders,armenia
-iran,borders,azerbaijan
-iran,borders,iraq
-iran,borders,pakistan
-iran,borders,turkey
-iran,borders,turkmenistan
-tehran,capital_of,iran
-iran,in_subregion,southern_Asia
-iran,in_region,asia
-iraq,borders,iran
-iraq,borders,jordan
-iraq,borders,kuwait
-iraq,borders,saudi_Arabia
-iraq,borders,syria
-iraq,borders,turkey
-baghdad,capital_of,iraq
-iraq,in_subregion,western_Asia
-iraq,in_region,asia
-reykjavik,capital_of,iceland
-iceland,in_subregion,northern_Europe
-iceland,in_region,europe
-israel,borders,egypt
-israel,borders,jordan
-israel,borders,lebanon
-israel,borders,palestine
-israel,borders,syria
-jerusalem,capital_of,israel
-israel,in_subregion,western_Asia
-israel,in_region,asia
-italy,borders,austria
-italy,borders,france
-italy,borders,san_Marino
-italy,borders,slovenia
-italy,borders,switzerland
-italy,borders,vatican_City
-rome,capital_of,italy
-italy,in_subregion,southern_Europe
-italy,in_region,europe
-kingston,capital_of,jamaica
-jamaica,in_subregion,caribbean
-jamaica,in_region,americas
-saint_Helier,capital_of,jersey
-jersey,in_subregion,northern_Europe
-jersey,in_region,europe
-jordan,borders,iraq
-jordan,borders,israel
-jordan,borders,palestine
-jordan,borders,saudi_Arabia
-jordan,borders,syria
-amman,capital_of,jordan
-jordan,in_subregion,western_Asia
-jordan,in_region,asia
-tokyo,capital_of,japan
-japan,in_subregion,eastern_Asia
-japan,in_region,asia
-kazakhstan,borders,china
-kazakhstan,borders,kyrgyzstan
-kazakhstan,borders,russia
-kazakhstan,borders,turkmenistan
-kazakhstan,borders,uzbekistan
-astana,capital_of,kazakhstan
-kazakhstan,in_subregion,central_Asia
-kazakhstan,in_region,asia
-central_Asia,is_subregion_of,asia
-kenya,borders,ethiopia
-kenya,borders,somalia
-kenya,borders,south_Sudan
-kenya,borders,tanzania
-kenya,borders,uganda
-nairobi,capital_of,kenya
-kenya,in_subregion,eastern_Africa
-kenya,in_region,africa
-kyrgyzstan,borders,china
-kyrgyzstan,borders,kazakhstan
-kyrgyzstan,borders,tajikistan
-kyrgyzstan,borders,uzbekistan
-bishkek,capital_of,kyrgyzstan
-kyrgyzstan,in_subregion,central_Asia
-kyrgyzstan,in_region,asia
-cambodia,borders,laos
-cambodia,borders,thailand
-cambodia,borders,vietnam
-phnom_Penh,capital_of,cambodia
-cambodia,in_subregion,south-Eastern_Asia
-cambodia,in_region,asia
-south_Tarawa,capital_of,kiribati
-kiribati,in_subregion,micronesia
-kiribati,in_region,oceania
-basseterre,capital_of,saint_Kitts_and_Nevis
-saint_Kitts_and_Nevis,in_subregion,caribbean
-saint_Kitts_and_Nevis,in_region,americas
-south_Korea,borders,north_Korea
-seoul,capital_of,south_Korea
-south_Korea,in_subregion,eastern_Asia
-south_Korea,in_region,asia
-kosovo,borders,albania
-kosovo,borders,north_Macedonia
-kosovo,borders,montenegro
-kosovo,borders,serbia
-pristina,capital_of,kosovo
-kosovo,in_subregion,eastern_Europe
-kosovo,in_region,europe
-kuwait,borders,iraq
-kuwait,borders,saudi_Arabia
-kuwait_City,capital_of,kuwait
-kuwait,in_subregion,western_Asia
-kuwait,in_region,asia
-laos,borders,myanmar
-laos,borders,cambodia
-laos,borders,china
-laos,borders,thailand
-laos,borders,vietnam
-vientiane,capital_of,laos
-laos,in_subregion,south-Eastern_Asia
-laos,in_region,asia
-lebanon,borders,israel
-lebanon,borders,syria
-beirut,capital_of,lebanon
-lebanon,in_subregion,western_Asia
-lebanon,in_region,asia
-liberia,borders,guinea
-liberia,borders,ivory_Coast
-liberia,borders,sierra_Leone
-monrovia,capital_of,liberia
-liberia,in_subregion,western_Africa
-liberia,in_region,africa
-libya,borders,algeria
-libya,borders,chad
-libya,borders,egypt
-libya,borders,niger
-libya,borders,sudan
-libya,borders,tunisia
-tripoli,capital_of,libya
-libya,in_subregion,northern_Africa
-libya,in_region,africa
-castries,capital_of,saint_Lucia
-saint_Lucia,in_subregion,caribbean
-saint_Lucia,in_region,americas
-liechtenstein,borders,austria
-liechtenstein,borders,switzerland
-vaduz,capital_of,liechtenstein
-liechtenstein,in_subregion,western_Europe
-liechtenstein,in_region,europe
-sri_Lanka,borders,india
-colombo,capital_of,sri_Lanka
-sri_Lanka,in_subregion,southern_Asia
-sri_Lanka,in_region,asia
-lesotho,borders,south_Africa
-maseru,capital_of,lesotho
-lesotho,in_subregion,southern_Africa
-lesotho,in_region,africa
-lithuania,borders,belarus
-lithuania,borders,latvia
-lithuania,borders,poland
-lithuania,borders,russia
-vilnius,capital_of,lithuania
-lithuania,in_subregion,northern_Europe
-lithuania,in_region,europe
-luxembourg,borders,belgium
-luxembourg,borders,france
-luxembourg,borders,germany
-luxembourg,capital_of,luxembourg
-luxembourg,in_subregion,western_Europe
-luxembourg,in_region,europe
-latvia,borders,belarus
-latvia,borders,estonia
-latvia,borders,lithuania
-latvia,borders,russia
-riga,capital_of,latvia
-latvia,in_subregion,northern_Europe
-latvia,in_region,europe
-saint_Martin,borders,sint_Maarten
-marigot,capital_of,saint_Martin
-saint_Martin,in_subregion,caribbean
-saint_Martin,in_region,americas
-morocco,borders,algeria
-morocco,borders,western_Sahara
-morocco,borders,spain
-rabat,capital_of,morocco
-morocco,in_subregion,northern_Africa
-morocco,in_region,africa
-monaco,borders,france
-monaco,capital_of,monaco
-monaco,in_subregion,western_Europe
-monaco,in_region,europe
-moldova,borders,romania
-moldova,borders,ukraine
-chișinău,capital_of,moldova
-moldova,in_subregion,eastern_Europe
-moldova,in_region,europe
-antananarivo,capital_of,madagascar
-madagascar,in_subregion,eastern_Africa
-madagascar,in_region,africa
-malé,capital_of,maldives
-maldives,in_subregion,southern_Asia
-maldives,in_region,asia
-mexico,borders,belize
-mexico,borders,guatemala
-mexico,borders,united_States
-mexico_City,capital_of,mexico
-mexico,in_subregion,north_America
-mexico,in_region,americas
-majuro,capital_of,marshall_Islands
-marshall_Islands,in_subregion,micronesia
-marshall_Islands,in_region,oceania
-north_Macedonia,borders,albania
-north_Macedonia,borders,bulgaria
-north_Macedonia,borders,greece
-north_Macedonia,borders,kosovo
-north_Macedonia,borders,serbia
-skopje,capital_of,north_Macedonia
-north_Macedonia,in_subregion,southern_Europe
-north_Macedonia,in_region,europe
-mali,borders,algeria
-mali,borders,burkina_Faso
-mali,borders,guinea
-mali,borders,ivory_Coast
-mali,borders,mauritania
-mali,borders,niger
-mali,borders,senegal
-bamako,capital_of,mali
-mali,in_subregion,western_Africa
-mali,in_region,africa
-valletta,capital_of,malta
-malta,in_subregion,southern_Europe
-malta,in_region,europe
-myanmar,borders,bangladesh
-myanmar,borders,china
-myanmar,borders,india
-myanmar,borders,laos
-myanmar,borders,thailand
-naypyidaw,capital_of,myanmar
-myanmar,in_subregion,south-Eastern_Asia
-myanmar,in_region,asia
-montenegro,borders,albania
-montenegro,borders,bosnia_and_Herzegovina
-montenegro,borders,croatia
-montenegro,borders,kosovo
-montenegro,borders,serbia
-podgorica,capital_of,montenegro
-montenegro,in_subregion,southern_Europe
-montenegro,in_region,europe
-mongolia,borders,china
-mongolia,borders,russia
-ulan_Bator,capital_of,mongolia
-mongolia,in_subregion,eastern_Asia
-mongolia,in_region,asia
-saipan,capital_of,northern_Mariana_Islands
-northern_Mariana_Islands,in_subregion,micronesia
-northern_Mariana_Islands,in_region,oceania
-mozambique,borders,malawi
-mozambique,borders,south_Africa
-mozambique,borders,eswatini
-mozambique,borders,tanzania
-mozambique,borders,zambia
-mozambique,borders,zimbabwe
-maputo,capital_of,mozambique
-mozambique,in_subregion,eastern_Africa
-mozambique,in_region,africa
-mauritania,borders,algeria
-mauritania,borders,mali
-mauritania,borders,senegal
-mauritania,borders,western_Sahara
-nouakchott,capital_of,mauritania
-mauritania,in_subregion,western_Africa
-mauritania,in_region,africa
-plymouth,capital_of,montserrat
-montserrat,in_subregion,caribbean
-montserrat,in_region,americas
-fort-de-France,capital_of,martinique
-martinique,in_subregion,caribbean
-martinique,in_region,americas
-port_Louis,capital_of,mauritius
-mauritius,in_subregion,eastern_Africa
-mauritius,in_region,africa
-malawi,borders,mozambique
-malawi,borders,tanzania
-malawi,borders,zambia
-lilongwe,capital_of,malawi
-malawi,in_subregion,eastern_Africa
-malawi,in_region,africa
-malaysia,borders,brunei
-malaysia,borders,indonesia
-malaysia,borders,thailand
-kuala_Lumpur,capital_of,malaysia
-malaysia,in_subregion,south-Eastern_Asia
-malaysia,in_region,asia
-mamoudzou,capital_of,mayotte
-mayotte,in_subregion,eastern_Africa
-mayotte,in_region,africa
-namibia,borders,angola
-namibia,borders,botswana
-namibia,borders,south_Africa
-namibia,borders,zambia
-windhoek,capital_of,namibia
-namibia,in_subregion,southern_Africa
-namibia,in_region,africa
-nouméa,capital_of,new_Caledonia
-new_Caledonia,in_subregion,melanesia
-new_Caledonia,in_region,oceania
-niger,borders,algeria
-niger,borders,benin
-niger,borders,burkina_Faso
-niger,borders,chad
-niger,borders,libya
-niger,borders,mali
-niger,borders,nigeria
-niamey,capital_of,niger
-niger,in_subregion,western_Africa
-niger,in_region,africa
-kingston,capital_of,norfolk_Island
-norfolk_Island,in_subregion,australia_and_New_Zealand
-norfolk_Island,in_region,oceania
-nigeria,borders,benin
-nigeria,borders,cameroon
-nigeria,borders,chad
-nigeria,borders,niger
-abuja,capital_of,nigeria
-nigeria,in_subregion,western_Africa
-nigeria,in_region,africa
-nicaragua,borders,costa_Rica
-nicaragua,borders,honduras
-managua,capital_of,nicaragua
-nicaragua,in_subregion,central_America
-nicaragua,in_region,americas
-alofi,capital_of,niue
-niue,in_subregion,polynesia
-niue,in_region,oceania
-netherlands,borders,belgium
-netherlands,borders,germany
-amsterdam,capital_of,netherlands
-netherlands,in_subregion,western_Europe
-netherlands,in_region,europe
-norway,borders,finland
-norway,borders,sweden
-norway,borders,russia
-oslo,capital_of,norway
-norway,in_subregion,northern_Europe
-norway,in_region,europe
-nepal,borders,china
-nepal,borders,india
-kathmandu,capital_of,nepal
-nepal,in_subregion,southern_Asia
-nepal,in_region,asia
-yaren,capital_of,nauru
-nauru,in_subregion,micronesia
-nauru,in_region,oceania
-wellington,capital_of,new_Zealand
-new_Zealand,in_subregion,australia_and_New_Zealand
-new_Zealand,in_region,oceania
-oman,borders,saudi_Arabia
-oman,borders,united_Arab_Emirates
-oman,borders,yemen
-muscat,capital_of,oman
-oman,in_subregion,western_Asia
-oman,in_region,asia
-pakistan,borders,afghanistan
-pakistan,borders,china
-pakistan,borders,india
-pakistan,borders,iran
-islamabad,capital_of,pakistan
-pakistan,in_subregion,southern_Asia
-pakistan,in_region,asia
-panama,borders,colombia
-panama,borders,costa_Rica
-panama_City,capital_of,panama
-panama,in_subregion,central_America
-panama,in_region,americas
-adamstown,capital_of,pitcairn_Islands
-pitcairn_Islands,in_subregion,polynesia
-pitcairn_Islands,in_region,oceania
-peru,borders,bolivia
-peru,borders,brazil
-peru,borders,chile
-peru,borders,colombia
-peru,borders,ecuador
-lima,capital_of,peru
-peru,in_subregion,south_America
-peru,in_region,americas
-manila,capital_of,philippines
-philippines,in_subregion,south-Eastern_Asia
-philippines,in_region,asia
-ngerulmud,capital_of,palau
-palau,in_subregion,micronesia
-palau,in_region,oceania
-papua_New_Guinea,borders,indonesia
-port_Moresby,capital_of,papua_New_Guinea
-papua_New_Guinea,in_subregion,melanesia
-papua_New_Guinea,in_region,oceania
-poland,borders,belarus
-poland,borders,czechia
-poland,borders,germany
-poland,borders,lithuania
-poland,borders,russia
-poland,borders,slovakia
-poland,borders,ukraine
-warsaw,capital_of,poland
-poland,in_subregion,eastern_Europe
-poland,in_region,europe
-san_Juan,capital_of,puerto_Rico
-puerto_Rico,in_subregion,caribbean
-puerto_Rico,in_region,americas
-north_Korea,borders,china
-north_Korea,borders,south_Korea
-north_Korea,borders,russia
-pyongyang,capital_of,north_Korea
-north_Korea,in_subregion,eastern_Asia
-north_Korea,in_region,asia
-portugal,borders,spain
-lisbon,capital_of,portugal
-portugal,in_subregion,southern_Europe
-portugal,in_region,europe
-paraguay,borders,argentina
-paraguay,borders,bolivia
-paraguay,borders,brazil
-asunción,capital_of,paraguay
-paraguay,in_subregion,south_America
-paraguay,in_region,americas
-palestine,borders,israel
-palestine,borders,egypt
-palestine,borders,jordan
-ramallah,capital_of,palestine
-palestine,in_subregion,western_Asia
-palestine,in_region,asia
-papeetē,capital_of,french_Polynesia
-french_Polynesia,in_subregion,polynesia
-french_Polynesia,in_region,oceania
-qatar,borders,saudi_Arabia
-doha,capital_of,qatar
-qatar,in_subregion,western_Asia
-qatar,in_region,asia
-saint-Denis,capital_of,réunion
-réunion,in_subregion,eastern_Africa
-réunion,in_region,africa
-romania,borders,bulgaria
-romania,borders,hungary
-romania,borders,moldova
-romania,borders,serbia
-romania,borders,ukraine
-bucharest,capital_of,romania
-romania,in_subregion,eastern_Europe
-romania,in_region,europe
-russia,borders,azerbaijan
-russia,borders,belarus
-russia,borders,china
-russia,borders,estonia
-russia,borders,finland
-russia,borders,georgia
-russia,borders,kazakhstan
-russia,borders,north_Korea
-russia,borders,latvia
-russia,borders,lithuania
-russia,borders,mongolia
-russia,borders,norway
-russia,borders,poland
-russia,borders,ukraine
-moscow,capital_of,russia
-russia,in_subregion,eastern_Europe
-russia,in_region,europe
-rwanda,borders,burundi
-rwanda,borders,dR_Congo
-rwanda,borders,tanzania
-rwanda,borders,uganda
-kigali,capital_of,rwanda
-rwanda,in_subregion,eastern_Africa
-rwanda,in_region,africa
-saudi_Arabia,borders,iraq
-saudi_Arabia,borders,jordan
-saudi_Arabia,borders,kuwait
-saudi_Arabia,borders,oman
-saudi_Arabia,borders,qatar
-saudi_Arabia,borders,united_Arab_Emirates
-saudi_Arabia,borders,yemen
-riyadh,capital_of,saudi_Arabia
-saudi_Arabia,in_subregion,western_Asia
-saudi_Arabia,in_region,asia
-sudan,borders,central_African_Republic
-sudan,borders,chad
-sudan,borders,egypt
-sudan,borders,eritrea
-sudan,borders,ethiopia
-sudan,borders,libya
-sudan,borders,south_Sudan
-khartoum,capital_of,sudan
-sudan,in_subregion,northern_Africa
-sudan,in_region,africa
-senegal,borders,gambia
-senegal,borders,guinea
-senegal,borders,guinea-Bissau
-senegal,borders,mali
-senegal,borders,mauritania
-dakar,capital_of,senegal
-senegal,in_subregion,western_Africa
-senegal,in_region,africa
-singapore,capital_of,singapore
-singapore,in_subregion,south-Eastern_Asia
-singapore,in_region,asia
-longyearbyen,capital_of,svalbard_and_Jan_Mayen
-svalbard_and_Jan_Mayen,in_subregion,northern_Europe
-svalbard_and_Jan_Mayen,in_region,europe
-honiara,capital_of,solomon_Islands
-solomon_Islands,in_subregion,melanesia
-solomon_Islands,in_region,oceania
-sierra_Leone,borders,guinea
-sierra_Leone,borders,liberia
-freetown,capital_of,sierra_Leone
-sierra_Leone,in_subregion,western_Africa
-sierra_Leone,in_region,africa
-el_Salvador,borders,guatemala
-el_Salvador,borders,honduras
-san_Salvador,capital_of,el_Salvador
-el_Salvador,in_subregion,central_America
-el_Salvador,in_region,americas
-san_Marino,borders,italy
-city_of_San_Marino,capital_of,san_Marino
-san_Marino,in_subregion,southern_Europe
-san_Marino,in_region,europe
-somalia,borders,djibouti
-somalia,borders,ethiopia
-somalia,borders,kenya
-mogadishu,capital_of,somalia
-somalia,in_subregion,eastern_Africa
-somalia,in_region,africa
-saint-Pierre,capital_of,saint_Pierre_and_Miquelon
-saint_Pierre_and_Miquelon,in_subregion,north_America
-saint_Pierre_and_Miquelon,in_region,americas
-serbia,borders,bosnia_and_Herzegovina
-serbia,borders,bulgaria
-serbia,borders,croatia
-serbia,borders,hungary
-serbia,borders,kosovo
-serbia,borders,north_Macedonia
-serbia,borders,montenegro
-serbia,borders,romania
-belgrade,capital_of,serbia
-serbia,in_subregion,southern_Europe
-serbia,in_region,europe
-south_Sudan,borders,central_African_Republic
-south_Sudan,borders,dR_Congo
-south_Sudan,borders,ethiopia
-south_Sudan,borders,kenya
-south_Sudan,borders,sudan
-south_Sudan,borders,uganda
-juba,capital_of,south_Sudan
-south_Sudan,in_subregion,middle_Africa
-south_Sudan,in_region,africa
-são_Tomé,capital_of,são_Tomé_and_Príncipe
-são_Tomé_and_Príncipe,in_subregion,middle_Africa
-são_Tomé_and_Príncipe,in_region,africa
-suriname,borders,brazil
-suriname,borders,french_Guiana
-suriname,borders,guyana
-paramaribo,capital_of,suriname
-suriname,in_subregion,south_America
-suriname,in_region,americas
-slovakia,borders,austria
-slovakia,borders,czechia
-slovakia,borders,hungary
-slovakia,borders,poland
-slovakia,borders,ukraine
-bratislava,capital_of,slovakia
-slovakia,in_subregion,central_Europe
-slovakia,in_region,europe
-central_Europe,is_subregion_of,europe
-slovenia,borders,austria
-slovenia,borders,croatia
-slovenia,borders,italy
-slovenia,borders,hungary
-ljubljana,capital_of,slovenia
-slovenia,in_subregion,southern_Europe
-slovenia,in_region,europe
-sweden,borders,finland
-sweden,borders,norway
-stockholm,capital_of,sweden
-sweden,in_subregion,northern_Europe
-sweden,in_region,europe
-eswatini,borders,mozambique
-eswatini,borders,south_Africa
-lobamba,capital_of,eswatini
-eswatini,in_subregion,southern_Africa
-eswatini,in_region,africa
-sint_Maarten,borders,saint_Martin
-philipsburg,capital_of,sint_Maarten
-sint_Maarten,in_subregion,caribbean
-sint_Maarten,in_region,americas
-victoria,capital_of,seychelles
-seychelles,in_subregion,eastern_Africa
-seychelles,in_region,africa
-syria,borders,iraq
-syria,borders,israel
-syria,borders,jordan
-syria,borders,lebanon
-syria,borders,turkey
-damascus,capital_of,syria
-syria,in_subregion,western_Asia
-syria,in_region,asia
-cockburn_Town,capital_of,turks_and_Caicos_Islands
-turks_and_Caicos_Islands,in_subregion,caribbean
-turks_and_Caicos_Islands,in_region,americas
-chad,borders,cameroon
-chad,borders,central_African_Republic
-chad,borders,libya
-chad,borders,niger
-chad,borders,nigeria
-chad,borders,sudan
-nDjamena,capital_of,chad
-chad,in_subregion,middle_Africa
-chad,in_region,africa
-togo,borders,benin
-togo,borders,burkina_Faso
-togo,borders,ghana
-lomé,capital_of,togo
-togo,in_subregion,western_Africa
-togo,in_region,africa
-thailand,borders,myanmar
-thailand,borders,cambodia
-thailand,borders,laos
-thailand,borders,malaysia
-bangkok,capital_of,thailand
-thailand,in_subregion,south-Eastern_Asia
-thailand,in_region,asia
-tajikistan,borders,afghanistan
-tajikistan,borders,china
-tajikistan,borders,kyrgyzstan
-tajikistan,borders,uzbekistan
-dushanbe,capital_of,tajikistan
-tajikistan,in_subregion,central_Asia
-tajikistan,in_region,asia
-fakaofo,capital_of,tokelau
-tokelau,in_subregion,polynesia
-tokelau,in_region,oceania
-turkmenistan,borders,afghanistan
-turkmenistan,borders,iran
-turkmenistan,borders,kazakhstan
-turkmenistan,borders,uzbekistan
-ashgabat,capital_of,turkmenistan
-turkmenistan,in_subregion,central_Asia
-turkmenistan,in_region,asia
-timor-Leste,borders,indonesia
-dili,capital_of,timor-Leste
-timor-Leste,in_subregion,south-Eastern_Asia
-timor-Leste,in_region,asia
-nukualofa,capital_of,tonga
-tonga,in_subregion,polynesia
-tonga,in_region,oceania
-port_of_Spain,capital_of,trinidad_and_Tobago
-trinidad_and_Tobago,in_subregion,caribbean
-trinidad_and_Tobago,in_region,americas
-tunisia,borders,algeria
-tunisia,borders,libya
-tunis,capital_of,tunisia
-tunisia,in_subregion,northern_Africa
-tunisia,in_region,africa
-turkey,borders,armenia
-turkey,borders,azerbaijan
-turkey,borders,bulgaria
-turkey,borders,georgia
-turkey,borders,greece
-turkey,borders,iran
-turkey,borders,iraq
-turkey,borders,syria
-ankara,capital_of,turkey
-turkey,in_subregion,western_Asia
-turkey,in_region,asia
-funafuti,capital_of,tuvalu
-tuvalu,in_subregion,polynesia
-tuvalu,in_region,oceania
-taipei,capital_of,taiwan
-taiwan,in_subregion,eastern_Asia
-taiwan,in_region,asia
-tanzania,borders,burundi
-tanzania,borders,dR_Congo
-tanzania,borders,kenya
-tanzania,borders,malawi
-tanzania,borders,mozambique
-tanzania,borders,rwanda
-tanzania,borders,uganda
-tanzania,borders,zambia
-dodoma,capital_of,tanzania
-tanzania,in_subregion,eastern_Africa
-tanzania,in_region,africa
-uganda,borders,dR_Congo
-uganda,borders,kenya
-uganda,borders,rwanda
-uganda,borders,south_Sudan
-uganda,borders,tanzania
-kampala,capital_of,uganda
-uganda,in_subregion,eastern_Africa
-uganda,in_region,africa
-ukraine,borders,belarus
-ukraine,borders,hungary
-ukraine,borders,moldova
-ukraine,borders,poland
-ukraine,borders,romania
-ukraine,borders,russia
-ukraine,borders,slovakia
-kyiv,capital_of,ukraine
-ukraine,in_subregion,eastern_Europe
-ukraine,in_region,europe
-uruguay,borders,argentina
-uruguay,borders,brazil
-montevideo,capital_of,uruguay
-uruguay,in_subregion,south_America
-uruguay,in_region,americas
-united_States,borders,canada
-united_States,borders,mexico
-washington_D_C_,capital_of,united_States
-united_States,in_subregion,north_America
-united_States,in_region,americas
-uzbekistan,borders,afghanistan
-uzbekistan,borders,kazakhstan
-uzbekistan,borders,kyrgyzstan
-uzbekistan,borders,tajikistan
-uzbekistan,borders,turkmenistan
-tashkent,capital_of,uzbekistan
-uzbekistan,in_subregion,central_Asia
-uzbekistan,in_region,asia
-vatican_City,borders,italy
-vatican_City,capital_of,vatican_City
-vatican_City,in_subregion,southern_Europe
-vatican_City,in_region,europe
-kingstown,capital_of,saint_Vincent_and_the_Grenadines
-saint_Vincent_and_the_Grenadines,in_subregion,caribbean
-saint_Vincent_and_the_Grenadines,in_region,americas
-venezuela,borders,brazil
-venezuela,borders,colombia
-venezuela,borders,guyana
-caracas,capital_of,venezuela
-venezuela,in_subregion,south_America
-venezuela,in_region,americas
-road_Town,capital_of,british_Virgin_Islands
-british_Virgin_Islands,in_subregion,caribbean
-british_Virgin_Islands,in_region,americas
-charlotte_Amalie,capital_of,united_States_Virgin_Islands
-united_States_Virgin_Islands,in_subregion,caribbean
-united_States_Virgin_Islands,in_region,americas
-vietnam,borders,cambodia
-vietnam,borders,china
-vietnam,borders,laos
-hanoi,capital_of,vietnam
-vietnam,in_subregion,south-Eastern_Asia
-vietnam,in_region,asia
-port_Vila,capital_of,vanuatu
-vanuatu,in_subregion,melanesia
-vanuatu,in_region,oceania
-mata-Utu,capital_of,wallis_and_Futuna
-wallis_and_Futuna,in_subregion,polynesia
-wallis_and_Futuna,in_region,oceania
-apia,capital_of,samoa
-samoa,in_subregion,polynesia
-samoa,in_region,oceania
-yemen,borders,oman
-yemen,borders,saudi_Arabia
-sanaa,capital_of,yemen
-yemen,in_subregion,western_Asia
-yemen,in_region,asia
-south_Africa,borders,botswana
-south_Africa,borders,lesotho
-south_Africa,borders,mozambique
-south_Africa,borders,namibia
-south_Africa,borders,eswatini
-south_Africa,borders,zimbabwe
-pretoria,capital_of,south_Africa
-south_Africa,in_subregion,southern_Africa
-south_Africa,in_region,africa
-zambia,borders,angola
-zambia,borders,botswana
-zambia,borders,dR_Congo
-zambia,borders,malawi
-zambia,borders,mozambique
-zambia,borders,namibia
-zambia,borders,tanzania
-zambia,borders,zimbabwe
-lusaka,capital_of,zambia
-zambia,in_subregion,eastern_Africa
-zambia,in_region,africa
-zimbabwe,borders,botswana
-zimbabwe,borders,mozambique
-zimbabwe,borders,south_Africa
-zimbabwe,borders,zambia
-harare,capital_of,zimbabwe
-zimbabwe,in_subregion,eastern_Africa
-zimbabwe,in_region,africa
+western_africa	locatedin	africa
+slovakia	neighbor	ukraine
+slovakia	neighbor	hungary
+slovakia	neighbor	austria
+slovakia	neighbor	czechia
+slovakia	neighbor	poland
+niger	neighbor	algeria
+niger	neighbor	chad
+niger	neighbor	libya
+niger	neighbor	burkina_faso
+niger	neighbor	mali
+niger	neighbor	nigeria
+niger	neighbor	benin
+belize	locatedin	americas
+morocco	neighbor	western_sahara
+morocco	neighbor	spain
+morocco	neighbor	algeria
+falkland_islands	locatedin	south_america
+saint_vincent_and_the_grenadines	locatedin	americas
+brunei	locatedin	asia
+iran	locatedin	asia
+indonesia	locatedin	asia
+senegal	neighbor	gambia
+senegal	neighbor	mauritania
+senegal	neighbor	mali
+senegal	neighbor	guinea-bissau
+senegal	neighbor	guinea
+central_america	locatedin	americas
+equatorial_guinea	neighbor	gabon
+equatorial_guinea	neighbor	cameroon
+gibraltar	neighbor	spain
+hungary	locatedin	eastern_europe
+poland	locatedin	eastern_europe
+micronesia	locatedin	oceania
+eritrea	locatedin	eastern_africa
+barbados	locatedin	caribbean
+kiribati	locatedin	oceania
+italy	locatedin	europe
+new_zealand	locatedin	oceania
+liechtenstein	neighbor	switzerland
+liechtenstein	neighbor	austria
+guam	locatedin	micronesia
+venezuela	neighbor	brazil
+venezuela	neighbor	colombia
+venezuela	neighbor	guyana
+afghanistan	neighbor	pakistan
+afghanistan	neighbor	iran
+afghanistan	neighbor	turkmenistan
+afghanistan	neighbor	uzbekistan
+afghanistan	neighbor	china
+afghanistan	neighbor	tajikistan
+greece	neighbor	turkey
+greece	neighbor	albania
+greece	neighbor	macedonia
+greece	neighbor	bulgaria
+iraq	locatedin	asia
+republic_of_the_congo	locatedin	middle_africa
+falkland_islands	locatedin	americas
+mayotte	locatedin	eastern_africa
+qatar	neighbor	saudi_arabia
+british_virgin_islands	locatedin	caribbean
+peru	locatedin	americas
+indonesia	locatedin	south-eastern_asia
+austria	locatedin	europe
+norway	locatedin	northern_europe
+saint_martin	locatedin	caribbean
+zambia	locatedin	eastern_africa
+ecuador	neighbor	peru
+ecuador	neighbor	colombia
+aruba	locatedin	americas
+mongolia	locatedin	asia
+senegal	locatedin	western_africa
+taiwan	locatedin	asia
+costa_rica	locatedin	central_america
+french_guiana	locatedin	south_america
+yemen	neighbor	oman
+yemen	neighbor	saudi_arabia
+namibia	neighbor	south_africa
+namibia	neighbor	zambia
+namibia	neighbor	angola
+namibia	neighbor	botswana
+hong_kong	neighbor	china
+guadeloupe	locatedin	americas
+turkmenistan	locatedin	central_asia
+paraguay	neighbor	brazil
+paraguay	neighbor	argentina
+paraguay	neighbor	bolivia
+iceland	locatedin	northern_europe
+azerbaijan	locatedin	asia
+india	neighbor	afghanistan
+india	neighbor	bangladesh
+india	neighbor	myanmar
+india	neighbor	pakistan
+india	neighbor	nepal
+india	neighbor	bhutan
+india	neighbor	china
+india	neighbor	sri_lanka
+cameroon	locatedin	middle_africa
+Åland_islands	locatedin	europe
+british_indian_ocean_territory	locatedin	africa
+croatia	neighbor	hungary
+croatia	neighbor	serbia
+croatia	neighbor	montenegro
+croatia	neighbor	bosnia_and_herzegovina
+croatia	neighbor	slovenia
+cameroon	locatedin	africa
+ukraine	locatedin	eastern_europe
+ethiopia	neighbor	eritrea
+ethiopia	neighbor	sudan
+ethiopia	neighbor	djibouti
+ethiopia	neighbor	south_sudan
+ethiopia	neighbor	somalia
+ethiopia	neighbor	kenya
+antigua_and_barbuda	locatedin	caribbean
+denmark	locatedin	europe
+saint_pierre_and_miquelon	locatedin	americas
+honduras	locatedin	central_america
+republic_of_the_congo	neighbor	cameroon
+republic_of_the_congo	neighbor	dr_congo
+republic_of_the_congo	neighbor	angola
+republic_of_the_congo	neighbor	gabon
+republic_of_the_congo	neighbor	central_african_republic
+eastern_asia	locatedin	asia
+sint_maarten	locatedin	americas
+slovenia	locatedin	europe
+marshall_islands	locatedin	micronesia
+malaysia	neighbor	brunei
+malaysia	neighbor	indonesia
+malaysia	neighbor	thailand
+senegal	locatedin	africa
+united_kingdom	locatedin	europe
+andorra	locatedin	southern_europe
+kyrgyzstan	locatedin	central_asia
+australia_and_new_zealand	locatedin	oceania
+belarus	locatedin	europe
+sri_lanka	locatedin	southern_asia
+gambia	neighbor	senegal
+tunisia	locatedin	africa
+kyrgyzstan	locatedin	asia
+latvia	neighbor	belarus
+latvia	neighbor	lithuania
+latvia	neighbor	russia
+latvia	neighbor	estonia
+algeria	neighbor	mauritania
+algeria	neighbor	libya
+algeria	neighbor	morocco
+algeria	neighbor	tunisia
+algeria	neighbor	western_sahara
+algeria	neighbor	mali
+algeria	neighbor	niger
+western_asia	locatedin	asia
+niue	locatedin	polynesia
+eritrea	neighbor	sudan
+eritrea	neighbor	ethiopia
+eritrea	neighbor	djibouti
+macedonia	locatedin	southern_europe
+czechia	locatedin	eastern_europe
+bangladesh	locatedin	southern_asia
+mexico	locatedin	northern_america
+saint_lucia	locatedin	caribbean
+croatia	locatedin	southern_europe
+bhutan	neighbor	india
+bhutan	neighbor	china
+gabon	locatedin	middle_africa
+palau	locatedin	micronesia
+norway	locatedin	europe
+oman	locatedin	asia
+gabon	locatedin	africa
+cayman_islands	locatedin	americas
+moldova	locatedin	europe
+myanmar	locatedin	south-eastern_asia
+turkmenistan	locatedin	asia
+iran	locatedin	southern_asia
+faroe_islands	locatedin	northern_europe
+christmas_island	locatedin	oceania
+iceland	locatedin	europe
+vatican_city	neighbor	italy
+ghana	locatedin	africa
+saint_martin	neighbor	sint_maarten
+sri_lanka	neighbor	india
+finland	locatedin	northern_europe
+togo	locatedin	western_africa
+mali	neighbor	mauritania
+mali	neighbor	algeria
+mali	neighbor	ivory_coast
+mali	neighbor	guinea
+mali	neighbor	burkina_faso
+mali	neighbor	senegal
+mali	neighbor	niger
+algeria	locatedin	africa
+northern_europe	locatedin	europe
+guinea	locatedin	africa
+kuwait	locatedin	western_asia
+nicaragua	locatedin	central_america
+liechtenstein	locatedin	europe
+mauritania	neighbor	western_sahara
+mauritania	neighbor	senegal
+mauritania	neighbor	algeria
+mauritania	neighbor	mali
+netherlands	neighbor	belgium
+netherlands	neighbor	germany
+swaziland	neighbor	south_africa
+swaziland	neighbor	mozambique
+wallis_and_futuna	locatedin	oceania
+bhutan	locatedin	asia
+ireland	locatedin	northern_europe
+france	locatedin	western_europe
+seychelles	locatedin	africa
+eastern_africa	locatedin	africa
+monaco	locatedin	western_europe
+caribbean	locatedin	americas
+venezuela	locatedin	americas
+united_arab_emirates	locatedin	asia
+jamaica	locatedin	caribbean
+united_arab_emirates	locatedin	western_asia
+equatorial_guinea	locatedin	middle_africa
+macau	neighbor	china
+palestine	locatedin	western_asia
+israel	locatedin	western_asia
+puerto_rico	locatedin	americas
+thailand	locatedin	south-eastern_asia
+eastern_europe	locatedin	europe
+cocos_keeling_islands	locatedin	oceania
+lesotho	neighbor	south_africa
+eritrea	locatedin	africa
+czechia	neighbor	slovakia
+czechia	neighbor	austria
+czechia	neighbor	germany
+czechia	neighbor	poland
+seychelles	locatedin	eastern_africa
+slovenia	locatedin	southern_europe
+botswana	locatedin	southern_africa
+monaco	neighbor	france
+gabon	neighbor	equatorial_guinea
+gabon	neighbor	cameroon
+gabon	neighbor	republic_of_the_congo
+el_salvador	locatedin	americas
+southern_africa	locatedin	africa
+jersey	locatedin	europe
+peru	locatedin	south_america
+samoa	locatedin	polynesia
+ghana	locatedin	western_africa
+dominica	locatedin	americas
+brazil	neighbor	suriname
+brazil	neighbor	peru
+brazil	neighbor	uruguay
+brazil	neighbor	french_guiana
+brazil	neighbor	colombia
+brazil	neighbor	guyana
+brazil	neighbor	paraguay
+brazil	neighbor	argentina
+brazil	neighbor	bolivia
+brazil	neighbor	venezuela
+cambodia	locatedin	asia
+angola	locatedin	africa
+cocos_keeling_islands	locatedin	australia_and_new_zealand
+botswana	neighbor	south_africa
+botswana	neighbor	zambia
+botswana	neighbor	zimbabwe
+botswana	neighbor	namibia
+uzbekistan	neighbor	afghanistan
+uzbekistan	neighbor	kyrgyzstan
+uzbekistan	neighbor	kazakhstan
+uzbekistan	neighbor	turkmenistan
+uzbekistan	neighbor	tajikistan
+mozambique	locatedin	eastern_africa
+haiti	locatedin	americas
+united_kingdom	neighbor	ireland
+melanesia	locatedin	oceania
+samoa	locatedin	oceania
+são_tomé_and_príncipe	locatedin	middle_africa
+martinique	locatedin	americas
+papua_new_guinea	neighbor	indonesia
+micronesia	locatedin	micronesia
+india	locatedin	southern_asia
+moldova	neighbor	ukraine
+moldova	neighbor	romania
+costa_rica	locatedin	americas
+swaziland	locatedin	africa
+niger	locatedin	western_africa
+cape_verde	locatedin	africa
+tonga	locatedin	polynesia
+chile	neighbor	argentina
+chile	neighbor	bolivia
+chile	neighbor	peru
+canada	locatedin	northern_america
+grenada	locatedin	caribbean
+kazakhstan	neighbor	uzbekistan
+kazakhstan	neighbor	kyrgyzstan
+kazakhstan	neighbor	china
+kazakhstan	neighbor	russia
+kazakhstan	neighbor	turkmenistan
+djibouti	locatedin	eastern_africa
+united_states	locatedin	northern_america
+saint_barthélemy	locatedin	caribbean
+central_europe	locatedin	europe
+mozambique	neighbor	south_africa
+mozambique	neighbor	tanzania
+mozambique	neighbor	malawi
+mozambique	neighbor	zimbabwe
+mozambique	neighbor	swaziland
+mozambique	neighbor	zambia
+guinea-bissau	neighbor	guinea
+guinea-bissau	neighbor	senegal
+south_africa	locatedin	southern_africa
+mauritania	locatedin	western_africa
+cyprus	locatedin	eastern_europe
+bangladesh	neighbor	india
+bangladesh	neighbor	myanmar
+tuvalu	locatedin	polynesia
+saint_pierre_and_miquelon	locatedin	northern_america
+micronesia	locatedin	oceania
+uzbekistan	locatedin	asia
+martinique	locatedin	caribbean
+tunisia	neighbor	libya
+tunisia	neighbor	algeria
+haiti	neighbor	dominican_republic
+ecuador	locatedin	americas
+ukraine	locatedin	europe
+zimbabwe	locatedin	africa
+bolivia	neighbor	brazil
+bolivia	neighbor	paraguay
+bolivia	neighbor	argentina
+bolivia	neighbor	peru
+bolivia	neighbor	chile
+russia	locatedin	eastern_europe
+luxembourg	locatedin	western_europe
+nicaragua	locatedin	americas
+nigeria	neighbor	niger
+nigeria	neighbor	cameroon
+nigeria	neighbor	chad
+nigeria	neighbor	benin
+nepal	neighbor	india
+nepal	neighbor	china
+benin	locatedin	western_africa
+belgium	locatedin	western_europe
+montenegro	locatedin	southern_europe
+cape_verde	locatedin	western_africa
+estonia	neighbor	latvia
+estonia	neighbor	russia
+cameroon	neighbor	central_african_republic
+cameroon	neighbor	chad
+cameroon	neighbor	gabon
+cameroon	neighbor	republic_of_the_congo
+cameroon	neighbor	equatorial_guinea
+cameroon	neighbor	nigeria
+south_korea	neighbor	north_korea
+norfolk_island	locatedin	australia_and_new_zealand
+singapore	locatedin	asia
+palestine	neighbor	egypt
+palestine	neighbor	israel
+palestine	neighbor	jordan
+austria	neighbor	italy
+austria	neighbor	czechia
+austria	neighbor	slovenia
+austria	neighbor	liechtenstein
+austria	neighbor	germany
+austria	neighbor	hungary
+austria	neighbor	switzerland
+austria	neighbor	slovakia
+bermuda	locatedin	northern_america
+dr_congo	locatedin	middle_africa
+benin	neighbor	togo
+benin	neighbor	burkina_faso
+benin	neighbor	nigeria
+benin	neighbor	niger
+saint_vincent_and_the_grenadines	locatedin	caribbean
+isle_of_man	locatedin	northern_europe
+christmas_island	locatedin	australia_and_new_zealand
+vietnam	locatedin	asia
+burkina_faso	neighbor	ghana
+burkina_faso	neighbor	ivory_coast
+burkina_faso	neighbor	togo
+burkina_faso	neighbor	mali
+burkina_faso	neighbor	niger
+burkina_faso	neighbor	benin
+brazil	locatedin	south_america
+guyana	locatedin	south_america
+france	neighbor	italy
+france	neighbor	luxembourg
+france	neighbor	andorra
+france	neighbor	switzerland
+france	neighbor	germany
+france	neighbor	monaco
+france	neighbor	belgium
+france	neighbor	spain
+luxembourg	locatedin	europe
+brunei	neighbor	malaysia
+uganda	neighbor	dr_congo
+uganda	neighbor	tanzania
+uganda	neighbor	rwanda
+uganda	neighbor	south_sudan
+uganda	neighbor	kenya
+guinea	neighbor	liberia
+guinea	neighbor	sierra_leone
+guinea	neighbor	ivory_coast
+guinea	neighbor	senegal
+guinea	neighbor	guinea-bissau
+guinea	neighbor	mali
+kyrgyzstan	neighbor	uzbekistan
+kyrgyzstan	neighbor	kazakhstan
+kyrgyzstan	neighbor	china
+kyrgyzstan	neighbor	tajikistan
+uruguay	locatedin	americas
+ecuador	locatedin	south_america
+ivory_coast	neighbor	ghana
+ivory_coast	neighbor	guinea
+ivory_coast	neighbor	burkina_faso
+ivory_coast	neighbor	mali
+ivory_coast	neighbor	liberia
+zambia	neighbor	angola
+zambia	neighbor	tanzania
+zambia	neighbor	malawi
+zambia	neighbor	mozambique
+zambia	neighbor	zimbabwe
+zambia	neighbor	namibia
+zambia	neighbor	dr_congo
+zambia	neighbor	botswana
+new_zealand	locatedin	australia_and_new_zealand
+kazakhstan	locatedin	central_asia
+bosnia_and_herzegovina	neighbor	montenegro
+bosnia_and_herzegovina	neighbor	serbia
+bosnia_and_herzegovina	neighbor	croatia
+nepal	locatedin	asia
+solomon_islands	locatedin	melanesia
+germany	neighbor	netherlands
+germany	neighbor	denmark
+germany	neighbor	poland
+germany	neighbor	czechia
+germany	neighbor	luxembourg
+germany	neighbor	france
+germany	neighbor	switzerland
+germany	neighbor	austria
+germany	neighbor	belgium
+philippines	locatedin	asia
+serbia	locatedin	southern_europe
+tuvalu	locatedin	oceania
+iraq	neighbor	turkey
+iraq	neighbor	iran
+iraq	neighbor	kuwait
+iraq	neighbor	jordan
+iraq	neighbor	saudi_arabia
+iraq	neighbor	syria
+timor-leste	locatedin	south-eastern_asia
+lithuania	locatedin	europe
+kenya	locatedin	africa
+wallis_and_futuna	locatedin	polynesia
+albania	neighbor	kosovo
+albania	neighbor	montenegro
+albania	neighbor	macedonia
+albania	neighbor	greece
+comoros	locatedin	eastern_africa
+guyana	neighbor	brazil
+guyana	neighbor	venezuela
+guyana	neighbor	suriname
+tunisia	locatedin	northern_africa
+western_sahara	neighbor	mauritania
+western_sahara	neighbor	algeria
+western_sahara	neighbor	morocco
+australia	locatedin	australia_and_new_zealand
+china	locatedin	eastern_asia
+guinea	locatedin	western_africa
+argentina	locatedin	south_america
+papua_new_guinea	locatedin	melanesia
+bosnia_and_herzegovina	locatedin	southern_europe
+suriname	neighbor	brazil
+suriname	neighbor	french_guiana
+suriname	neighbor	guyana
+central_asia	locatedin	asia
+montenegro	neighbor	serbia
+montenegro	neighbor	albania
+montenegro	neighbor	croatia
+montenegro	neighbor	bosnia_and_herzegovina
+montenegro	neighbor	kosovo
+burkina_faso	locatedin	western_africa
+kosovo	locatedin	eastern_europe
+bolivia	locatedin	americas
+gibraltar	locatedin	europe
+northern_america	locatedin	americas
+mauritius	locatedin	eastern_africa
+poland	neighbor	ukraine
+poland	neighbor	belarus
+poland	neighbor	lithuania
+poland	neighbor	czechia
+poland	neighbor	germany
+poland	neighbor	slovakia
+poland	neighbor	russia
+lebanon	neighbor	syria
+lebanon	neighbor	israel
+sweden	neighbor	finland
+sweden	neighbor	norway
+cayman_islands	locatedin	caribbean
+switzerland	neighbor	germany
+switzerland	neighbor	austria
+switzerland	neighbor	italy
+switzerland	neighbor	liechtenstein
+switzerland	neighbor	france
+northern_mariana_islands	locatedin	micronesia
+mexico	neighbor	united_states
+mexico	neighbor	guatemala
+mexico	neighbor	belize
+south_america	locatedin	americas
+macau	locatedin	eastern_asia
+svalbard_and_jan_mayen	locatedin	northern_europe
+guatemala	neighbor	belize
+guatemala	neighbor	honduras
+guatemala	neighbor	mexico
+guatemala	neighbor	el_salvador
+isle_of_man	locatedin	europe
+latvia	locatedin	northern_europe
+malta	locatedin	southern_europe
+bulgaria	locatedin	eastern_europe
+netherlands	locatedin	europe
+argentina	neighbor	brazil
+argentina	neighbor	paraguay
+argentina	neighbor	bolivia
+argentina	neighbor	chile
+argentina	neighbor	uruguay
+bolivia	locatedin	south_america
+afghanistan	locatedin	southern_asia
+aruba	locatedin	caribbean
+dominica	locatedin	caribbean
+moldova	locatedin	eastern_europe
+japan	locatedin	asia
+french_polynesia	locatedin	polynesia
+french_guiana	locatedin	americas
+rwanda	neighbor	burundi
+rwanda	neighbor	dr_congo
+rwanda	neighbor	tanzania
+rwanda	neighbor	uganda
+western_sahara	locatedin	africa
+syria	locatedin	western_asia
+botswana	locatedin	africa
+south_georgia	locatedin	south_america
+cyprus	neighbor	united_kingdom
+central_african_republic	locatedin	middle_africa
+czechia	locatedin	europe
+jersey	locatedin	northern_europe
+saint_martin	locatedin	americas
+mongolia	neighbor	china
+mongolia	neighbor	russia
+denmark	locatedin	northern_europe
+vanuatu	locatedin	oceania
+angola	locatedin	middle_africa
+new_caledonia	locatedin	melanesia
+guernsey	locatedin	northern_europe
+zimbabwe	neighbor	south_africa
+zimbabwe	neighbor	zambia
+zimbabwe	neighbor	mozambique
+zimbabwe	neighbor	botswana
+marshall_islands	locatedin	oceania
+thailand	locatedin	asia
+canada	neighbor	united_states
+paraguay	locatedin	south_america
+italy	locatedin	southern_europe
+portugal	locatedin	europe
+madagascar	locatedin	africa
+réunion	locatedin	eastern_africa
+jamaica	locatedin	americas
+dr_congo	neighbor	central_african_republic
+dr_congo	neighbor	angola
+dr_congo	neighbor	uganda
+dr_congo	neighbor	tanzania
+dr_congo	neighbor	rwanda
+dr_congo	neighbor	south_sudan
+dr_congo	neighbor	republic_of_the_congo
+dr_congo	neighbor	burundi
+dr_congo	neighbor	zambia
+guernsey	locatedin	europe
+american_samoa	locatedin	polynesia
+liberia	locatedin	africa
+kosovo	neighbor	serbia
+kosovo	neighbor	albania
+kosovo	neighbor	montenegro
+kosovo	neighbor	macedonia
+south_sudan	neighbor	central_african_republic
+south_sudan	neighbor	sudan
+south_sudan	neighbor	ethiopia
+south_sudan	neighbor	uganda
+south_sudan	neighbor	dr_congo
+south_sudan	neighbor	kenya
+french_polynesia	locatedin	oceania
+norfolk_island	locatedin	oceania
+denmark	neighbor	germany
+tonga	locatedin	oceania
+turks_and_caicos_islands	locatedin	americas
+south_georgia	locatedin	americas
+vietnam	neighbor	china
+vietnam	neighbor	cambodia
+vietnam	neighbor	laos
+sint_maarten	locatedin	caribbean
+turks_and_caicos_islands	locatedin	caribbean
+nigeria	locatedin	western_africa
+bulgaria	locatedin	europe
+luxembourg	neighbor	belgium
+luxembourg	neighbor	germany
+luxembourg	neighbor	france
+algeria	locatedin	northern_africa
+ghana	neighbor	togo
+ghana	neighbor	burkina_faso
+ghana	neighbor	ivory_coast
+montserrat	locatedin	americas
+romania	locatedin	eastern_europe
+bahamas	locatedin	americas
+malawi	locatedin	eastern_africa
+faroe_islands	locatedin	europe
+tajikistan	neighbor	uzbekistan
+tajikistan	neighbor	afghanistan
+tajikistan	neighbor	kyrgyzstan
+tajikistan	neighbor	china
+malawi	neighbor	tanzania
+malawi	neighbor	mozambique
+malawi	neighbor	zambia
+liberia	locatedin	western_africa
+netherlands	locatedin	western_europe
+ivory_coast	locatedin	africa
+burundi	neighbor	dr_congo
+burundi	neighbor	tanzania
+burundi	neighbor	rwanda
+new_caledonia	locatedin	oceania
+burundi	locatedin	eastern_africa
+argentina	locatedin	americas
+dominican_republic	locatedin	caribbean
+middle_africa	locatedin	africa
+guatemala	locatedin	central_america
+kenya	neighbor	ethiopia
+kenya	neighbor	tanzania
+kenya	neighbor	south_sudan
+kenya	neighbor	somalia
+kenya	neighbor	uganda
+somalia	locatedin	eastern_africa
+tanzania	locatedin	africa
+georgia	locatedin	asia
+united_states_minor_outlying_islands	locatedin	northern_america
+barbados	locatedin	americas
+niue	locatedin	oceania
+iran	neighbor	turkey
+iran	neighbor	afghanistan
+iran	neighbor	turkmenistan
+iran	neighbor	pakistan
+iran	neighbor	azerbaijan
+iran	neighbor	armenia
+iran	neighbor	iraq
+slovakia	locatedin	central_europe
+laos	locatedin	south-eastern_asia
+macedonia	locatedin	europe
+mayotte	locatedin	africa
+southern_europe	locatedin	europe
+australia	locatedin	oceania
+egypt	locatedin	africa
+lithuania	locatedin	northern_europe
+yemen	locatedin	western_asia
+italy	neighbor	vatican_city
+italy	neighbor	san_marino
+italy	neighbor	france
+italy	neighbor	slovenia
+italy	neighbor	austria
+italy	neighbor	switzerland
+lebanon	locatedin	asia
+western_sahara	locatedin	northern_africa
+united_arab_emirates	neighbor	oman
+united_arab_emirates	neighbor	saudi_arabia
+united_kingdom	locatedin	northern_europe
+nicaragua	neighbor	costa_rica
+nicaragua	neighbor	honduras
+andorra	neighbor	spain
+andorra	neighbor	france
+honduras	neighbor	guatemala
+honduras	neighbor	nicaragua
+honduras	neighbor	el_salvador
+afghanistan	locatedin	asia
+nepal	locatedin	southern_asia
+mali	locatedin	western_africa
+central_african_republic	neighbor	chad
+central_african_republic	neighbor	sudan
+central_african_republic	neighbor	south_sudan
+central_african_republic	neighbor	republic_of_the_congo
+central_african_republic	neighbor	dr_congo
+central_african_republic	neighbor	cameroon
+guyana	locatedin	americas
+ethiopia	locatedin	africa
+kuwait	neighbor	iraq
+kuwait	neighbor	saudi_arabia
+iraq	locatedin	western_asia
+northern_mariana_islands	locatedin	oceania
+azerbaijan	locatedin	western_asia
+montenegro	locatedin	europe
+sint_maarten	neighbor	saint_martin
+vietnam	locatedin	south-eastern_asia
+malaysia	locatedin	asia
+maldives	locatedin	asia
+sudan	locatedin	africa
+singapore	locatedin	south-eastern_asia
+bulgaria	neighbor	turkey
+bulgaria	neighbor	romania
+bulgaria	neighbor	serbia
+bulgaria	neighbor	macedonia
+bulgaria	neighbor	greece
+liechtenstein	locatedin	western_europe
+bahrain	locatedin	asia
+south_sudan	locatedin	middle_africa
+south_africa	neighbor	lesotho
+south_africa	neighbor	zimbabwe
+south_africa	neighbor	namibia
+south_africa	neighbor	swaziland
+south_africa	neighbor	mozambique
+south_africa	neighbor	botswana
+cook_islands	locatedin	polynesia
+bermuda	locatedin	americas
+taiwan	locatedin	eastern_asia
+turkey	locatedin	asia
+estonia	locatedin	northern_europe
+united_states	neighbor	canada
+united_states	neighbor	mexico
+colombia	locatedin	south_america
+austria	locatedin	western_europe
+cuba	locatedin	americas
+thailand	neighbor	malaysia
+thailand	neighbor	cambodia
+thailand	neighbor	myanmar
+thailand	neighbor	laos
+pitcairn_islands	locatedin	polynesia
+morocco	locatedin	northern_africa
+rwanda	locatedin	eastern_africa
+somalia	neighbor	ethiopia
+somalia	neighbor	djibouti
+somalia	neighbor	kenya
+kenya	locatedin	eastern_africa
+suriname	locatedin	south_america
+spain	locatedin	europe
+hong_kong	locatedin	eastern_asia
+sweden	locatedin	northern_europe
+puerto_rico	locatedin	caribbean
+tanzania	neighbor	zambia
+tanzania	neighbor	rwanda
+tanzania	neighbor	mozambique
+tanzania	neighbor	uganda
+tanzania	neighbor	kenya
+tanzania	neighbor	burundi
+tanzania	neighbor	dr_congo
+tanzania	neighbor	malawi
+palestine	locatedin	asia
+estonia	locatedin	europe
+madagascar	locatedin	eastern_africa
+zimbabwe	locatedin	eastern_africa
+guam	locatedin	oceania
+belize	locatedin	central_america
+albania	locatedin	europe
+trinidad_and_tobago	locatedin	caribbean
+albania	locatedin	southern_europe
+chad	neighbor	central_african_republic
+chad	neighbor	libya
+chad	neighbor	south_sudan
+chad	neighbor	niger
+chad	neighbor	cameroon
+chad	neighbor	nigeria
+uzbekistan	locatedin	central_asia
+gambia	locatedin	western_africa
+saudi_arabia	neighbor	qatar
+saudi_arabia	neighbor	united_arab_emirates
+saudi_arabia	neighbor	kuwait
+saudi_arabia	neighbor	jordan
+saudi_arabia	neighbor	oman
+saudi_arabia	neighbor	iraq
+saudi_arabia	neighbor	yemen
+portugal	locatedin	southern_europe
+azerbaijan	neighbor	turkey
+azerbaijan	neighbor	georgia
+azerbaijan	neighbor	iran
+azerbaijan	neighbor	russia
+azerbaijan	neighbor	armenia
+namibia	locatedin	africa
+peru	neighbor	brazil
+peru	neighbor	bolivia
+peru	neighbor	ecuador
+peru	neighbor	colombia
+peru	neighbor	chile
+curaçao	locatedin	americas
+china	locatedin	asia
+Åland_islands	locatedin	northern_europe
+uruguay	neighbor	brazil
+uruguay	neighbor	argentina
+hungary	locatedin	europe
+ukraine	neighbor	romania
+ukraine	neighbor	belarus
+ukraine	neighbor	poland
+ukraine	neighbor	moldova
+ukraine	neighbor	slovakia
+ukraine	neighbor	hungary
+ukraine	neighbor	russia
+united_states	locatedin	americas
+pakistan	neighbor	afghanistan
+pakistan	neighbor	india
+pakistan	neighbor	china
+pakistan	neighbor	iran
+armenia	neighbor	turkey
+armenia	neighbor	georgia
+armenia	neighbor	iran
+armenia	neighbor	azerbaijan
+papua_new_guinea	locatedin	oceania
+tokelau	locatedin	oceania
+uganda	locatedin	eastern_africa
+polynesia	locatedin	oceania
+brunei	locatedin	south-eastern_asia
+jordan	locatedin	western_asia
+central_african_republic	locatedin	africa
+india	locatedin	asia
+nauru	locatedin	micronesia
+lithuania	neighbor	poland
+lithuania	neighbor	belarus
+lithuania	neighbor	russia
+lithuania	neighbor	latvia
+fiji	locatedin	melanesia
+switzerland	locatedin	western_europe
+djibouti	neighbor	eritrea
+djibouti	neighbor	somalia
+djibouti	neighbor	ethiopia
+equatorial_guinea	locatedin	africa
+kazakhstan	locatedin	asia
+bahrain	locatedin	western_asia
+japan	locatedin	eastern_asia
+tanzania	locatedin	eastern_africa
+guadeloupe	locatedin	caribbean
+mozambique	locatedin	africa
+maldives	locatedin	southern_asia
+turkmenistan	neighbor	kazakhstan
+turkmenistan	neighbor	afghanistan
+turkmenistan	neighbor	iran
+turkmenistan	neighbor	uzbekistan
+slovenia	neighbor	italy
+slovenia	neighbor	austria
+slovenia	neighbor	croatia
+slovenia	neighbor	hungary
+são_tomé_and_príncipe	locatedin	africa
+turkey	locatedin	western_asia
+south_korea	locatedin	asia
+libya	locatedin	northern_africa
+malta	locatedin	europe
+dominican_republic	locatedin	americas
+south_korea	locatedin	eastern_asia
+chad	locatedin	africa
+armenia	locatedin	western_asia
+pakistan	locatedin	southern_asia
+united_states_virgin_islands	locatedin	americas
+benin	locatedin	africa
+macedonia	neighbor	kosovo
+macedonia	neighbor	serbia
+macedonia	neighbor	albania
+macedonia	neighbor	greece
+macedonia	neighbor	bulgaria
+greece	locatedin	southern_europe
+saint_kitts_and_nevis	locatedin	caribbean
+mongolia	locatedin	eastern_asia
+cyprus	locatedin	europe
+saint_lucia	locatedin	americas
+burkina_faso	locatedin	africa
+malawi	locatedin	africa
+serbia	neighbor	romania
+serbia	neighbor	kosovo
+serbia	neighbor	montenegro
+serbia	neighbor	bosnia_and_herzegovina
+serbia	neighbor	macedonia
+serbia	neighbor	croatia
+serbia	neighbor	hungary
+serbia	neighbor	bulgaria
+russia	neighbor	ukraine
+russia	neighbor	georgia
+russia	neighbor	estonia
+russia	neighbor	norway
+russia	neighbor	poland
+russia	neighbor	finland
+russia	neighbor	lithuania
+russia	neighbor	azerbaijan
+russia	neighbor	mongolia
+russia	neighbor	north_korea
+russia	neighbor	belarus
+russia	neighbor	china
+russia	neighbor	kazakhstan
+russia	neighbor	latvia
+north_korea	neighbor	china
+north_korea	neighbor	russia
+north_korea	neighbor	south_korea
+tajikistan	locatedin	asia
+el_salvador	locatedin	central_america
+syria	neighbor	turkey
+syria	neighbor	lebanon
+syria	neighbor	israel
+syria	neighbor	iraq
+syria	neighbor	jordan
+switzerland	locatedin	europe
+kiribati	locatedin	micronesia
+sierra_leone	locatedin	africa
+el_salvador	neighbor	guatemala
+el_salvador	neighbor	honduras
+timor-leste	neighbor	indonesia
+trinidad_and_tobago	locatedin	americas
+northern_africa	locatedin	africa
+western_europe	locatedin	europe
+guinea-bissau	locatedin	western_africa
+tokelau	locatedin	polynesia
+san_marino	locatedin	southern_europe
+germany	locatedin	western_europe
+georgia	neighbor	turkey
+georgia	neighbor	azerbaijan
+georgia	neighbor	armenia
+georgia	neighbor	russia
+united_states_virgin_islands	locatedin	caribbean
+philippines	locatedin	south-eastern_asia
+finland	neighbor	sweden
+finland	neighbor	norway
+finland	neighbor	russia
+united_states_minor_outlying_islands	locatedin	americas
+sweden	locatedin	europe
+laos	neighbor	thailand
+laos	neighbor	vietnam
+laos	neighbor	china
+laos	neighbor	cambodia
+laos	neighbor	myanmar
+turkey	neighbor	georgia
+turkey	neighbor	iran
+turkey	neighbor	azerbaijan
+turkey	neighbor	armenia
+turkey	neighbor	greece
+turkey	neighbor	syria
+turkey	neighbor	iraq
+turkey	neighbor	bulgaria
+lesotho	locatedin	southern_africa
+belarus	neighbor	ukraine
+belarus	neighbor	poland
+belarus	neighbor	latvia
+belarus	neighbor	lithuania
+belarus	neighbor	russia
+colombia	neighbor	brazil
+colombia	neighbor	panama
+colombia	neighbor	venezuela
+colombia	neighbor	peru
+colombia	neighbor	ecuador
+solomon_islands	locatedin	oceania
+egypt	neighbor	sudan
+egypt	neighbor	israel
+egypt	neighbor	libya
+nigeria	locatedin	africa
+france	locatedin	europe
+china	neighbor	afghanistan
+china	neighbor	kyrgyzstan
+china	neighbor	hong_kong
+china	neighbor	bhutan
+china	neighbor	myanmar
+china	neighbor	pakistan
+china	neighbor	tajikistan
+china	neighbor	india
+china	neighbor	mongolia
+china	neighbor	north_korea
+china	neighbor	vietnam
+china	neighbor	macau
+china	neighbor	laos
+china	neighbor	kazakhstan
+china	neighbor	russia
+chile	locatedin	south_america
+pakistan	locatedin	asia
+saint_barthélemy	locatedin	americas
+armenia	locatedin	asia
+saudi_arabia	locatedin	western_asia
+jordan	neighbor	syria
+jordan	neighbor	israel
+jordan	neighbor	iraq
+jordan	neighbor	saudi_arabia
+pitcairn_islands	locatedin	oceania
+north_korea	locatedin	asia
+costa_rica	neighbor	panama
+costa_rica	neighbor	nicaragua
+germany	locatedin	europe
+belgium	neighbor	netherlands
+belgium	neighbor	germany
+belgium	neighbor	luxembourg
+belgium	neighbor	france
+bahamas	locatedin	caribbean
+panama	neighbor	costa_rica
+panama	neighbor	colombia
+montserrat	locatedin	caribbean
+dr_congo	locatedin	africa
+antigua_and_barbuda	locatedin	americas
+sierra_leone	locatedin	western_africa
+british_indian_ocean_territory	locatedin	eastern_africa
+oman	neighbor	united_arab_emirates
+oman	neighbor	yemen
+oman	neighbor	saudi_arabia
+cook_islands	locatedin	oceania
+réunion	locatedin	africa
+dominican_republic	neighbor	haiti
+tajikistan	locatedin	central_asia
+saint_kitts_and_nevis	locatedin	americas
+finland	locatedin	europe
+uruguay	locatedin	south_america
+sudan	neighbor	central_african_republic
+sudan	neighbor	chad
+sudan	neighbor	libya
+sudan	neighbor	eritrea
+sudan	neighbor	egypt
+sudan	neighbor	ethiopia
+sudan	neighbor	south_sudan
+south_africa	locatedin	africa
+vatican_city	locatedin	europe
+sudan	locatedin	northern_africa
+togo	neighbor	ghana
+togo	neighbor	burkina_faso
+togo	neighbor	benin
+american_samoa	locatedin	oceania
+namibia	locatedin	southern_africa
+curaçao	locatedin	caribbean
+belize	neighbor	guatemala
+belize	neighbor	mexico
+angola	neighbor	dr_congo
+angola	neighbor	zambia
+angola	neighbor	namibia
+angola	neighbor	republic_of_the_congo
+palau	locatedin	oceania
+north_korea	locatedin	eastern_asia
+gambia	locatedin	africa
+ethiopia	locatedin	eastern_africa
+sierra_leone	neighbor	guinea
+sierra_leone	neighbor	liberia
+myanmar	neighbor	india
+myanmar	neighbor	thailand
+myanmar	neighbor	china
+myanmar	neighbor	bangladesh
+myanmar	neighbor	laos
+chile	locatedin	americas
+hungary	neighbor	ukraine
+hungary	neighbor	romania
+hungary	neighbor	serbia
+hungary	neighbor	slovenia
+hungary	neighbor	austria
+hungary	neighbor	croatia
+hungary	neighbor	slovakia
+gibraltar	locatedin	southern_europe
+fiji	locatedin	oceania
+lebanon	locatedin	western_asia
+spain	neighbor	andorra
+spain	neighbor	morocco
+spain	neighbor	gibraltar
+spain	neighbor	portugal
+spain	neighbor	france
+israel	neighbor	egypt
+israel	neighbor	lebanon
+israel	neighbor	jordan
+israel	neighbor	syria
+libya	neighbor	algeria
+libya	neighbor	chad
+libya	neighbor	egypt
+libya	neighbor	sudan
+libya	neighbor	niger
+libya	neighbor	tunisia
+spain	locatedin	southern_europe
+bhutan	locatedin	southern_asia
+vanuatu	locatedin	melanesia
+south-eastern_asia	locatedin	asia
+laos	locatedin	asia
+comoros	locatedin	africa
+norway	neighbor	sweden
+norway	neighbor	finland
+norway	neighbor	russia
+french_guiana	neighbor	brazil
+french_guiana	neighbor	suriname
+kuwait	locatedin	asia
+slovakia	locatedin	europe
+egypt	locatedin	northern_africa
+belarus	locatedin	eastern_europe
+qatar	locatedin	western_asia
+cambodia	neighbor	thailand
+cambodia	neighbor	vietnam
+cambodia	neighbor	laos
+grenada	locatedin	americas
+liberia	neighbor	guinea
+liberia	neighbor	sierra_leone
+liberia	neighbor	ivory_coast
+ireland	neighbor	united_kingdom
+togo	locatedin	africa
+indonesia	neighbor	malaysia
+indonesia	neighbor	timor-leste
+indonesia	neighbor	papua_new_guinea
+swaziland	locatedin	southern_africa
+anguilla	locatedin	americas
+romania	neighbor	ukraine
+romania	neighbor	hungary
+romania	neighbor	moldova
+romania	neighbor	serbia
+romania	neighbor	bulgaria
+georgia	locatedin	western_asia
+latvia	locatedin	europe
+british_virgin_islands	locatedin	americas
+haiti	locatedin	caribbean
+svalbard_and_jan_mayen	locatedin	europe
+venezuela	locatedin	south_america
+malaysia	locatedin	south-eastern_asia
+southern_asia	locatedin	asia
+san_marino	neighbor	italy
+greenland	locatedin	americas
+myanmar	locatedin	asia
+ivory_coast	locatedin	western_africa
+greenland	locatedin	northern_america
+portugal	neighbor	spain
+oman	locatedin	western_asia
+chad	locatedin	middle_africa
+vatican_city	locatedin	southern_europe
+mauritius	locatedin	africa
+cambodia	locatedin	south-eastern_asia
+panama	locatedin	central_america
+anguilla	locatedin	caribbean
+cuba	locatedin	caribbean
+nauru	locatedin	oceania
