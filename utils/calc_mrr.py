@@ -26,14 +26,15 @@ def calc_mrr(kb, test_file, delimiter=',', header=None, size=None):
         size = len(test_triples)
     for t in tqdm(test_triples[:size]):
         try:
+            ob = t[2]
             try:
-                ranks = kb.get_most_likely(sub, pred, '?', k=20)
+                # TODO: should not have to do this, can check it in the get_most_likely fn (ie if len possibles < k, just return that many)
+                ranks = kb.get_most_likely(t[0], t[1], '?', k=20)
             except:
-                ranks = kb.get_most_likely(sub, pred, '?', k=2)
+                ranks = kb.get_most_likely(t[0], t[1], '?', k=2)
             ranked_ents = [x['triple'][2] for x in ranks]
             if ob not in ranked_ents:
                 continue
-            print('Was looking for {} and found it in position {}'.format(ob, ranked_ents.index(ob)))
             mrr += 1 / (ranked_ents.index(ob) + 1)
         except:
             continue
