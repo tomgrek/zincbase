@@ -68,6 +68,8 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * utilize postgres as backend triple store
 * The to_csv/from_csv methods do not yet support node attributes.
 * Add relation extraction from arbitrary unstructured text
+* Address inconsistencies with Prolog syntax vs basic triples
+* Add relation attributes (e.g. 'formerly') without having to add the relation as 100% fact first.
 
 # References & Acknowledgements
 

@@ -248,8 +248,9 @@ class KB():
         :Example:
 
         >>> kb = KB()
+        >>> kb.seed(555)
         >>> kb.from_csv('./assets/countries_s1_train.csv', delimiter='\\t')
-        >>> kb.build_kg_model(cuda=False, embedding_size=40)
+        >>> kb.build_kg_model(cuda=False, embedding_size=100)
         >>> kb.train_kg_model(steps=2000, batch_size=1, verbose=False, neg_to_pos=4)
         >>> _ = kb.create_binary_classifier('locatedin', 'asia')
         >>> kb.binary_classify('india', 'locatedin', 'asia')
