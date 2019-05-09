@@ -202,13 +202,13 @@ class KB():
         :Example:
 
         >>> kb = KB()
-        >>> kb.from_csv('./assets/countries.csv')
+        >>> kb.from_csv('./assets/countries_s1_train.csv', delimiter='\\t')
         >>> kb.seed(555)
         >>> kb.build_kg_model(cuda=False, embedding_size=40)
         >>> kb.train_kg_model(steps=1000, batch_size=1, verbose=False)
-        >>> _ = kb.create_multi_classifier('capital_of')
-        >>> kb.multi_classify('manila', 'capital_of')
-        'philippines'"""
+        >>> _ = kb.create_multi_classifier('locatedin')
+        >>> kb.multi_classify('philippines', 'locatedin')
+        'south_eastern_asia'"""
 
         all_examples = list(self.query('{}(X, Y)'.format(pred)))
         Xs = []
@@ -248,13 +248,13 @@ class KB():
         :Example:
 
         >>> kb = KB()
-        >>> kb.from_csv('./assets/countries.csv')
+        >>> kb.from_csv('./assets/countries_s1_train.csv', delimiter='\\t')
         >>> kb.build_kg_model(cuda=False, embedding_size=40)
-        >>> kb.train_kg_model(steps=2000, batch_size=1, verbose=False)
-        >>> _ = kb.create_binary_classifier('in_region', 'asia')
-        >>> kb.binary_classify('india', 'in_region', 'asia')
+        >>> kb.train_kg_model(steps=2000, batch_size=1, verbose=False, neg_to_pos=4)
+        >>> _ = kb.create_binary_classifier('locatedin', 'asia')
+        >>> kb.binary_classify('india', 'locatedin', 'asia')
         True
-        >>> kb.binary_classify('brazil', 'in_region', 'asia')
+        >>> kb.binary_classify('brazil', 'locatedin', 'asia')
         False"""
         all_examples = list(self.query('{}(X, Y)'.format(pred)))
         pos_examples = [self.get_embedding(x['X']) for x in all_examples if x['Y'] == ob]
@@ -519,12 +519,12 @@ class KB():
         :Example:
 
         >>> kb = KB()
-        >>> kb.from_csv('./assets/countries.csv')
+        >>> kb.from_csv('./assets/countries_s1_train.csv', delimiter='\\t')
         >>> kb.seed(555)
-        >>> kb.build_kg_model(cuda=False, embedding_size=40)
-        >>> kb.train_kg_model(steps=1000, batch_size=1, verbose=False)
-        >>> kb.get_most_likely('austria', 'borders', '?', k=2) # doctest:+ELLIPSIS
-        [{'prob': 0.758, 'triple': ('austria', 'borders', 'austria')}, {'prob': 0.7565, 'triple': ('austria', 'borders', 'slovenia')}]"""
+        >>> kb.build_kg_model(cuda=False, embedding_size=100)
+        >>> kb.train_kg_model(steps=1000, batch_size=2, verbose=False, neg_to_pos=4)
+        >>> kb.get_most_likely('austria', 'neighbor', '?', k=2) # doctest:+ELLIPSIS
+        [{'prob': 0.9448, 'triple': ('austria', 'neighbor', 'liechtenstein')}, {'prob': 0.9447, 'triple': ('austria', 'neighbor', 'germany')}]"""
 
         orig_sub = sub
         orig_ob = ob
