@@ -251,8 +251,8 @@ class KGEModel(nn.Module):
         positive_score, attr_loss = model(positive_sample)
         positive_score = F.logsigmoid(positive_score).squeeze(dim=1)
 
-        positive_sample_loss = - (subsampling_weight * positive_score).sum()/subsampling_weight.sum()
-        negative_sample_loss = - (subsampling_weight * negative_score).sum()/subsampling_weight.sum()
+        positive_sample_loss = -(subsampling_weight * positive_score).sum() / subsampling_weight.sum()
+        negative_sample_loss = -(subsampling_weight * negative_score).sum() / subsampling_weight.sum()
 
         loss = (positive_sample_loss + negative_sample_loss) / 2
         loss += attr_loss

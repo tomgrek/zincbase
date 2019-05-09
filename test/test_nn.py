@@ -53,7 +53,7 @@ kb.build_kg_model(cuda=False, embedding_size=30, node_attributes=['owns_a_rainco
                attr_loss_to_graph_loss=0.9)
 # Ideally use bs=1 to overfit on this small dataset
 # bs=2 at least checks that it works with > 1 bs
-kb.train_kg_model(steps=12001, batch_size=2)
+kb.train_kg_model(steps=12001, batch_size=2, neg_to_pos=4)
 
 # # # # # # # # # # # # # # # # # # # # # # # #
 # People from Seattle should be more likely to
@@ -67,7 +67,7 @@ y = kb._kg_model.run_embedding(kb.get_embedding('other2'), 'doesnt_own_raincoat'
 assert round(x) == 1; assert round(y) == 0
 x = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'owns_a_raincoat')
 y = kb._kg_model.run_embedding(kb.get_embedding('mary'), 'doesnt_own_raincoat')
-assert round(x) == 1; assert round(y) == 0
+assert x > 1.5 * y # Not a known fact
 x = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'owns_a_raincoat')
 y = kb._kg_model.run_embedding(kb.get_embedding('tom'), 'doesnt_own_raincoat')
 assert round(x) == 0; assert round(y) == 1
@@ -103,10 +103,11 @@ print('First suite of neural network tests passed.')
 # # # # # # # # # # # # # # # # # # # # # # # #
 kb.store('lives_in(tom, seattle)') ## TODO seems weird to have to add this fact then stick 'formerly' on it
 # on the next line.
-kb.edge_attr('tom', 'lives_in', 'bay_area', {'formerly': 1.0})
-kb.build_kg_model(cuda=False, embedding_size=30, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'],
+kb.edge_attr('tom', 'lives_in', 'seattle', {'formerly': 1.0})
+kb.seed(555)
+kb.build_kg_model(cuda=False, embedding_size=50, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'],
                 pred_attributes=['formerly'], attr_loss_to_graph_loss=0.9, pred_loss_to_graph_loss=5.0)
-kb.train_kg_model(steps=18001, batch_size=2)
+kb.train_kg_model(steps=8001, batch_size=2, neg_to_pos=4)
 
 # # # # # # # # # # # # # # # # # # # # # # # #
 # People from Seattle should be more likely to
@@ -137,7 +138,7 @@ assert y > 1.5 * x # Not a known fact
 # # # # # # # # # # # # # # # # # # # # # # # #
 bay_prob = kb.estimate_triple_prob('tom', 'lives_in', 'bay_area')
 sea_prob = kb.estimate_triple_prob('tom', 'lives_in', 'seattle')
-assert bay_prob > 2 * sea_prob
+assert bay_prob > sea_prob
 
 bay_prob = kb.estimate_triple_prob('shamala', 'lives_in', 'bay_area')
 sea_prob = kb.estimate_triple_prob('shamala', 'lives_in', 'seattle')

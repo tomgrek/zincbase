@@ -20,15 +20,15 @@ for ans in kb.query('eats(tom, Food)'):
     print(ans['Food']) # prints 'rice'
 
 ...
-# The included assets/countries.csv contains triples like:
-# (paris, capital_of, france)
-# (djibouti, in_region, africa)
-# (denmark, borders, germany)
+# The included assets/countries_s1_train.csv contains triples like:
+# (namibia, locatedin, africa)
+# (lithuania, neighbor, poland)
 
+kb = KB()
 kb.from_csv('./assets/countries.csv')
 kb.build_kg_model(cuda=False, embedding_size=40)
 kb.train_kg_model(steps=2000, batch_size=1, verbose=False)
-kb.estimate_triple_prob('egypt', 'borders', 'sudan')
+kb.estimate_triple_prob('fiji', 'locatedin', 'melanesia')
 0.8467
 ```
 

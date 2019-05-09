@@ -55,3 +55,5 @@ assert sea_prob > 2 * bay_prob
 sea_prob = kb.estimate_triple_prob('other2', 'lives_in', 'seattle')
 bay_prob = kb.estimate_triple_prob('other2', 'lives_in', 'bay_area')
 assert sea_prob > 2 * bay_prob
+
+print('All basic NN tests passed.')

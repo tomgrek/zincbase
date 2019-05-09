@@ -216,7 +216,7 @@ class KB():
         indexes = list(set([x['Y'] for x in all_examples]))
         ratios = defaultdict(int)
         for example in all_examples:
-            Xs.append(self.get_embedding(example['X']))
+            Xs.append(self.get_embedding(example['X']).cpu())
             Ys.append(indexes.index(example['Y']))
             ratios[indexes.index(example['Y'])] += 1
         Xs = np.reshape(np.stack(Xs), (-1, self.get_embedding(all_examples[0]['X']).shape[1]))
@@ -234,7 +234,7 @@ class KB():
         previously trained on `pred`."""
 
         clf, indexes = self.classifiers[pred]
-        return indexes[int(clf.predict(np.reshape(self.get_embedding(subject), (1, -1))))]
+        return indexes[int(clf.predict(np.reshape(self.get_embedding(subject).cpu(), (1, -1))))]
 
     def create_binary_classifier(self, pred, ob):
         """Creates a binary classifier (SVM) for `pred(?, ob)` using embeddings from the trained model.
@@ -735,10 +735,10 @@ class KB():
                 next(reader, None)
             i = 0
             for row in reader:
-                pred = re.sub('[ ./()]', '_', row[1])
-                sub = re.sub('[ ./()]', '_', row[0])
+                pred = re.sub('[ ./()-]', '_', row[1])
+                sub = re.sub('[ ./()-]', '_', row[0])
                 sub = sub[0].lower() + sub[1:]
-                ob = re.sub('[ ./()]', '_', row[2])
+                ob = re.sub('[ ./()-]', '_', row[2])
                 ob = ob[0].lower() + ob[1:]
                 if not (sub.replace('_','').isalnum() and ob.replace('_','').isalnum()):
                     continue
