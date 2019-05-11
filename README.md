@@ -83,6 +83,8 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * Add relation extraction from arbitrary unstructured text
 * Address inconsistencies with Prolog syntax vs basic triples
 * Add relation attributes (e.g. 'formerly') without having to add the relation as 100% fact first.
+* Add documentation regarding adding a truthiness attribute
+* Truthiness attribute would be much more useful if explicit negative examples were permitted.
 
 # References & Acknowledgements
 
@@ -105,7 +107,7 @@ If you use this software, please consider citing:
   author = {{Tom Grek}},
   title = {ZincBase: A state of the art knowledge base},
   url = {https://github.com/tomgrek/zincbase},
-  version = {0.0.1},
+  version = {0.1.0},
   date = {2019-04-27},
 }
 
