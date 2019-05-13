@@ -17,11 +17,12 @@ from torch.utils.data import DataLoader
 import torch
 from tqdm import tqdm
 
+from logic.Goal import Goal
+from logic.Negative import Negative
 from logic.Term import Term
 from logic.Rule import Rule
-from logic.Goal import Goal
 from logic.common import unify, process
-from nn.dataloader import TrainDataset, BidirectionalOneShotIterator
+from nn.dataloader import NegDataset, TrainDataset, BidirectionalOneShotIterator
 from nn.rotate import KGEModel
 from utils.string_utils import strip_all_whitespace
 
@@ -35,9 +36,11 @@ class KB():
     def __init__(self):
         self.G = nx.MultiDiGraph()
         self.rules = []
+        self._neg_examples = []
         self._entity2id = {}
         self._relation2id = {}
         self._encoded_triples = []
+        self._encoded_neg_examples = []
         self._kg_model = None
         self._knn = None
         self._knn_index = []
@@ -382,6 +385,8 @@ class KB():
                 attrs.append(attr)
             self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]],
                                         attrs))
+        for neg_example in self._neg_examples:
+            self._encoded_neg_examples.append((self._entity2id[neg_example.head], self._relation2id[neg_example.pred], self._entity2id[neg_example.tail]))
         dee = False; dre = False
         if model_name == 'ComplEx':
             dee = True
@@ -410,13 +415,16 @@ class KB():
             self._kg_model = self._kg_model.cuda()
 
     def train_kg_model(self, steps=1000, batch_size=512, lr=0.001,
-                       reencode_triples=False, neg_to_pos=128, verbose=True):
+                       reencode_triples=False, neg_to_pos=128,
+                       neg_ratio=1., verbose=True):
         """Train a KG model on the KB.
 
         :param int steps: Number of training steps
         :param int batch_size: Batch size for training
         :param float lr: Initial learning rate for Adam optimizer
         :param bool reencode_triples: If a node has been added since last training, set this to True
+        :param int neg_to_pos: Ratio of generated negative samples to real positive samples
+        :param float neg_ratio: How often real/inputted negative examples should appear, vs real pos + generated neg. Smaller (>0) means more often.
         """
         if reencode_triples:
             # TODO: this is not encoding attributes as well, yet.
@@ -428,18 +436,28 @@ class KB():
         nentity = len(self._entity2id)
         nrelation = len(self._relation2id)
         train_dataloader_head = DataLoader(
-                    TrainDataset(self._encoded_triples, nrelation, neg_to_pos, 'head-batch'),
-                    batch_size=batch_size,
-                    shuffle=True,
-                    num_workers=1,
-                    collate_fn=TrainDataset.collate_fn)
+            TrainDataset(self._encoded_triples, nrelation, neg_to_pos, 'head-batch'),
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=1,
+            collate_fn=TrainDataset.collate_fn)
         train_dataloader_tail = DataLoader(
-                    TrainDataset(self._encoded_triples, nrelation, neg_to_pos, 'tail-batch'),
-                    batch_size=batch_size,
-                    shuffle=True,
-                    num_workers=1,
-                    collate_fn=TrainDataset.collate_fn)
-        train_iterator = BidirectionalOneShotIterator(train_dataloader_head, train_dataloader_tail)
+            TrainDataset(self._encoded_triples, nrelation, neg_to_pos, 'tail-batch'),
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=1,
+            collate_fn=TrainDataset.collate_fn)
+        if len(self._neg_examples):
+            neg_dataloader = DataLoader(
+                NegDataset(self._encoded_neg_examples),
+                batch_size=batch_size,
+                shuffle=True,
+                num_workers=1,
+                collate_fn=TrainDataset.collate_fn)
+            neg_ratio = int(neg_ratio * (len(self._encoded_triples) / len(self._neg_examples)))
+            train_iterator = BidirectionalOneShotIterator(train_dataloader_head, train_dataloader_tail, neg_dataloader, neg_ratio)
+        else:
+            train_iterator = BidirectionalOneShotIterator(train_dataloader_head, train_dataloader_tail)
         optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self._kg_model.parameters()), lr=lr)
 
         self._kg_model.train()
@@ -615,6 +633,10 @@ class KB():
         True
         """
         try:
+            if rule_idx[0] == '~':
+                rule_idx = int(rule_idx[1:])
+                self._neg_examples.pop(rule_idx)
+                return True
             self.rules.pop(rule_idx)
             return True
         except:
@@ -663,7 +685,11 @@ class KB():
 
         >>> KB().store('a(a)')
         0"""
-        self.rules.append(Rule(strip_all_whitespace(statement), graph=self.G))
+        statement = strip_all_whitespace(statement)
+        if statement[0] == '~':
+            self._neg_examples.append(Negative(statement[1:]))
+            return '~' + str(len(self._neg_examples) - 1)
+        self.rules.append(Rule(statement, graph=self.G))
         return len(self.rules) - 1
 
     def to_triples(self, data=False):

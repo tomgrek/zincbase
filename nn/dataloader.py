@@ -3,6 +3,16 @@ import torch
 
 from torch.utils.data import Dataset
 
+class NegDataset(Dataset):
+    def __init__(self, neg_triples):
+        self.triples = neg_triples
+        self.len = len(neg_triples)
+    def __len__(self):
+        return self.len
+    def __getitem__(self, idx):
+        t = self.triples[idx]
+        return torch.LongTensor(t), torch.LongTensor([[0., 0., 0.]]), torch.FloatTensor([0.]), 'neg'
+
 class TrainDataset(Dataset):
     def __init__(self, triples, nrelation, negative_sample_size, mode):
         self.len = len(triples)
@@ -89,7 +99,8 @@ class TrainDataset(Dataset):
                 count[(tail, -relation-1)] += 1
         return count
 
-    def get_true_attr(self, triples):
+    @staticmethod
+    def get_true_attr(triples):
         true_attr = {}
         for head, relation, tail, attr in triples:
             true_attr[head] = attr
@@ -117,12 +128,32 @@ class TrainDataset(Dataset):
         return true_head, true_tail
 
 class BidirectionalOneShotIterator(object):
-    def __init__(self, dataloader_head, dataloader_tail):
+    def __init__(self, dataloader_head, dataloader_tail, dataloader_neg=None, neg_ratio=1):
         self.iterator_head = self.one_shot_iterator(dataloader_head)
         self.iterator_tail = self.one_shot_iterator(dataloader_tail)
+        self.neg = False
+        if dataloader_neg:
+            self.neg = True
+            self.neg_ratio = neg_ratio
+            self.iterator_neg = self.one_shot_iterator(dataloader_neg)
         self.step = 0
 
     def __next__(self):
+        if self.neg:
+            return self.next_with_neg()
+        return self.next_no_neg()
+
+    def next_with_neg(self):
+        self.step += 1
+        if self.step % self.neg_ratio == 0:
+            data = next(self.iterator_neg)
+        elif self.step % 2 == 0:
+            data = next(self.iterator_head)
+        else:
+            data = next(self.iterator_tail)
+        return data
+
+    def next_no_neg(self):
         self.step += 1
         if self.step % 2 == 0:
             data = next(self.iterator_head)
