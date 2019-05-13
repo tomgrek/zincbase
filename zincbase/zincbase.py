@@ -70,7 +70,7 @@ class KB():
 
     def edge_attr(self, sub, pred, ob, attributes):
         """Set attributes on a predicate between subject and object.
-        Useful for example to encode time.
+        Useful for example to encode time, or truthiness.
 
         :param str sub: Subject node/entity
         :param str pred: Predicate between subject and object
