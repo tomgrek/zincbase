@@ -634,7 +634,7 @@ class KB():
         True
         """
         try:
-            if rule_idx[0] == '~':
+            if isinstance(rule_idx, str) and rule_idx[0] == '~':
                 rule_idx = int(rule_idx[1:])
                 self._neg_examples.pop(rule_idx)
                 return True
