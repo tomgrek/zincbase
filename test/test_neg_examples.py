@@ -22,7 +22,7 @@ b = list(kb.query('locatedin(canada, X)'))
 assert len(b) == 1; assert b[0]['X'] == 'northern_america'
 assert kb.delete_rule(rule_num)
 
-kb.build_kg_model(cuda=True, embedding_size=100)
+kb.build_kg_model(cuda=False, embedding_size=100)
 
 kb.train_kg_model(steps=500, batch_size=512, neg_ratio=0.01)
 
@@ -38,7 +38,7 @@ kb.from_csv('./assets/countries_s1_train.csv', delimiter='\t')
 kb.store('~locatedin(canada, africa)')
 kb.store('~neighbor(austria, spain)')
 
-kb.build_kg_model(cuda=True, embedding_size=100)
+kb.build_kg_model(cuda=False, embedding_size=100)
 kb.train_kg_model(steps=500, batch_size=512, neg_ratio=0.1)
 
 canada_in_africa_explicit = kb.estimate_triple_prob('canada', 'locatedin', 'africa')
