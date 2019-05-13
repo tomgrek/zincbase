@@ -7,6 +7,7 @@ for them, versus just going by its own synthetic negative examples.)
 It may have the side effect of pushing UP the probability of other wrong
 triples, see e.g. "canada in asia" below.
 """
+import context
 
 from zincbase import KB
 
