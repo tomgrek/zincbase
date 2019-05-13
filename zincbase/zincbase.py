@@ -622,7 +622,8 @@ class KB():
     def delete_rule(self, rule_idx):
         """Delete a rule from the KB.
 
-        :param int rule_idx: The index of the rule in the KB. Returned when the rule was added.
+        :param rule_idx: The index of the rule in the KB. Returned when the rule was added. May be int (if it
+        was a real rule) or str (if it was a negative example - preceded by ~).
 
         :Example:
 
@@ -677,6 +678,10 @@ class KB():
 
     def store(self, statement):
         """Store a fact/rule in the KB
+
+        It is possible to store 'false' facts by preceding the predicate with a tilde (~).
+        In this case, they do not come out in the graph and cannot be queried, but may
+        assist when building the model.
 
         :param str statement: Fact or rule to store in the KB.
         :return: the id of the fact/rule

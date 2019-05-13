@@ -15,4 +15,5 @@ jobs:
             python3 test/test_graph.py
             python3 test/test_nn_basic.py
             python3 test/test_nn.py
+            python3 test/test_neg_examples.py
             python3 -m doctest zincbase/zincbase.py

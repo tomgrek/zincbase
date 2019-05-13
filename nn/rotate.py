@@ -284,8 +284,8 @@ class KGEModel(nn.Module):
             negative_sample_loss = -(subsampling_weight * negative_score).sum() / subsampling_weight.sum()
             loss = (positive_sample_loss + negative_sample_loss) / 2
         else:
-            positive_sample_loss = -(subsampling_weight * positive_score).sum()
-            negative_sample_loss = torch.tensor([0.])
+            positive_sample_loss = -positive_score.sum()
+            negative_sample_loss = torch.tensor([[0.]])
             loss = positive_sample_loss
         
         loss += attr_loss
