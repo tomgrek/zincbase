@@ -161,11 +161,33 @@ class KGEModel(nn.Module):
                 index=tail_part.view(-1)
             ).view(batch_size, negative_sample_size, -1)
 
+        elif mode == 'neg':
+            head = torch.index_select(
+                self.entity_embedding,
+                dim=0,
+                index=sample[:,0]
+            ).unsqueeze(1)
+
+            relation = torch.index_select(
+                self.relation_embedding,
+                dim=0,
+                index=sample[:,1]
+            ).unsqueeze(1)
+
+            tail = torch.index_select(
+                self.entity_embedding,
+                dim=0,
+                index=sample[:,2]
+            ).unsqueeze(1)
+
         model_func = {
             'ComplEx': self.ComplEx,
             'RotatE': self.RotatE
         }
         score = model_func[self.model_name](head, relation, tail, mode)
+
+        if mode == 'neg':
+            score = -score
 
         if predict_pred_prop:
             whole = torch.cat((head.squeeze(), relation.squeeze(), tail.squeeze()), dim=-1)
@@ -244,17 +266,28 @@ class KGEModel(nn.Module):
             positive_sample = positive_sample.cuda()
             negative_sample = negative_sample.cuda()
             subsampling_weight = subsampling_weight.cuda()
-        negative_score, _ = model((positive_sample, negative_sample), mode=mode)
 
-        negative_score = F.logsigmoid(-negative_score).mean(dim=1)
+        if mode == 'neg':
+            negative_score = torch.zeros(positive_sample.shape)
+            if args['cuda']:
+                negative_score = negative_score.cuda()
+        else:
+            negative_score, _ = model((positive_sample, negative_sample), mode=mode)
+            negative_score = F.logsigmoid(-negative_score).mean(dim=1)
 
-        positive_score, attr_loss = model(positive_sample)
+        fwd_mode = 'neg' if mode == 'neg' else 'single'
+        positive_score, attr_loss = model(positive_sample, mode=fwd_mode)
         positive_score = F.logsigmoid(positive_score).squeeze(dim=1)
 
-        positive_sample_loss = -(subsampling_weight * positive_score).sum() / subsampling_weight.sum()
-        negative_sample_loss = -(subsampling_weight * negative_score).sum() / subsampling_weight.sum()
-
-        loss = (positive_sample_loss + negative_sample_loss) / 2
+        if mode != 'neg':
+            positive_sample_loss = -(subsampling_weight * positive_score).sum() / subsampling_weight.sum()
+            negative_sample_loss = -(subsampling_weight * negative_score).sum() / subsampling_weight.sum()
+            loss = (positive_sample_loss + negative_sample_loss) / 2
+        else:
+            positive_sample_loss = -positive_score.sum()
+            negative_sample_loss = torch.tensor([[0.]])
+            loss = positive_sample_loss
+        
         loss += attr_loss
 
         loss.backward()
