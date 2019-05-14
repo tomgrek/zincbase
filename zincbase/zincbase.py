@@ -282,7 +282,7 @@ class KB():
         """Save current KB to the directory specified. Saves the (state dict of the) PyTorch
         model as well, if it has been built.
 
-        :param str dirname: Directory in which to save the files. Creates the directory
+        :param str dirname: Directory in which to save the files. Creates the directory \
         if it doesn't already exist."""
         if not os.path.exists(dirname):
             os.mkdir(dirname)
@@ -310,7 +310,7 @@ class KB():
         """Load KB (and model, if it exists) from the specified directory.
 
         :param str dirname: Directory to load zb.pkl and (if present) pytorch_model.dict
-        :param bool cuda: If the model exists, it will be loaded - specify if you want
+        :param bool cuda: If the model exists, it will be loaded - specify if you want \
         it to be on the GPU."""
 
         with open(os.path.join(dirname, 'zb.pkl'), 'rb') as f:
@@ -622,7 +622,7 @@ class KB():
     def delete_rule(self, rule_idx):
         """Delete a rule from the KB.
 
-        :param rule_idx: The index of the rule in the KB. Returned when the rule was added. May be int (if it
+        :param rule_idx: The index of the rule in the KB. Returned when the rule was added. May be int (if it \
         was a real rule) or str (if it was a negative example - preceded by ~).
 
         :Example:

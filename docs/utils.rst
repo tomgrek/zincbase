@@ -4,6 +4,22 @@ utils package
 Submodules
 ----------
 
+utils.calc\_auc\_roc module
+---------------------------
+
+.. automodule:: utils.calc_auc_roc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.calc\_mrr module
+----------------------
+
+.. automodule:: utils.calc_mrr
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 utils.string\_utils module
 --------------------------
 
