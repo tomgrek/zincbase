@@ -11,9 +11,9 @@ ZincBase is a state of the art knowledge base. It does the following:
 * Build them into a graph
 * Provide ways to query the graph, including via bleeding-edge graph neural networks.
 
-Zincbase exists to answer questions like:
+Zincbase exists to answer questions like "what is the probability that Tom likes LARPing", or "who likes LARPing", or "classify people into LARPers vs normies":
 
-![who-likes-larping](https://user-images.githubusercontent.com/2245347/57595488-2dc45b80-74fa-11e9-80f4-dc5c7a5b22de.png)
+<img src="https://user-images.githubusercontent.com/2245347/57595488-2dc45b80-74fa-11e9-80f4-dc5c7a5b22de.png" width="320" alt="Example graph for reasoning">
 
 It combines the latest in neural networks with symbolic logic (think expert systems and prolog) and graph search.
 
@@ -62,6 +62,7 @@ python test/test_lists.py
 python test/test_nn_basic.py
 python test/test_nn.py
 python test/test_neg_examples.py
+python test/test_truthiness.py
 python -m doctest zincbase/zincbase.py
 ```
 
@@ -94,7 +95,7 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * Address inconsistencies with Prolog syntax vs basic triples
 * Add relation attributes (e.g. 'formerly') without having to add the relation as 100% fact first.
 * Add documentation regarding adding a truthiness attribute
-* Truthiness attribute would be much more useful if explicit negative examples were permitted.
+* Better interface to negative examples - specifically, exclude them from training save for the truthiness attribute.
 
 # References & Acknowledgements
 

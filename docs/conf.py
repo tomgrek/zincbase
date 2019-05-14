@@ -26,9 +26,9 @@ copyright = '2019, Tom Grek'
 author = 'Tom Grek'
 
 # The short X.Y version
-version = '0.0'
+version = '0.1'
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.1.1'
 
 
 # -- General configuration ---------------------------------------------------

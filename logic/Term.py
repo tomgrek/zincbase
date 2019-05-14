@@ -1,3 +1,5 @@
+"""A base unit for ZincBase's Prolog-like implementation of 'facts'"""
+
 from utils.string_utils import split_on
 
 class Term:
