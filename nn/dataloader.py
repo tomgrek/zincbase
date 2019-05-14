@@ -14,7 +14,7 @@ class NegDataset(Dataset):
         return self.len
     def __getitem__(self, idx):
         t = self.triples[idx]
-        return torch.LongTensor(t), torch.LongTensor([[0., 0., 0.]]), torch.FloatTensor([0.]), 'neg'
+        return torch.LongTensor(t), torch.LongTensor([[0., 0., 0.]]), torch.FloatTensor([0.]), 'neg', False
 
 class TrainDataset(Dataset):
     """Zincbase sets this up automatically from the knowledge base.
@@ -38,9 +38,9 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         positive_sample = self.triples[idx]
 
-        head, relation, tail, attr = positive_sample
+        head, relation, tail, attr, true = positive_sample
 
-        subsampling_weight = self.count[(head, relation)] + self.count[(tail, -relation-1)]
+        subsampling_weight = self.count[(head, relation)] + self.count[(tail, -relation - 1)]
         subsampling_weight = torch.sqrt(1 / torch.Tensor([subsampling_weight]))
 
         negative_sample_list = []
@@ -81,7 +81,7 @@ class TrainDataset(Dataset):
                 tmp.append(item)
         positive_sample = tmp
         positive_sample = torch.LongTensor(positive_sample) #TODO First 3 needs to be a longtensor, after that should be floats
-        return positive_sample, negative_sample, subsampling_weight, self.mode
+        return positive_sample, negative_sample, subsampling_weight, self.mode, true
 
     @staticmethod
     def collate_fn(data):
@@ -89,12 +89,13 @@ class TrainDataset(Dataset):
         negative_sample = torch.stack([_[1] for _ in data], dim=0)
         subsample_weight = torch.cat([_[2] for _ in data], dim=0)
         mode = data[0][3]
-        return positive_sample, negative_sample, subsample_weight, mode
+        true = data[0][4]
+        return positive_sample, negative_sample, subsample_weight, mode, true
 
     @staticmethod
     def count_frequency(triples, start=4):
         count = {}
-        for head, relation, tail, attr in triples:
+        for head, relation, tail, attr, true in triples:
             if (head, relation) not in count:
                 count[(head, relation)] = start
             else:
@@ -109,7 +110,7 @@ class TrainDataset(Dataset):
     @staticmethod
     def get_true_attr(triples):
         true_attr = {}
-        for head, relation, tail, attr in triples:
+        for head, relation, tail, attr, true in triples:
             true_attr[head] = attr
         return true_attr
 
@@ -119,7 +120,7 @@ class TrainDataset(Dataset):
         true_head = {}
         true_tail = {}
 
-        for head, relation, tail, attr in triples:
+        for head, relation, tail, attr, true in triples:
             if (head, relation) not in true_tail:
                 true_tail[(head, relation)] = []
             true_tail[(head, relation)].append(tail)

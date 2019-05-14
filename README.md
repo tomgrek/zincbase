@@ -95,7 +95,8 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * Address inconsistencies with Prolog syntax vs basic triples
 * Add relation attributes (e.g. 'formerly') without having to add the relation as 100% fact first.
 * Add documentation regarding adding a truthiness attribute
-* Better interface to negative examples - specifically, exclude them from training save for the truthiness attribute.
+* Better interface to negative examples - ~specifically, exclude them from training save for the truthiness attribute.~
+* Add 'real name' attribute to nodes when adding them to the KB. It should track the original name before we strip out spaces and special chars.
 
 # References & Acknowledgements
 
