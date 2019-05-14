@@ -12,6 +12,14 @@ logic.Goal module
     :undoc-members:
     :show-inheritance:
 
+logic.Negative module
+---------------------
+
+.. automodule:: logic.Negative
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 logic.Rule module
 -----------------
 
