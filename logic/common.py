@@ -1,3 +1,5 @@
+"""Under-the-hood details of ZincBase's Prolog-like implementation"""
+
 import copy
 
 from logic.Term import Term

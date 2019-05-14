@@ -4,6 +4,9 @@ import torch
 from torch.utils.data import Dataset
 
 class NegDataset(Dataset):
+    """Zincbase sets this up automatically from the knowledge base.
+    It's a generator used for negative examples.
+    """
     def __init__(self, neg_triples):
         self.triples = neg_triples
         self.len = len(neg_triples)
@@ -14,6 +17,10 @@ class NegDataset(Dataset):
         return torch.LongTensor(t), torch.LongTensor([[0., 0., 0.]]), torch.FloatTensor([0.]), 'neg'
 
 class TrainDataset(Dataset):
+    """Zincbase sets this up automatically from the knowledge base.
+    It's the generator for the RotatE algorithm.
+    """
+
     def __init__(self, triples, nrelation, negative_sample_size, mode):
         self.len = len(triples)
         self.triples = triples
@@ -128,6 +135,8 @@ class TrainDataset(Dataset):
         return true_head, true_tail
 
 class BidirectionalOneShotIterator(object):
+    """ZincBase uses this class automatically when you want to train a model from a KB.
+    """
     def __init__(self, dataloader_head, dataloader_tail, dataloader_neg=None, neg_ratio=1):
         self.iterator_head = self.one_shot_iterator(dataloader_head)
         self.iterator_tail = self.one_shot_iterator(dataloader_tail)
