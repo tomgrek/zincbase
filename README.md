@@ -86,7 +86,6 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 # TODO
 
 * Add documentation
-* "solidify" method that takes bindings output from a rule and adds them to graph as concrete atoms so NN can work on them.
 * to_csv method
 * utilize postgres as backend triple store
 * The to_csv/from_csv methods do not yet support node attributes.
