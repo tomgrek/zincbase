@@ -87,7 +87,6 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 
 * Add documentation
 * "solidify" method that takes bindings output from a rule and adds them to graph as concrete atoms so NN can work on them.
-* refactor the .attr method to be prolog style ie owns_a_raincoat(tom)
 * to_csv method
 * utilize postgres as backend triple store
 * The to_csv/from_csv methods do not yet support node attributes.
@@ -95,7 +94,7 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * Address inconsistencies with Prolog syntax vs basic triples
 * Add relation attributes (e.g. 'formerly') without having to add the relation as 100% fact first.
 * Add documentation regarding adding a truthiness attribute
-* Better interface to negative examples - ~specifically, exclude them from training save for the truthiness attribute.~
+* Better interface to negative examples
 * Add 'real name' attribute to nodes when adding them to the KB. It should track the original name before we strip out spaces and special chars.
 
 # References & Acknowledgements

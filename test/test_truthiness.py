@@ -13,7 +13,7 @@ kb.store('locatedin(canada, africa)')
 kb.store('~locatedin(canada, africa)')
 kb.edge_attr('canada', 'locatedin', 'africa', {'truthiness':-1.})
 
-kb.build_kg_model(cuda=True, embedding_size=100, pred_attributes=['truthiness'])
+kb.build_kg_model(cuda=False, embedding_size=100, pred_attributes=['truthiness'])
 
 kb.train_kg_model(steps=1000, batch_size=4, neg_ratio=0.01)
 
