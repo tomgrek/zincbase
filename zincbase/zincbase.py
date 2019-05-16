@@ -688,6 +688,39 @@ class KB():
         plt.axis('off')
         plt.show()
 
+    def solidify(self, predicate):
+        """Query the KB (with Prolog) and 'solidify' facts in the KB, making them part
+        of the graph, so that the NN can be trained.
+
+        :param str predicate: A predicate (that's a rule not a fact otherwise what's the point)
+        
+        :Example:
+        >>> kb = KB()
+        >>> kb.store('is(tom, human)')
+        0
+        >>> kb.store('has_part(shamala, head)')
+        1
+        >>> kb.store('is(X, human) :- has_part(X, head)')
+        2
+        >>> next(kb.query('is(tom, human)'))
+        True
+        >>> kb.to_triples()
+        [('tom', 'is', 'human'), ('shamala', 'has_part', 'head')]
+        >>> kb.solidify('is')
+        1
+        >>> kb.to_triples()
+        [('tom', 'is', 'human'), ('shamala', 'has_part', 'head'), ('shamala', 'is', 'human')]
+        """
+        answers = self.query('{}(X, Y)'.format(predicate))
+        i = 0
+        rule_strings = [str(x) for x in self.rules]
+        for a in answers:
+            as_string = '{}({}, {})'.format(predicate, a['X'], a['Y'])
+            if not as_string in rule_strings:
+                i += 1
+                self.store(as_string)
+        return i
+
     def query(self, statement):
         """Query the KB.
 
@@ -735,8 +768,9 @@ class KB():
         the triple representation is `(subject, pred, object)`.
 
         :param bool data: Whether to return subject, predicate and object \
-        attributes as elements 4, 5, and 6 of the triple.
-        :return: list of triples (tuples of length 3 or 6 if data=True)
+        attributes as elements 4, 5, and 6 of the triple. The 7th element of the \
+        triple is usually False, but is True when the fact/triple is a negative example.
+        :return: list of triples (tuples of length 3 or 7 if data=True)
 
         :Example:
 
@@ -750,8 +784,10 @@ class KB():
         >>> kb.to_triples()
         [('b', 'a', 'c')]
         >>> kb.attr('b', {'an_attribute': 'xyz'})
+        >>> kb.to_triples()
+        [('b', 'a', 'c')]
         >>> kb.to_triples(data=True)
-        [('b', 'a', 'c', {'an_attribute': 'xyz'}, {}, {})]"""
+        [('b', 'a', 'c', {'an_attribute': 'xyz'}, {}, {}, False)]"""
         triples = []
         neg_examples = [str(x) for x in self._neg_examples]
         for r in self.rules:

@@ -10,6 +10,7 @@ jobs:
           name: Run Tests
           command: |
             python3 -m pip install -r requirements.txt
+            python3 -m doctest zincbase/zincbase.py
             python3 test/test_main.py
             python3 test/test_lists.py
             python3 test/test_graph.py
@@ -17,4 +18,3 @@ jobs:
             python3 test/test_nn.py
             python3 test/test_neg_examples.py
             python3 test/test_truthiness.py
-            python3 -m doctest zincbase/zincbase.py
