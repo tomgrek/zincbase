@@ -11,3 +11,5 @@ class Negative:
         self.head = atoms[0]
         self.pred = sub_exprs[0]
         self.tail = atoms[1]
+    def __repr__(self):
+        return self.pred + '(' + self.head + ', ' + self.tail + ')'

@@ -72,7 +72,7 @@ class KGEModel(nn.Module):
         x = self.nonlinearity(x)
         return x[self.node_attributes.index(attribute_name)].item()
 
-    def forward(self, sample, mode='single', attributes=True, predict_pred_prop=False):
+    def forward(self, sample, mode='single', attributes=True, predict_pred_prop=False, predict_only=False):
         """A single forward pass"""
         if mode == 'single':
             batch_size, negative_sample_size = sample.size(0), 1
@@ -100,11 +100,14 @@ class KGEModel(nn.Module):
             attr_pred = sample[:, 3+self.num_node_attributes:]
             attr_pred = attr_pred.to(torch.float)
 
+            true = sample[:, -1]
+
         elif mode == 'head-batch':
 
             tail_part, head_part = sample
             attr_node = head_part[:, 3:3 + self.num_node_attributes]
             attr_pred = head_part[:, 3 + self.num_node_attributes:]
+            true = tail_part[:, -1]
             head_part = head_part[:, :3]
             tail_part = tail_part[:, :3]
             batch_size, negative_sample_size = head_part.size(0), head_part.size(1)
@@ -161,6 +164,8 @@ class KGEModel(nn.Module):
                 index=tail_part.view(-1)
             ).view(batch_size, negative_sample_size, -1)
 
+            true = head_part[:, -1]
+
         elif mode == 'neg':
             head = torch.index_select(
                 self.entity_embedding,
@@ -180,11 +185,17 @@ class KGEModel(nn.Module):
                 index=sample[:,2]
             ).unsqueeze(1)
 
+            true = sample[:, -1]
+
         model_func = {
             'ComplEx': self.ComplEx,
             'RotatE': self.RotatE
         }
+
         score = model_func[self.model_name](head, relation, tail, mode)
+        if not predict_only and mode != 'neg':
+            true = (1 - true).unsqueeze(dim=-1).to(torch.float32).to(self.device)
+            score = score * true
 
         if mode == 'neg':
             score = -score
@@ -261,7 +272,7 @@ class KGEModel(nn.Module):
     def train_step(model, optimizer, train_iterator, args):
         optimizer.zero_grad()
 
-        positive_sample, negative_sample, subsampling_weight, mode = next(train_iterator)
+        positive_sample, negative_sample, subsampling_weight, mode, true = next(train_iterator)
         if args['cuda']:
             positive_sample = positive_sample.cuda()
             negative_sample = negative_sample.cuda()

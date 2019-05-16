@@ -72,6 +72,9 @@ class KB():
         """Set attributes on a predicate between subject and object.
         Useful for example to encode time, or truthiness.
 
+        Note that if any of the specified attributes have been previously set, 
+        this updates them with new values. To delete a set edge attribute, see also `delete_edge_attr`.
+
         :param str sub: Subject node/entity
         :param str pred: Predicate between subject and object
         :param str ob: Object node/entity
@@ -91,6 +94,24 @@ class KB():
         for idx, edge in self.G[sub][ob].items():
             if edge['pred'] == pred:
                 nx.set_edge_attributes(self.G, {(sub, ob, idx): attributes})
+                return None
+        return False
+    
+    def delete_edge_attr(self, sub, pred, ob, attributes):
+        """Delete attributes previously set on a predicate between subject and object.
+        To set the attribute in the first place, see also `edge_attr`.
+
+        :param str sub: Subject node/entity
+        :param str pred: Predicate between subject and object
+        :param str ob: Object node/entity
+        :param list attributes: List of attributes to delete.
+
+        :returns: False if attribute was not present, else None.
+        """
+        for idx, edge in self.G[sub][ob].items():
+            if edge['pred'] == pred:
+                for attribute in attributes:
+                    del edge[attribute]
                 return None
         return False
 
@@ -279,7 +300,7 @@ class KB():
         return pred == 2
 
     def save_all(self, dirname='.'):
-        """Save current KB to the directory specified. Saves the (state dict of the) PyTorch
+        """Save current KB to the directory specified. Saves the (state dict of the) PyTorch \
         model as well, if it has been built.
 
         :param str dirname: Directory in which to save the files. Creates the directory \
@@ -381,10 +402,18 @@ class KB():
                 attr = float(triple[3].get(attribute, 0.0))
                 attrs.append(attr)
             for pred_attr in pred_attributes:
-                attr = float(triple[4].get(pred_attr, 0.0))
+                if pred_attr == 'truthiness':
+                    default_value = 1
+                else:
+                    default_value = 0
+                attr = float(triple[4].get(pred_attr, default_value))
                 attrs.append(attr)
+            if len(triple) == 7 and triple[6]:
+                true = 1. # it's a false fact; negative example TODO rename from 'true'!
+            else:
+                true = 0.
             self._encoded_triples.append((self._entity2id[triple[0]], self._relation2id[triple[1]], self._entity2id[triple[2]],
-                                        attrs))
+                                        attrs, true))
         for neg_example in self._neg_examples:
             self._encoded_neg_examples.append((self._entity2id[neg_example.head], self._relation2id[neg_example.pred], self._entity2id[neg_example.tail]))
         dee = False; dre = False
@@ -480,7 +509,7 @@ class KB():
         tensor = torch.tensor([[self._entity2id[sub], self._relation2id[pred], self._entity2id[ob]]])
         if self._cuda:
             tensor = tensor.cuda()
-        logit, _ = self._kg_model(tensor, attributes=False)
+        logit, _ = self._kg_model(tensor, attributes=False, predict_only=True)
         return round(expit(float(logit)), 4)
 
     def estimate_triple_prob_with_attrs(self, sub, pred, ob, pred_prop):
@@ -490,7 +519,7 @@ class KB():
         tensor = torch.tensor([[self._entity2id[sub], self._relation2id[pred], self._entity2id[ob]]])
         if self._cuda:
             tensor = tensor.cuda()
-        logit, _ = self._kg_model(tensor, attributes=True, predict_pred_prop=pred_prop)
+        logit, _ = self._kg_model(tensor, attributes=True, predict_pred_prop=pred_prop, predict_only=True)
         return round(expit(float(logit)), 4)
 
     def get_embedding(self, entity):
@@ -569,7 +598,7 @@ class KB():
         possibles_tensor = torch.tensor(possibles)
         if self._cuda:
             possibles_tensor = possibles_tensor.cuda()
-        out, _ = self._kg_model(possibles_tensor)
+        out, _ = self._kg_model(possibles_tensor, predict_only=True)
         k = min(out.size(0), k)
         answers = torch.topk(out, k=k, dim=0)
         probs = answers[0]
@@ -724,6 +753,7 @@ class KB():
         >>> kb.to_triples(data=True)
         [('b', 'a', 'c', {'an_attribute': 'xyz'}, {}, {})]"""
         triples = []
+        neg_examples = [str(x) for x in self._neg_examples]
         for r in self.rules:
             if not r.goals:
                 if len(r.head.args) == 2:
@@ -732,10 +762,17 @@ class KB():
                     object_ = str(r.head.args[1])
                     object_ = object_[0].lower() + object_[1:]
                     if data:
+                        edge = self.edge(subject, r.head.pred, object_)
+                        truthiness = edge.get('truthiness', False)
+                        if (truthiness and truthiness < 0) or str(r) in neg_examples: 
+                            is_neg = True
+                        else:
+                            is_neg = False
                         triples.append((subject, r.head.pred, object_,
                             self.node(subject),
-                            self.edge(subject, r.head.pred, object_),
-                            self.node(object_)
+                            edge,
+                            self.node(object_),
+                            is_neg
                         ))
                     else:
                         triples.append((subject, r.head.pred, object_))

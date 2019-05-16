@@ -11,3 +11,5 @@ class Rule:
             sub_goals = split_on(parts[1], ',')
             for sub_goal in sub_goals:
                 self.goals.append(Term(sub_goal, graph=graph))
+    def __repr__(self):
+        return str(self.head)
