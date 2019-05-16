@@ -1,0 +1,13 @@
+Contributions very welcome!
+
+I found it helpful to add the following as `.git/hooks/pre-commit`:
+```
+#!/bin/sh
+
+cuda=$(grep -r "cuda=True" test/*)
+if [ ! -z "$cuda" ]
+then
+        echo "Set CUDA to false or tests on CircleCI will fail!"
+        exit 1
+fi
+```

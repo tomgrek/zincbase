@@ -123,3 +123,7 @@ If you use this software, please consider citing:
 }
 
 ```
+
+# Contributing
+
+See CONTRIBUTING. And please do!
