@@ -105,7 +105,7 @@ kb.store('lives_in(tom, seattle)') ## TODO seems weird to have to add this fact 
 # on the next line.
 kb.edge_attr('tom', 'lives_in', 'seattle', {'formerly': 1.0})
 kb.seed(555)
-kb.build_kg_model(cuda=False, embedding_size=50, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'],
+kb.build_kg_model(cuda=True, embedding_size=50, node_attributes=['owns_a_raincoat', 'doesnt_own_raincoat'],
                 pred_attributes=['formerly'], attr_loss_to_graph_loss=0.9, pred_loss_to_graph_loss=5.0)
 kb.train_kg_model(steps=8001, batch_size=2, neg_to_pos=4)
 
