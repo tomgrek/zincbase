@@ -72,6 +72,9 @@ class KB():
         """Set attributes on a predicate between subject and object.
         Useful for example to encode time, or truthiness.
 
+        Note that if any of the specified attributes have been previously set, 
+        this updates them with new values. To delete a set edge attribute, see also `delete_edge_attr`.
+
         :param str sub: Subject node/entity
         :param str pred: Predicate between subject and object
         :param str ob: Object node/entity
@@ -91,6 +94,24 @@ class KB():
         for idx, edge in self.G[sub][ob].items():
             if edge['pred'] == pred:
                 nx.set_edge_attributes(self.G, {(sub, ob, idx): attributes})
+                return None
+        return False
+    
+    def delete_edge_attr(self, sub, pred, ob, attributes):
+        """Delete attributes previously set on a predicate between subject and object.
+        To set the attribute in the first place, see also `edge_attr`.
+
+        :param str sub: Subject node/entity
+        :param str pred: Predicate between subject and object
+        :param str ob: Object node/entity
+        :param list attributes: List of attributes to delete.
+
+        :returns: False if attribute was not present, else None.
+        """
+        for idx, edge in self.G[sub][ob].items():
+            if edge['pred'] == pred:
+                for attribute in attributes:
+                    del edge[attribute]
                 return None
         return False
 
@@ -732,6 +753,7 @@ class KB():
         >>> kb.to_triples(data=True)
         [('b', 'a', 'c', {'an_attribute': 'xyz'}, {}, {})]"""
         triples = []
+        neg_examples = [str(x) for x in self._neg_examples]
         for r in self.rules:
             if not r.goals:
                 if len(r.head.args) == 2:
@@ -742,9 +764,7 @@ class KB():
                     if data:
                         edge = self.edge(subject, r.head.pred, object_)
                         truthiness = edge.get('truthiness', False)
-                        # TODO Need option for either truthiness < 0 OR edge is in neg examples.
-                        # if Negative(r.head.pred + '(' + subject + ',' + object_) in self._neg_examples:
-                        if (truthiness and truthiness < 0):# or edge:
+                        if (truthiness and truthiness < 0) or str(r) in neg_examples: 
                             is_neg = True
                         else:
                             is_neg = False
