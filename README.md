@@ -90,6 +90,8 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * utilize postgres as backend triple store
 * The to_csv/from_csv methods do not yet support node attributes.
 * Add relation extraction from arbitrary unstructured text
+* Add context to triple - that is interpreted by BERT/ULM/GPT-2 similar and
+put into an embedding that's concat'd to the KG embedding.
 * Address inconsistencies with Prolog syntax vs basic triples
 * Add documentation regarding adding a truthiness attribute
 * Better interface to negative examples
