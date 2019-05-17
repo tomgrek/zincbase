@@ -19,3 +19,10 @@ def split_on(line, separator, all=True):
             nesting -= 1
             continue
     return [line]
+
+def split_to_parts(line):
+    sub_exprs = split_on(line, '(', all=False)
+    if len(sub_exprs) != 2:
+        raise Exception('Syntax error')
+    atoms = split_on(sub_exprs[1][:-1], ',')
+    return (atoms[0], sub_exprs[0], atoms[1])

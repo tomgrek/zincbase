@@ -91,7 +91,6 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * The to_csv/from_csv methods do not yet support node attributes.
 * Add relation extraction from arbitrary unstructured text
 * Address inconsistencies with Prolog syntax vs basic triples
-* Add relation attributes (e.g. 'formerly') without having to add the relation as 100% fact first.
 * Add documentation regarding adding a truthiness attribute
 * Better interface to negative examples
 * Add 'real name' attribute to nodes when adding them to the KB. It should track the original name before we strip out spaces and special chars.

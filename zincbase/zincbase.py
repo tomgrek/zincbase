@@ -24,7 +24,7 @@ from logic.Rule import Rule
 from logic.common import unify, process
 from nn.dataloader import NegDataset, TrainDataset, BidirectionalOneShotIterator
 from nn.rotate import KGEModel
-from utils.string_utils import strip_all_whitespace
+from utils.string_utils import strip_all_whitespace, split_to_parts
 
 class KB():
     """Knowledge Base Class
@@ -403,9 +403,9 @@ class KB():
                 attrs.append(attr)
             for pred_attr in pred_attributes:
                 if pred_attr == 'truthiness':
-                    default_value = 1
+                    default_value = 1.
                 else:
-                    default_value = 0
+                    default_value = 0.
                 attr = float(triple[4].get(pred_attr, default_value))
                 attrs.append(attr)
             if len(triple) == 7 and triple[6]:
@@ -484,6 +484,7 @@ class KB():
                 num_workers=1,
                 collate_fn=TrainDataset.collate_fn)
             neg_ratio = int(neg_ratio * (len(self._encoded_triples) / len(self._neg_examples)))
+            neg_ratio = max(neg_ratio, 1e-4)
             train_iterator = BidirectionalOneShotIterator(train_dataloader_head, train_dataloader_tail, neg_dataloader, neg_ratio)
         else:
             train_iterator = BidirectionalOneShotIterator(train_dataloader_head, train_dataloader_tail)
@@ -738,14 +739,16 @@ class KB():
         [{'X': 'a'}]"""
         return self._search(Term(strip_all_whitespace(statement)))
 
-    def store(self, statement):
+    def store(self, statement, edge_attributes={}):
         """Store a fact/rule in the KB
 
-        It is possible to store 'false' facts by preceding the predicate with a tilde (~).
+        It is possible to store 'false' facts (negative examples) by preceding the predicate with a tilde (~).
         In this case, they do not come out in the graph and cannot be queried, but may
         assist when building the model.
 
         :param str statement: Fact or rule to store in the KB.
+        :param dict node_attributes: Dictionary of attributes to set on the edge. May \
+        include truthiness which, if < 0, automatically makes the rule a negative example.
         :return: the id of the fact/rule
 
         :Example:
@@ -753,10 +756,22 @@ class KB():
         >>> KB().store('a(a)')
         0"""
         statement = strip_all_whitespace(statement)
+        if 'truthiness' in edge_attributes and edge_attributes['truthiness'] < 0:
+            if statement[0] != '~':
+                statement = '~' + statement
         if statement[0] == '~':
+            triple = split_to_parts(statement[1:])
+            if not triple[0] in self._entity2id:
+                self._entity2id[triple[0]] = len(self._entity2id)
+            if not triple[1] in self._relation2id:
+                self._relation2id[triple[1]] = len(self._relation2id)
+            if not triple[2] in self._entity2id:
+                self._entity2id[triple[2]] = len(self._entity2id)
             self._neg_examples.append(Negative(statement[1:]))
             return '~' + str(len(self._neg_examples) - 1)
         self.rules.append(Rule(statement, graph=self.G))
+        parts = split_to_parts(statement[1:])
+        self.edge_attr(parts[0], parts[1], parts[2], edge_attributes)
         return len(self.rules) - 1
 
     def to_triples(self, data=False):

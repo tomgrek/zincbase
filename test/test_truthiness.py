@@ -9,9 +9,8 @@ kb.seed(555)
 
 kb.from_csv('./assets/countries_s1_train.csv', delimiter='\t')
 
-kb.store('locatedin(canada, africa)')
-kb.store('~locatedin(canada, africa)')
-kb.edge_attr('canada', 'locatedin', 'africa', {'truthiness':-1.})
+# specifying both a ~ and a truthiness < 0 is probably unnecessary.
+kb.store('~locatedin(canada, africa)', {'truthiness': -1.})
 
 kb.build_kg_model(cuda=False, embedding_size=100, pred_attributes=['truthiness'])
 
