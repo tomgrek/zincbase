@@ -770,8 +770,9 @@ class KB():
             self._neg_examples.append(Negative(statement[1:]))
             return '~' + str(len(self._neg_examples) - 1)
         self.rules.append(Rule(statement, graph=self.G))
-        parts = split_to_parts(statement[1:])
-        self.edge_attr(parts[0], parts[1], parts[2], edge_attributes)
+        if edge_attributes:
+            parts = split_to_parts(statement[1:])
+            self.edge_attr(parts[0], parts[1], parts[2], edge_attributes)
         return len(self.rules) - 1
 
     def to_triples(self, data=False):
