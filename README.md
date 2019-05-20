@@ -68,6 +68,8 @@ python -m doctest zincbase/zincbase.py
 
 # Validation
 
+"Countries" and "FB15k" datasets are included in this repo.
+
 There is a script to evaluate that ZincBase gets at least as good
 performance on the Countries dataset as the original (2019) RotatE paper. From the repo's
 root directory:
@@ -78,6 +80,8 @@ python examples/eval_countries_s3.py
 
 It tests the hardest Countries task and prints out the AUC ROC, which should be
 ~ 0.95 to match the paper. It takes about 30 minutes to run on a modern GPU.
+
+There is also a script to evaluate performance on FB15k: `python examples/fb15k_mrr.py`.
 
 ## Building documentation
 
