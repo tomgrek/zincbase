@@ -757,7 +757,7 @@ class KB():
         [{'X': 'a'}]"""
         return self._search(Term(strip_all_whitespace(statement)))
 
-    def store(self, statement, edge_attributes={}):
+    def store(self, statement, node_attributes=[], edge_attributes={}):
         """Store a fact/rule in the KB
 
         It is possible to store 'false' facts (negative examples) by preceding the predicate with a tilde (~).
@@ -765,7 +765,9 @@ class KB():
         assist when building the model.
 
         :param str statement: Fact or rule to store in the KB.
-        :param dict node_attributes: Dictionary of attributes to set on the edge. May \
+        :param list<dict> node_attributes: List of length 2 with each element being a \
+        dict of items to set on the nodes (in order subject, object).
+        :param dict edge_attributes: Dictionary of attributes to set on the edge. May \
         include truthiness which, if < 0, automatically makes the rule a negative example.
         :return: the id of the fact/rule
 
@@ -791,6 +793,10 @@ class KB():
         if edge_attributes:
             parts = split_to_parts(statement[1:])
             self.edge_attr(parts[0], parts[1], parts[2], edge_attributes)
+        if node_attributes:
+            parts = split_to_parts(statement[1:])
+            self.attr(parts[0], node_attributes[0])
+            self.attr(parts[2], node_attributes[1])
         return len(self.rules) - 1
 
     def to_triples(self, data=False):
@@ -879,7 +885,11 @@ class KB():
                 ob = cleanse(row[2])
                 if not (sub.replace('_','').isalnum() and ob.replace('_','').isalnum()):
                     continue
-                self.store('{}({},{})'.format(pred, sub, ob))
+                node_attributes = [
+                    {'_': {'real_name': row[0]}},
+                    {'_': {'real_name': row[2]}}
+                ]
+                self.store('{}({},{})'.format(pred, sub, ob), node_attributes=node_attributes)
                 i += 1
                 if size and i > size:
                     break

@@ -95,7 +95,6 @@ put into an embedding that's concat'd to the KG embedding.
 * Address inconsistencies with Prolog syntax vs basic triples
 * Add documentation regarding adding a truthiness attribute
 * Better interface to negative examples
-* Add 'real name' attribute to nodes when adding them to the KB. It should track the original name before we strip out spaces and special chars.
 
 # References & Acknowledgements
 
