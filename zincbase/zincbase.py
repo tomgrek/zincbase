@@ -24,7 +24,7 @@ from logic.Rule import Rule
 from logic.common import unify, process
 from nn.dataloader import NegDataset, TrainDataset, BidirectionalOneShotIterator
 from nn.rotate import KGEModel
-from utils.string_utils import strip_all_whitespace, split_to_parts
+from utils.string_utils import strip_all_whitespace, split_to_parts, cleanse
 
 class KB():
     """Knowledge Base Class
@@ -874,11 +874,9 @@ class KB():
                 next(reader, None)
             i = 0
             for row in reader:
-                pred = re.sub('[ ./()-]', '_', row[1])
-                sub = re.sub('[ ./()-]', '_', row[0])
-                sub = sub[0].lower() + sub[1:]
-                ob = re.sub('[ ./()-]', '_', row[2])
-                ob = ob[0].lower() + ob[1:]
+                pred = cleanse(row[1])
+                sub = cleanse(row[0])
+                ob = cleanse(row[2])
                 if not (sub.replace('_','').isalnum() and ob.replace('_','').isalnum()):
                     continue
                 self.store('{}({},{})'.format(pred, sub, ob))

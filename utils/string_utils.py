@@ -1,3 +1,5 @@
+import re
+
 def strip_all_whitespace(line):
     return line.replace(' ', '').strip()
 
@@ -26,3 +28,7 @@ def split_to_parts(line):
         raise Exception('Syntax error')
     atoms = split_on(sub_exprs[1][:-1], ',')
     return (atoms[0], sub_exprs[0], atoms[1])
+
+def cleanse(line):
+    line = re.sub('[ ./()-]', '_', line)
+    return line[0].lower() + line[1:]

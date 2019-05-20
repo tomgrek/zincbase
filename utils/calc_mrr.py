@@ -3,6 +3,8 @@ import re
 
 from tqdm import tqdm
 
+from utils.string_utils import cleanse
+
 def calc_mrr(kb, test_file, delimiter=',', header=None, size=None):
     """Calculate the mean reciprocal rank using a test set."""
     with open(test_file) as f:
@@ -12,11 +14,9 @@ def calc_mrr(kb, test_file, delimiter=',', header=None, size=None):
         i = 0
         test_triples = []
         for row in reader:
-            pred = re.sub('[ ./()]', '_', row[1])
-            sub = re.sub('[ ./()]', '_', row[0])
-            sub = sub[0].lower() + sub[1:]
-            ob = re.sub('[ ./()]', '_', row[2])
-            ob = ob[0].lower() + ob[1:]
+            pred = cleanse(pred)
+            sub = cleanse(sub)
+            ob = cleanse(ob)
             if not (sub.replace('_','').isalnum() and ob.replace('_','').isalnum()):
                 continue
             test_triples.append((sub, pred, ob))
