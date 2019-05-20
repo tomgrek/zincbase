@@ -1,3 +1,19 @@
-countries.csv is derived from and contains information from https://github.com/mledoze/countries, and is made available 
+The countries files are derived from and contain information from https://github.com/mledoze/countries, and is made available 
 here under the Open Database License (ODbL, see https://github.com/mledoze/countries/blob/master/LICENSE)
 for the terms of the license.
+
+Freebase 15k comes from:
+
+  @incollection{bordes-nips13,
+    title = {Translating Embeddings for Modeling Multi-relational Data},
+    author = {Antoine Bordes and Nicolas Usunier and Alberto Garcia-Dur\'an and Jason Weston and Oksana Yakhnenko},
+    booktitle={Advances in Neural Information Processing Systems (NIPS 26)},
+    year={2013}
+  }
+
+And can be found at these urls: https://www.hds.utc.fr/everest/doku.php?id=en:transe, http://goo.gl/0PpKQe.
+
+It is licensed under Creative Commons Attribution (aka CC-BY) 
+(http://creativecommons.org/licenses/by/2.5/).
+
+It was modifed by me, Tom Grek, to replace entity ids with rough approximations of their names (seemingly not a 1:1 mapping) but I do not assert any rights in that.

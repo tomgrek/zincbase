@@ -25,6 +25,7 @@ def calc_mrr(kb, test_file, delimiter=',', header=None, size=None):
     if not size:
         size = len(test_triples)
     for t in tqdm(test_triples[:size]):
+        # TODO, this is inefficient, not batched.
         try:
             ob = t[2]
             ranks = kb.get_most_likely(t[0], t[1], '?', k=100)
