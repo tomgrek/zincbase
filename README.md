@@ -97,8 +97,7 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * Add context to triple - that is interpreted by BERT/ULM/GPT-2 similar and
 put into an embedding that's concat'd to the KG embedding.
 * Address inconsistencies with Prolog syntax vs basic triples
-* Add documentation regarding adding a truthiness attribute
-* Better interface to negative examples
+* Reinforcement learning for graph traversal.
 
 # References & Acknowledgements
 

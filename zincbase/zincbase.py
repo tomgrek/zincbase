@@ -714,6 +714,7 @@ class KB():
         :param str predicate: A predicate (that's a rule not a fact otherwise what's the point)
         
         :Example:
+        
         >>> kb = KB()
         >>> kb.store('is(tom, human)')
         0
