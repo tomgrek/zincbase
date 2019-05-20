@@ -791,10 +791,10 @@ class KB():
             return '~' + str(len(self._neg_examples) - 1)
         self.rules.append(Rule(statement, graph=self.G))
         if edge_attributes:
-            parts = split_to_parts(statement[1:])
+            parts = split_to_parts(statement)
             self.edge_attr(parts[0], parts[1], parts[2], edge_attributes)
         if node_attributes:
-            parts = split_to_parts(statement[1:])
+            parts = split_to_parts(statement)
             self.attr(parts[0], node_attributes[0])
             self.attr(parts[2], node_attributes[1])
         return len(self.rules) - 1
@@ -889,7 +889,10 @@ class KB():
                     {'_': {'real_name': row[0]}},
                     {'_': {'real_name': row[2]}}
                 ]
-                self.store('{}({},{})'.format(pred, sub, ob), node_attributes=node_attributes)
+                edge_attributes = {
+                    '_': {'real_name': row[1]}
+                }
+                self.store('{}({},{})'.format(pred, sub, ob), node_attributes=node_attributes, edge_attributes=edge_attributes)
                 i += 1
                 if size and i > size:
                     break
