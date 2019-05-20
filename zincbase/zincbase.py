@@ -562,8 +562,26 @@ class KB():
             borgs.append({'distance': round(distances[i], 4), 'entity': self._knn_index[int(indices[i])]})
         return borgs
 
-    def get_most_likely(self, sub, pred, ob, k=1):
+    @property
+    def entities(self):
+        """All the entities in the KB.
+        
+        :returns generator: Generator of all the entities"""
+        return self._entity2id.keys()
+    
+    @property
+    def predicates(self):
+        """All the predicates (aka relations) in the KB.
+        
+        :returns generator: Generator of all the predicates"""
+        return self._relation2id.keys()
+
+    def get_most_likely(self, sub, pred, ob, candidates=None, k=1):
         """Return the k most likely triples to satisfy the input triple.
+
+        :param list<str> candidates: Candidate entities. If None or not specified, this function \
+        will generate possible candidates from the rest of the triple.
+        :param int k: The k in top k.
 
         :Example:
 
@@ -571,25 +589,25 @@ class KB():
         >>> kb.from_csv('./assets/countries_s1_train.csv', delimiter='\\t')
         >>> kb.seed(555)
         >>> kb.build_kg_model(cuda=False, embedding_size=100)
-        >>> kb.train_kg_model(steps=1000, batch_size=2, verbose=False, neg_to_pos=4)
+        >>> kb.train_kg_model(steps=2000, batch_size=2, verbose=False, neg_to_pos=4)
         >>> kb.get_most_likely('austria', 'neighbor', '?', k=2) # doctest:+ELLIPSIS
-        [{'prob': 0.9448, 'triple': ('austria', 'neighbor', 'liechtenstein')}, {'prob': 0.9447, 'triple': ('austria', 'neighbor', 'germany')}]"""
-
+        [{'prob': 0.9673, 'triple': ('austria', 'neighbor', 'germany')}, {'prob': 0.9656, 'triple': ('austria', 'neighbor', 'liechtenstein')}]
+        >>> kb.get_most_likely('?', 'neighbor', 'austria', candidates=list(kb.entities), k=2)
+        [{'prob': 0.9467, 'triple': ('slovenia', 'neighbor', 'austria')}, {'prob': 0.94, 'triple': ('liechtenstein', 'neighbor', 'austria')}]"""
+        
         orig_sub = sub
         orig_ob = ob
-        if sub == '?':
-            sub = 'X'
-            ob = 'Y'
-        else:
-            ob = 'X'
-            sub = 'Y'
-        # note, this doesn't really work for queries like ? lives_in seattle
-        # because the candidates from the line below are only people that
-        # already have a lives_in relation TODO.
-        candidates = self.query('{}({}, {})'.format(pred, sub, ob))
-        possibles = []
-        candidates = list(set([x['X'] for x in candidates]))
+        if not candidates:
+            if sub == '?':
+                sub = 'X'
+                ob = 'Y'
+            else:
+                ob = 'X'
+                sub = 'Y'
+            candidates = self.query('{}({}, {})'.format(pred, sub, ob))
+            candidates = list(set([x['X'] for x in candidates]))
         reverse_lookup = {}
+        possibles = []
         for cand in candidates:
             reverse_lookup[self._entity2id[cand]] = cand
             if orig_sub == '?':
