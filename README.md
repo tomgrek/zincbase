@@ -96,7 +96,6 @@ From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
 * Add relation extraction from arbitrary unstructured text
 * Add context to triple - that is interpreted by BERT/ULM/GPT-2 similar and
 put into an embedding that's concat'd to the KG embedding.
-* Address inconsistencies with Prolog syntax vs basic triples
 * Reinforcement learning for graph traversal.
 
 # References & Acknowledgements
