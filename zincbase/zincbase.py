@@ -812,7 +812,7 @@ class KB():
         np.savetxt(embeddings_filename, embeddings, delimiter='\t')
         labels_file = open(labels_filename, 'w')
         for ent in self.entities:
-            labels.write(ent + '\n')
+            labels_file.write(ent + '\n')
         labels_file.close()
         return True
 
