@@ -577,9 +577,10 @@ class KB():
         return self._relation2id.keys()
 
     def get_most_likely(self, sub, pred, ob, candidates=None, k=1):
-        """Return the k most likely triples to satisfy the input triple.
+        """Return the k most likely triples to satisfy the input triple. One of \
+        sub, pred, or ob may be '?'.
 
-        :param list<str> candidates: Candidate entities. If None or not specified, this function \
+        :param list<str> candidates: Candidate entities/predicates. If None or not specified, this function \
         will generate possible candidates from the rest of the triple.
         :param int k: The k in top k.
 
@@ -593,27 +594,36 @@ class KB():
         >>> kb.get_most_likely('austria', 'neighbor', '?', k=2) # doctest:+ELLIPSIS
         [{'prob': 0.9673, 'triple': ('austria', 'neighbor', 'germany')}, {'prob': 0.9656, 'triple': ('austria', 'neighbor', 'liechtenstein')}]
         >>> kb.get_most_likely('?', 'neighbor', 'austria', candidates=list(kb.entities), k=2)
-        [{'prob': 0.9467, 'triple': ('slovenia', 'neighbor', 'austria')}, {'prob': 0.94, 'triple': ('liechtenstein', 'neighbor', 'austria')}]"""
-
+        [{'prob': 0.9467, 'triple': ('slovenia', 'neighbor', 'austria')}, {'prob': 0.94, 'triple': ('liechtenstein', 'neighbor', 'austria')}]
+        >>> kb.get_most_likely('austria', '?', 'germany', k=3)
+        [{'prob': 0.9673, 'triple': ('austria', 'neighbor', 'germany')}, {'prob': 0.664, 'triple': ('austria', 'locatedin', 'germany')}]"""
+        
+        reverse_lookup = {}
+        possibles = []
         orig_sub = sub
         orig_ob = ob
         if not candidates:
-            if sub == '?':
-                sub = 'X'
-                ob = 'Y'
+            if pred == '?':
+                candidates = self.predicates
             else:
-                ob = 'X'
-                sub = 'Y'
-            candidates = self.query('{}({}, {})'.format(pred, sub, ob))
-            candidates = list(set([x['X'] for x in candidates]))
-        reverse_lookup = {}
-        possibles = []
+                if sub == '?':
+                    sub = 'X'
+                    ob = 'Y'
+                else:
+                    ob = 'X'
+                    sub = 'Y'
+                candidates = self.query('{}({}, {})'.format(pred, sub, ob))
+                candidates = list(set([x['X'] for x in candidates]))
         for cand in candidates:
-            reverse_lookup[self._entity2id[cand]] = cand
-            if orig_sub == '?':
-                possibles.append([self._entity2id[cand], self._relation2id[pred], self._entity2id[orig_ob]])
+            if pred == '?':
+                reverse_lookup[self._relation2id[cand]] = cand
+                possibles.append([self._entity2id[sub], self._relation2id[cand], self._entity2id[ob]])
             else:
-                possibles.append([self._entity2id[orig_sub], self._relation2id[pred], self._entity2id[cand]])
+                reverse_lookup[self._entity2id[cand]] = cand
+                if orig_sub == '?':
+                    possibles.append([self._entity2id[cand], self._relation2id[pred], self._entity2id[orig_ob]])
+                else:
+                    possibles.append([self._entity2id[orig_sub], self._relation2id[pred], self._entity2id[cand]])
         possibles_tensor = torch.tensor(possibles)
         if self._cuda:
             possibles_tensor = possibles_tensor.cuda()
@@ -624,7 +634,10 @@ class KB():
         indexes = answers[1]
         retvals = []
         for i in range(len(indexes)):
-            if orig_sub == '?':
+            if pred == '?':
+                orig = reverse_lookup[possibles[int(indexes[i])][1]]
+                triple = (sub, orig, ob)
+            elif orig_sub == '?':
                 orig = reverse_lookup[possibles[int(indexes[i])][0]]
                 triple = (orig, pred, orig_ob)
             else:
