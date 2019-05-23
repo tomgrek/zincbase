@@ -72,7 +72,7 @@ class KB():
         """Set attributes on a predicate between subject and object.
         Useful for example to encode time, or truthiness.
 
-        Note that if any of the specified attributes have been previously set, 
+        Note that if any of the specified attributes have been previously set,
         this updates them with new values. To delete a set edge attribute, see also `delete_edge_attr`.
 
         :param str sub: Subject node/entity
@@ -96,7 +96,7 @@ class KB():
                 nx.set_edge_attributes(self.G, {(sub, ob, idx): attributes})
                 return None
         return False
-    
+
     def delete_edge_attr(self, sub, pred, ob, attributes):
         """Delete attributes previously set on a predicate between subject and object.
         To set the attribute in the first place, see also `edge_attr`.
@@ -565,14 +565,14 @@ class KB():
     @property
     def entities(self):
         """All the entities in the KB.
-        
+
         :returns generator: Generator of all the entities"""
         return self._entity2id.keys()
-    
+
     @property
     def predicates(self):
         """All the predicates (aka relations) in the KB.
-        
+
         :returns generator: Generator of all the predicates"""
         return self._relation2id.keys()
 
@@ -594,7 +594,7 @@ class KB():
         [{'prob': 0.9673, 'triple': ('austria', 'neighbor', 'germany')}, {'prob': 0.9656, 'triple': ('austria', 'neighbor', 'liechtenstein')}]
         >>> kb.get_most_likely('?', 'neighbor', 'austria', candidates=list(kb.entities), k=2)
         [{'prob': 0.9467, 'triple': ('slovenia', 'neighbor', 'austria')}, {'prob': 0.94, 'triple': ('liechtenstein', 'neighbor', 'austria')}]"""
-        
+
         orig_sub = sub
         orig_ob = ob
         if not candidates:
@@ -712,9 +712,9 @@ class KB():
         of the graph, so that the NN can be trained.
 
         :param str predicate: A predicate (that's a rule not a fact otherwise what's the point)
-        
+
         :Example:
-        
+
         >>> kb = KB()
         >>> kb.store('is(tom, human)')
         0
@@ -800,6 +800,27 @@ class KB():
             self.attr(parts[2], node_attributes[1])
         return len(self.rules) - 1
 
+    def to_tensorboard_projector(self, embeddings_filename, labels_filename, filter_fn=None):
+        """Convert the KB's trained embeddings to 2 files suitable for \
+        https://projector.tensorflow.org. This outputs only entity embeddings, \
+        not relation embeddings, a visualization of which may not be interpretable.
+
+        :param str embeddings_filename: Filename to output embeddings to, tsv format.
+        :param str labels_filename: Filename to output labels to, one label per row.
+        :param function filter_fn: Only include the embeddings/labels for which filter_fn(label) returns True"""
+
+        embeddings = self._kg_model.entity_embedding.detach().cpu().numpy()
+        if not filter_fn:
+            filter_fn = lambda x: True
+        z = [e for e in zip(embeddings, self.entities) if filter_fn(e[1])]
+        embeddings, labels = list(zip(*z))
+        np.savetxt(embeddings_filename, embeddings, delimiter='\t')
+        labels_file = open(labels_filename, 'w')
+        for ent in labels:
+            labels_file.write(ent + '\n')
+        labels_file.close()
+        return True
+
     def to_triples(self, data=False):
         """Convert all facts in the KB to a list of triples, each of length 3
         (or 4 if data=True).
@@ -841,7 +862,7 @@ class KB():
                     if data:
                         edge = self.edge(subject, r.head.pred, object_)
                         truthiness = edge.get('truthiness', False)
-                        if (truthiness and truthiness < 0) or str(r) in neg_examples: 
+                        if (truthiness and truthiness < 0) or str(r) in neg_examples:
                             is_neg = True
                         else:
                             is_neg = False
