@@ -800,18 +800,23 @@ class KB():
             self.attr(parts[2], node_attributes[1])
         return len(self.rules) - 1
 
-    def to_tensorboard_projector(self, embeddings_filename, labels_filename):
+    def to_tensorboard_projector(self, embeddings_filename, labels_filename, filter_fn=None):
         """Convert the KB's trained embeddings to 2 files suitable for \
         https://projector.tensorflow.org. This outputs only entity embeddings, \
         not relation embeddings, a visualization of which may not be interpretable.
 
         :param str embeddings_filename: Filename to output embeddings to, tsv format.
-        :param str labels_filename: Filename to output labels to, one label per row."""
+        :param str labels_filename: Filename to output labels to, one label per row.
+        :param function filter_fn: Only include the embeddings/labels for which filter_fn(label) returns True"""
 
         embeddings = self._kg_model.entity_embedding.detach().cpu().numpy()
+        if not filter_fn:
+            filter_fn = lambda x: True
+        z = [e for e in zip(embeddings, self.entities) if filter_fn(e[1])]
+        embeddings, labels = list(zip(*z))
         np.savetxt(embeddings_filename, embeddings, delimiter='\t')
         labels_file = open(labels_filename, 'w')
-        for ent in self.entities:
+        for ent in labels:
             labels_file.write(ent + '\n')
         labels_file.close()
         return True
