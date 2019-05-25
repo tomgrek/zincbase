@@ -1,6 +1,6 @@
-from zincbase.utils.string_utils import split_on
+from utils.string_utils import split_on
 
-from zincbase.logic.Term import Term
+from logic.Term import Term
 
 class Rule:
     def __init__(self, expr, graph=None):

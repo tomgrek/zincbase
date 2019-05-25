@@ -1,7 +1,7 @@
 import types
 
 import context
-from zincbase import KB
+from zincbase.zincbase import KB
 
 kb = KB()
 b = kb.store('c(x)'); assert b == 0

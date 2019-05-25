@@ -17,14 +17,14 @@ from torch.utils.data import DataLoader
 import torch
 from tqdm import tqdm
 
-from zincbase.logic.Goal import Goal
-from zincbase.logic.Negative import Negative
-from zincbase.logic.Term import Term
-from zincbase.logic.Rule import Rule
-from zincbase.logic.common import unify, process
-from zincbase.nn.dataloader import NegDataset, TrainDataset, BidirectionalOneShotIterator
-from zincbase.nn.rotate import KGEModel
-from zincbase.utils.string_utils import strip_all_whitespace, split_to_parts, cleanse
+from logic.Goal import Goal
+from logic.Negative import Negative
+from logic.Term import Term
+from logic.Rule import Rule
+from logic.common import unify, process
+from nn.dataloader import NegDataset, TrainDataset, BidirectionalOneShotIterator
+from nn.rotate import KGEModel
+from utils.string_utils import strip_all_whitespace, split_to_parts, cleanse
 
 class KB():
     """Knowledge Base Class

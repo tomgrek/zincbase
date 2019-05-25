@@ -9,7 +9,7 @@ triples, see e.g. "canada in asia" below.
 """
 import context
 
-from zincbase import KB
+from zincbase.zincbase import KB
 
 kb = KB()
 kb.seed(555)

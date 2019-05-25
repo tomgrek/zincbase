@@ -56,7 +56,7 @@ class NERModel():
             urllib.request.urlretrieve(url, weights_file)
 
         self.ner_model = BertNER(len(TOKEN_TYPES), device, False).to(device)
-        if device == 'cpu':
+        if device != 'cuda':
             weights = torch.load(weights_file, map_location='cpu')
         else:
             weights = torch.load(weights_file)
