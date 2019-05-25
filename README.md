@@ -32,6 +32,7 @@ for ans in kb.query('eats(tom, Food)'):
 # The included assets/countries_s1_train.csv contains triples like:
 # (namibia, locatedin, africa)
 # (lithuania, neighbor, poland)
+# Note that it won't be included if you pip install, only if you git clone.
 
 kb = KB()
 kb.from_csv('./assets/countries.csv')
@@ -49,7 +50,15 @@ kb.estimate_triple_prob('fiji', 'locatedin', 'melanesia')
 
 # Installation
 
-`pip install -r requirements.txt`
+`pip install zincbase`
+
+This won't get you the examples or the assets (except those which are automatically
+downloaded as needed, such as the NER model.) Advanced users may instead wish to:
+
+```
+git clone https://github.com/tomgrek/zincbase.git
+pip install -r requirements.txt
+```
 
 _Note:_ Requirements might differ for PyTorch depending on your system.
 
@@ -86,6 +95,15 @@ There is also a script to evaluate performance on FB15k: `python examples/fb15k_
 ## Building documentation
 
 From docs/ dir: `make html`. If something changed a lot: `sphinx-apidoc -o . ..`
+
+## Building the pypi wheel
+
+From the repo's root dir:
+
+```
+python setup.py sdist
+twine upload dist/*
+```
 
 # TODO
 

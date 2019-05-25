@@ -17,6 +17,7 @@ from torch.utils.data import DataLoader
 import torch
 from tqdm import tqdm
 
+import nn
 from logic.Goal import Goal
 from logic.Negative import Negative
 from logic.Term import Term

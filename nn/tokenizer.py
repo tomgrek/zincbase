@@ -6,5 +6,6 @@ def get_tokenizer(bert_model='bert-base-cased', do_lower_case=False):
     global tokenizer
     if tokenizer:
         return tokenizer
-    return BertTokenizer.from_pretrained(bert_model, do_lower_case=do_lower_case)
+    tokenizer = BertTokenizer.from_pretrained(bert_model, do_lower_case=do_lower_case)
+    return tokenizer
 

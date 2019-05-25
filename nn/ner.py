@@ -7,12 +7,17 @@ from pytorch_pretrained_bert import BertModel
 from zincbase import KB
 from nn.tokenizer import get_tokenizer
 from utils.file_utils import get_cache_dir, check_file_exists
+from utils.string_utils import clean_punctuation
+
+TOKEN_TYPES = ('<PAD>', 'O', 'B-LOC', 'I-LOC', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-MISC', 'I-MISC')
+tag2idx = {tag: idx for idx, tag in enumerate(TOKEN_TYPES)}
+idx2tag = {idx: tag for idx, tag in enumerate(TOKEN_TYPES)}
 
 class BertNER(nn.Module):
     def __init__(self, vocab_size=None, device='cpu', training=False):
         super().__init__()
         self.bert = BertModel.from_pretrained('bert-base-cased').to(device)
-        self.fc = nn.Linear(768, vocab_size)
+        self.classifier = nn.Linear(768, vocab_size)
         self.device = device
         self.training = training
         self.bert.eval()
@@ -27,7 +32,7 @@ class BertNER(nn.Module):
             with torch.no_grad():
                 layers_out, _ = self.bert(x)
                 last_layer = layers_out[-1]
-        logits = self.fc(last_layer)
+        logits = self.classifier(last_layer)
         preds = logits.argmax(-1)
         return logits, preds
 
@@ -36,8 +41,10 @@ class NERModel():
     """
     def __init__(self, device='cpu', alternate_model_weights=None):
         """
+        :param str device: 'cuda' or 'cpu', defaults to cpu.
         :param str alternate_model_weights: If you've trained your own model, specify the path to its .bin file here
         """
+        self.device = device
         if not alternate_model_weights:
             self.model_name = 'ner_model.bin'
             weights_file = get_cache_dir() + self.model_name
@@ -48,16 +55,25 @@ class NERModel():
             print('Downloading weights file; afterwards it will be cached at %s' % weights_file)
             url = 'https://zincbase.com/models/ner_model.bin'
             urllib.request.urlretrieve(url, weights_file)
-        
-        self.TOKEN_TYPES = ('<PAD>', 'O', 'B-LOC', 'I-LOC', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-MISC', 'I-MISC')
-        self.tag2idx = {tag: idx for idx, tag in enumerate(self.TOKEN_TYPES)}
-        self.idx2tag = {idx: tag for idx, tag in enumerate(self.TOKEN_TYPES)}
 
-        self.ner_model = BertNER(len(self.TOKEN_TYPES), device, False)
+        self.ner_model = BertNER(len(TOKEN_TYPES), device, False).to(device)
         weights = torch.load(weights_file)
         self.ner_model.load_state_dict(weights)
     
     def ner(self, doc):
+        """Carry out named entity recognition on doc, finding locations, people, organizations and misc things.
+
+        :param str doc: A string of text, which might have named entities in it.
+        :returns dict: Dictionary with keys LOC, PER, ORG and MISC, each of which is a list of found entities.
+
+        :Example:
+
+        >>> from nn.ner import NERModel
+        >>> nlp = NERModel(device='cpu')
+        >>> nlp.ner('The cat, Kitty, meowed in SOMA')
+        {'LOC': ['SOMA'], 'PER': ['Kitty'], 'ORG': [], 'MISC': []}
+        """
+
         tokens = []
         is_heads = []
         tmp_toks = []
@@ -69,7 +85,7 @@ class NERModel():
             is_head = [1] + [0]*(len(xx) - 1)
             tokens.extend(xx)
             is_heads.extend(is_head)
-        tokens = torch.LongTensor([tokens])
+        tokens = torch.LongTensor([tokens]).to(self.device)
         real_toks = []
         last_tok = ''
         for i, t in enumerate(tmp_toks):
@@ -83,7 +99,7 @@ class NERModel():
         _, toktype = self.ner_model(tokens)
         toktype = toktype.cpu().numpy().tolist()
         y_pred = [p for head, p in zip(is_heads, toktype[0]) if head == 1]
-        preds = [self.idx2tag[p] for p in y_pred]
+        preds = [idx2tag[p] for p in y_pred]
         ents = {
             'LOC': [],
             'PER': [],
@@ -95,7 +111,7 @@ class NERModel():
         for pred, real_tok in list(zip(preds, real_toks)):
             if pred == 'O':
                 if cat and enttype:
-                    ents[enttype].append(cat)
+                    ents[enttype].append(clean_punctuation(cat))
                 cat = ''
                 continue
             if pred[0] == 'B':
@@ -104,5 +120,5 @@ class NERModel():
             if pred[0] == 'I':
                 cat += ' ' + real_tok
         if cat:
-            ents[enttype].append(cat)
+            ents[enttype].append(clean_punctuation(cat))
         return ents
