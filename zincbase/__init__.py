@@ -1,1 +1,1 @@
-from .zincbase import KB
+#from zincbase import KB
