@@ -2,8 +2,8 @@
 
 import copy
 
-from logic.Term import Term
-from utils.type_checks import isVar, isAtom
+from zincbase.logic.Term import Term
+from zincbase.utils.type_checks import isVar, isAtom
 
 def unify(src, src_bindings, dest, dest_bindings):
     if src.pred == '_' or dest.pred == '_':

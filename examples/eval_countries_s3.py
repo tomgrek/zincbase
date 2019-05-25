@@ -10,7 +10,7 @@ import numpy as np
 from sklearn.metrics import average_precision_score
 import torch
 
-from utils.calc_auc_roc import calc_auc_roc
+from zincbase.utils.calc_auc_roc import calc_auc_roc
 from zincbase import KB
 
 kb = KB()

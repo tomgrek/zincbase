@@ -1,6 +1,6 @@
 import os, sys
 
-from zincbase import KB
+from ..zincbase import KB
 
 def get_cache_dir():
     path = os.path.abspath(sys.modules[KB.__module__].__file__)

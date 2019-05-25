@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils import data
 
-from nn.ner import BertNER, TOKEN_TYPES, tag2idx, idx2tag
+from zincbase.nn.ner import BertNER, TOKEN_TYPES, tag2idx, idx2tag
 from dataloader import NERDataset, pad
 
 def train(model, it, optimizer, criterion):
