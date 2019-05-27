@@ -1,15 +1,27 @@
 version: 2.1
 
 jobs:
-  build:
+  test:
     docker:
       - image: python:3.7
     steps:
       - checkout
+      - restore_cache:
+          key: v1-dependency-cache-{{ checksum "setup.py" }}
+      - run:
+          name: Install deps
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            python3 -m pip install -r requirements.txt
+      - save_cache:
+          key: v1-dependency-cache-{{ checksum "setup.py" }}
+          paths:
+            - "venv"
       - run:
           name: Run Tests
           command: |
-            python3 -m pip install -r requirements.txt
+            . venv/bin/activate
             python3 -m doctest zincbase/zincbase.py
             python3 test/test_main.py
             python3 test/test_lists.py
@@ -18,3 +30,50 @@ jobs:
             python3 test/test_nn.py
             python3 test/test_neg_examples.py
             python3 test/test_truthiness.py
+  deploy:
+    docker:
+      - image: python:3.7
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-dependency-cache-{{ checksum "setup.py" }}
+      - run:
+          name: Install deps
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            python3 -m pip install -r requirements.txt
+      - save_cache:
+          key: v1-dependency-cache-{{ checksum "setup.py" }}
+      - run:
+          name: init .pypirc
+          command: |
+            echo -e "[pypi]" >> ~/.pypirc
+            echo -e "username = tomgrek" >> ~/.pypirc
+            echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+      - run:
+          name: build pypi
+          command: |
+            python setup.py sdist
+      - run:
+          name: upload to pypi
+          command: |
+            . venv/bin/activate
+            twine upload dist/*
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - test:
+        filters:
+          tags:
+            only: /.*/
+      - deploy:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+
