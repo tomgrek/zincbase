@@ -45,6 +45,8 @@ jobs:
             python3 -m pip install -r requirements.txt
       - save_cache:
           key: v1-dependency-cache-{{ checksum "setup.py" }}
+          paths:
+            - "venv"
       - run:
           name: init .pypirc
           command: |
