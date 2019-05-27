@@ -9,9 +9,9 @@ with open("requirements.txt", "r") as fh:
 
 setup(
     name='Zincbase',
-    version='0.2.77',
+    version='0.2.79',
     packages=setuptools.find_packages(),
-    description="A state of the art knowledge base and batteries-included NLP toolkit",
+    description="A batteries-included kit for building knowledge bases",
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=requirements,
