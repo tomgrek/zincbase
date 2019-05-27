@@ -1,1 +1,0 @@
-from zincbase.zincbase import KB

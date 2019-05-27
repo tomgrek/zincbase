@@ -4,9 +4,9 @@ import torch
 import torch.nn as nn
 from pytorch_pretrained_bert import BertModel
 
-from nn.tokenizer import get_tokenizer
-from utils.file_utils import get_cache_dir, check_file_exists
-from utils.string_utils import clean_punctuation
+from zincbase.nn.tokenizer import get_tokenizer
+from zincbase.utils.file_utils import get_cache_dir, check_file_exists
+from zincbase.utils.string_utils import clean_punctuation
 
 TOKEN_TYPES = ('<PAD>', 'O', 'B-LOC', 'I-LOC', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-MISC', 'I-MISC')
 tag2idx = {tag: idx for idx, tag in enumerate(TOKEN_TYPES)}
@@ -56,7 +56,7 @@ class NERModel():
             urllib.request.urlretrieve(url, weights_file)
 
         self.ner_model = BertNER(len(TOKEN_TYPES), device, False).to(device)
-        if device != 'cuda':
+        if device == 'cpu':
             weights = torch.load(weights_file, map_location='cpu')
         else:
             weights = torch.load(weights_file)
