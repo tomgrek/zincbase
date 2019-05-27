@@ -3,7 +3,7 @@ import re
 
 from tqdm import tqdm
 
-from utils.string_utils import cleanse
+from zincbase.utils.string_utils import cleanse
 
 def calc_mrr(kb, test_file, delimiter=',', header=None, size=None):
     """Calculate the mean reciprocal rank using a test set."""
