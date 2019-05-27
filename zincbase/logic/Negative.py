@@ -1,6 +1,6 @@
 """Internal ZincBase class for negative training examples"""
 
-from utils.string_utils import split_on
+from zincbase.utils.string_utils import split_on
 
 class Negative:
     def __init__(self, expr):

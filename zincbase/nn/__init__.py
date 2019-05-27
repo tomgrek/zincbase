@@ -1,1 +1,1 @@
-from nn.ner import NERModel
+from .ner import NERModel

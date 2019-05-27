@@ -4,7 +4,7 @@
 
 <img src="https://user-images.githubusercontent.com/2245347/57199440-c45daf00-6f33-11e9-91df-1a6a9cae6fb7.png" width="140" alt="Zincbase logo">
 
-ZincBase is a state of the art knowledge base. It does the following:
+Zincbase is a batteries-included kit for building knowledge bases. It exists to do the following:
 
 * Extract facts (aka triples and rules) from unstructured data/text
 * Store and retrieve those facts efficiently
@@ -60,11 +60,13 @@ git clone https://github.com/tomgrek/zincbase.git
 pip install -r requirements.txt
 ```
 
-_Note:_ Requirements might differ for PyTorch depending on your system.
+_Note:_ Requirements might differ for PyTorch depending on your system. On Mac OSX 
+you might need to `brew install libomp` first.
 
 # Testing
 
 ```
+python -m doctest zincbase/zincbase.py
 python test/test_main.py
 python test/test_graph.py
 python test/test_lists.py
@@ -72,7 +74,6 @@ python test/test_nn_basic.py
 python test/test_nn.py
 python test/test_neg_examples.py
 python test/test_truthiness.py
-python -m doctest zincbase/zincbase.py
 ```
 
 # Validation
