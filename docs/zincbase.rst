@@ -1,18 +1,25 @@
 zincbase package
 ================
 
-The main Zincbase package.
+Subpackages
+-----------
 
-See README.md for some simple docs.
+.. toctree::
 
-zincbase.zincbase module
-------------------------
+    zincbase.kb
+    zincbase.logic
+    zincbase.nn
+    zincbase.utils
 
-.. automodule:: zincbase.zincbase
+You can just call `from zincbase import KB`; internally that import `zincbase.kb.KB` so look there for docs on the main KB package.
+
+Module contents
+---------------
+
+.. automodule:: zincbase
     :members:
     :undoc-members:
     :show-inheritance:
-
 
 Negative Examples
 =================
