@@ -1,3 +1,4 @@
+import logging
 import urllib
 
 import torch
@@ -7,6 +8,7 @@ from pytorch_pretrained_bert import BertModel
 from zincbase.nn.tokenizer import get_tokenizer
 from zincbase.utils.file_utils import get_cache_dir, check_file_exists
 from zincbase.utils.string_utils import clean_punctuation
+from zincbase.utils.misc_utils import chunk
 
 TOKEN_TYPES = ('<PAD>', 'O', 'B-LOC', 'I-LOC', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-MISC', 'I-MISC')
 tag2idx = {tag: idx for idx, tag in enumerate(TOKEN_TYPES)}
@@ -49,7 +51,7 @@ class NERModel():
             weights_file = get_cache_dir() + self.model_name
         else:
             weights_file = alternate_model_weights
-        
+
         if not check_file_exists(weights_file):
             print('Downloading weights file; afterwards it will be cached at %s' % weights_file)
             url = 'https://zincbase.com/models/ner_model.bin'
@@ -61,7 +63,7 @@ class NERModel():
         else:
             weights = torch.load(weights_file)
         self.ner_model.load_state_dict(weights)
-    
+
     def ner(self, doc):
         """Carry out named entity recognition on doc, finding locations, people, organizations and misc things.
 
@@ -87,7 +89,7 @@ class NERModel():
             is_head = [1] + [0]*(len(xx) - 1)
             tokens.extend(xx)
             is_heads.extend(is_head)
-        tokens = torch.LongTensor([tokens]).to(self.device)
+
         real_toks = []
         last_tok = ''
         for i, t in enumerate(tmp_toks):
@@ -98,9 +100,18 @@ class NERModel():
             else:
                 last_tok += t.replace('##', '')
         real_toks.append(last_tok)
-        _, toktype = self.ner_model(tokens)
-        toktype = toktype.cpu().numpy().tolist()
-        y_pred = [p for head, p in zip(is_heads, toktype[0]) if head == 1]
+
+        toktype = []
+        if len(tokens) > 512:
+            logging.warning("Breaking up the document which has >512 tokens. This will reduce accuracy - use shorter docs if possible.")
+            # TODO: Retrain the model with max_position_embeddings > 512
+        for toks in chunk(tokens, 512):
+            toks = torch.LongTensor([toks]).to(self.device)
+            _, preds = self.ner_model(toks)
+            preds = preds.cpu().numpy().tolist()
+            toktype.extend(preds[0])
+
+        y_pred = [p for head, p in zip(is_heads, toktype) if head == 1]
         preds = [idx2tag[p] for p in y_pred]
         ents = {
             'LOC': [],
@@ -123,4 +134,6 @@ class NERModel():
                 cat += ' ' + real_tok
         if cat:
             ents[enttype].append(clean_punctuation(cat))
+        for key in ents:
+            ents[key] = list(set(ents[key]))
         return ents
