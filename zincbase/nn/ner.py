@@ -3,7 +3,7 @@ import urllib
 
 import torch
 import torch.nn as nn
-from pytorch_pretrained_bert import BertModel
+from pytorch_pretrained_bert import BertModel, BertConfig
 
 from zincbase.nn.tokenizer import get_tokenizer
 from zincbase.utils.file_utils import get_cache_dir, check_file_exists
@@ -17,7 +17,9 @@ idx2tag = {idx: tag for idx, tag in enumerate(TOKEN_TYPES)}
 class BertNER(nn.Module):
     def __init__(self, vocab_size=None, device='cpu', training=False):
         super().__init__()
-        self.bert = BertModel.from_pretrained('bert-base-cased').to(device)
+        bert_vocab_size = 30522
+        config = BertConfig(bert_vocab_size, max_position_embeddings=512)
+        self.bert = BertModel(config).from_pretrained('bert-base-cased').to(device)
         self.classifier = nn.Linear(768, vocab_size)
         self.device = device
         self.training = training
@@ -78,6 +80,36 @@ class NERModel():
         {'LOC': ['SOMA'], 'PER': ['Kitty'], 'ORG': [], 'MISC': []}
         """
 
+        ents = self._ner_inner(doc)
+        def got_none(x):
+            if (len(x['PER']) + len(x['LOC']) + len(x['ORG']) + len(x['MISC'])) == 0:
+                return True
+            all_length_one_or_none = True
+            for key in x:
+                if len(x[key]):
+                    for ent in x[key]:
+                        if ent and len(ent.split()) != 1:
+                            all_length_one_or_none = False
+            return all_length_one_or_none
+
+        for key in ents.keys():
+            for ent in ents[key]:
+                if len(ent.split()) > 1:
+                    doc = doc.replace(ent, ' [SEP] ')
+        newents = self._ner_inner(doc)
+        while not got_none(newents):
+            for key in newents:
+                ents[key].extend(newents[key])
+            for key in ents.keys():
+                for ent in ents[key]:
+                    if len(ent.split()) > 1:
+                        doc = doc.replace(ent, ' [SEP] ')
+            newents = self._ner_inner(doc)
+        for key in ents:
+            ents[key] = list(set(ents[key]))
+        return ents
+
+    def _ner_inner(self, doc):
         tokens = []
         is_heads = []
         tmp_toks = []
@@ -103,8 +135,7 @@ class NERModel():
 
         toktype = []
         if len(tokens) > 512:
-            logging.warning("Breaking up the document which has >512 tokens. This will reduce accuracy - use shorter docs if possible.")
-            # TODO: Retrain the model with max_position_embeddings > 512
+            logging.warning("Breaking up the document which has 512 tokens. This will reduce accuracy - use shorter docs if possible.")
         for toks in chunk(tokens, 512):
             toks = torch.LongTensor([toks]).to(self.device)
             _, preds = self.ner_model(toks)

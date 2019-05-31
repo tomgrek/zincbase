@@ -10,7 +10,10 @@ class NERDataset(data.Dataset):
         entries = open(filepath, 'r').read().strip().split("\n\n")
         sents, tags_li = [], []
         for entry in entries:
-            words = [line.split()[0] for line in entry.splitlines()]
+            try:
+                words = [line.split()[0] for line in entry.splitlines()]
+            except:
+                continue #import ipdb; ipdb.set_trace()
             tags = ([line.split()[-1] for line in entry.splitlines()])
             sents.append(["[CLS]"] + words + ["[SEP]"])
             tags_li.append(["<PAD>"] + tags + ["<PAD>"])

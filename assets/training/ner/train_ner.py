@@ -6,14 +6,17 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils import data
+import tqdm
 
 from zincbase.nn.ner import BertNER, TOKEN_TYPES, tag2idx, idx2tag
 from dataloader import NERDataset, pad
 
 def train(model, it, optimizer, criterion):
     model.train()
-    for i, batch in enumerate(it):
+    for i, batch in tqdm.tqdm(enumerate(it)):
         words, x, is_heads, tags, y, seqlens = batch
+        if y.size(1) > 384:
+            continue
         y = y.to(model.device)
         optimizer.zero_grad()
         logits, _ = model(x)
@@ -22,7 +25,7 @@ def train(model, it, optimizer, criterion):
         loss = criterion(logits, y)
         loss.backward()
         optimizer.step()
-        if i % 100 == 0:
+        if i % 300 == 0:
             print(f"Step {i}: loss={loss.item()}")
 
 def eval(model, it, f):
