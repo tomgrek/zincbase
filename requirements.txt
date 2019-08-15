@@ -3,7 +3,7 @@ networkx
 numpy
 pytorch_pretrained_bert
 scipy
-sklearn
+scikit-learn
 torch
 torchvision
 tqdm
