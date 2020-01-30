@@ -4,10 +4,12 @@
 
 # Hello!
 
-The tech behind parts of Zincbase was acquired.
+The tech behind parts of ZincBase was acquired.
 This repo is still here for reference, but it is deprecated.
 
-Fortunately, work still goes on at [ComplexDB](https://github.com/complexdb)!
+Fortunately, work still goes on. Apart from a couple of fringe bits, the [active repo lives here](https://github.com/complexdb/zincbase).
+
+The new owner of ZincBase as it is today is [ComplexDB](https://complexdb.com).
 
 ## Alright, you still want to continue
 
