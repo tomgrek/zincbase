@@ -2,6 +2,15 @@
 [![DOI](https://zenodo.org/badge/183831265.svg)](https://zenodo.org/badge/latestdoi/183831265)
 [![Documentation Status](https://readthedocs.org/projects/zincbase/badge/?version=latest)](https://zincbase.readthedocs.io/en/latest/?badge=latest)
 
+# Hello!
+
+The tech behind parts of Zincbase was acquired.
+This repo is still here for reference, but it is deprecated.
+
+Fortunately, work still goes on at [ComplexDB](https://github.com/complexdb)!
+
+## Alright, you still want to continue
+
 <img src="https://user-images.githubusercontent.com/2245347/57199440-c45daf00-6f33-11e9-91df-1a6a9cae6fb7.png" width="140" alt="Zincbase logo">
 
 ZincBase is a state of the art knowledge base. It does the following:
