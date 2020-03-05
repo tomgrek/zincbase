@@ -12,8 +12,6 @@ import tqdm
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-
-
 def query_ent(ent, level=0, max_level=1):
     if level >= max_level:
         return None

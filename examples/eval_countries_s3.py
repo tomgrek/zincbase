@@ -10,8 +10,8 @@ import numpy as np
 from sklearn.metrics import average_precision_score
 import torch
 
-from utils.calc_auc_roc import calc_auc_roc
 from zincbase import KB
+from zincbase.utils.data_science import calc_auc_roc
 
 kb = KB()
 
@@ -53,4 +53,4 @@ print('^^ Should be ~0.95 to match the paper.')
 #     Ys_pred.append(region)
 
 # aucroc = calc_auc_roc(Ys, Ys_pred)
-# print(aucroc) 
+# print(aucroc)

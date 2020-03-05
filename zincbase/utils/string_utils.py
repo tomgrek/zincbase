@@ -32,3 +32,14 @@ def split_to_parts(line):
 def cleanse(line):
     line = re.sub('[ ./()-]', '_', line)
     return line[0].lower() + line[1:]
+
+def clean_punctuation(line):
+    if not line:
+        return line
+    if line[0] in '.,()-:;':
+        line = line[1:]
+    if not line:
+        return line
+    if line[-1] in '.,()-:;':
+        line = line[:-1]
+    return line.strip()

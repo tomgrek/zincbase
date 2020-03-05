@@ -1,4 +1,5 @@
 import context
+
 from zincbase import KB
 
 kb = KB()
